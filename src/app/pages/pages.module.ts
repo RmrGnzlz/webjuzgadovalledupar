@@ -4,13 +4,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsuarioComponent } from './usuario/usuario.component';
 import { PagesComponent } from './pages.component';
+// import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 
 @NgModule({
   declarations: [
     UsuarioComponent,
-    PagesComponent
+    PagesComponent,
+    // DashboardComponent
   ],
   imports: [
     CommonModule,

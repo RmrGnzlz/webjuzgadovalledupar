@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { PagesComponent } from './pages/pages.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginComponent } from './login/login.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 
 @NgModule({
@@ -17,14 +18,16 @@ import { LoginComponent } from './login/login.component';
     AppComponent,
     NotFoundComponent,
     LoginComponent,
+    PagesComponent,
+    DashboardComponent
 
 
   ],
   imports: [
     BrowserModule,
+    // PagesModule,
     AppRoutingModule,
-    PagesModule,
-    // ServiceModule,
+    ServiceModule,
     SharedModule
   ],
   providers: [],
