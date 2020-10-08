@@ -4,15 +4,17 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsuarioComponent } from './usuario/usuario.component';
 import { PagesComponent } from './pages.component';
-// import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { PruebaComponent } from './prueba/prueba.component';
 
 
 
 @NgModule({
   declarations: [
-    UsuarioComponent,
     PagesComponent,
-    // DashboardComponent
+    UsuarioComponent,
+    DashboardComponent,
+    PruebaComponent
   ],
   imports: [
     CommonModule,
@@ -20,7 +22,8 @@ import { PagesComponent } from './pages.component';
     PagesRoutingModule
   ],
   exports: [
-
+    UsuarioComponent,
+    DashboardComponent
   ]
 })
 export class PagesModule { }

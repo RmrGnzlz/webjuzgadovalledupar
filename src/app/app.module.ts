@@ -1,16 +1,19 @@
-import { HeaderComponent } from './shared/header/header.component';
-import { SharedModule } from './shared/shared.module';
-import { ServiceModule } from './Service/service.module';
+// RUTAS
+import { AppRoutingModule } from './app-routing.module';
+
+
+// MODULOS
 import { PagesModule } from './pages/pages.module';
+// import { SharedModule } from './shared/shared.module';
+import { ServiceModule } from './Service/service.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
+
+
 import { AppComponent } from './app.component';
-import { PagesComponent } from './pages/pages.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginComponent } from './login/login.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 
 @NgModule({
@@ -18,17 +21,16 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     AppComponent,
     NotFoundComponent,
     LoginComponent,
-    PagesComponent,
-    DashboardComponent
+
 
 
   ],
   imports: [
     BrowserModule,
-    // PagesModule,
+    PagesModule,
     AppRoutingModule,
     ServiceModule,
-    SharedModule
+    // SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
