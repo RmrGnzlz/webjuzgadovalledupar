@@ -1,9 +1,11 @@
+
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 
 import {
-UsuarioService
+UsuarioService,
+SalaService
 } from './service.index';
 
 @NgModule({
@@ -12,7 +14,8 @@ UsuarioService
     CommonModule
   ],
   providers:[
-  UsuarioService
+  UsuarioService,
+  SalaService
   ]
 })
 export class ServiceModule { }

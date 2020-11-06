@@ -6,7 +6,9 @@ import { UsuarioComponent } from './usuario/usuario.component';
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PruebaComponent } from './prueba/prueba.component';
-
+import { SalaComponent } from './Tecnico/sala/sala.component';
+import { MaterialModule } from '../material.module';
+import { ComponentsModule } from '../components/components.module';
 
 
 @NgModule({
@@ -14,12 +16,16 @@ import { PruebaComponent } from './prueba/prueba.component';
     PagesComponent,
     UsuarioComponent,
     DashboardComponent,
-    PruebaComponent
+    PruebaComponent,
+    SalaComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
-    PagesRoutingModule
+    PagesRoutingModule,
+    MaterialModule,
+    ComponentsModule
+
   ],
   exports: [
     UsuarioComponent,
