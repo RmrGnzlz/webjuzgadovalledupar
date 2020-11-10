@@ -9,6 +9,7 @@ import { PruebaComponent } from './prueba/prueba.component';
 import { SalaComponent } from './Tecnico/sala/sala.component';
 import { MaterialModule } from '../material.module';
 import { ComponentsModule } from '../components/components.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { ComponentsModule } from '../components/components.module';
     SharedModule,
     PagesRoutingModule,
     MaterialModule,
-    ComponentsModule
+    ComponentsModule,
+    ReactiveFormsModule
 
   ],
   exports: [

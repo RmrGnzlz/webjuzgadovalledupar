@@ -1,31 +1,77 @@
-<mat-grid-list cols=2>
-<mat-grid-tile>
-  <div class="card ">
+<!-- <mat-card> -->
+  <div class="text-right">
+    <button class="btn btn-outline-info text-right"
+    data-toggle="modal" data-target="#exampleModal">
+      <i class="fa fa-plus-square"></i>
+      Crear Sala
+    </button>
+
+  </div>
+
+
+  <app-tabla-component
+  [data]=registros
+  [headersInput]="headersUsuarios"
+  [information]="informationTable"
+  [filter]="1 === 1">
+  </app-tabla-component>
+<!-- </mat-card> -->
+
+
+
+<div class="col-6">
+  <div class="card">
     <div class="card-body">
 
-      <app-tabla-component
-      [data]=registros
-      [headersInput]="headersUsuarios"
-      [information]="informationTable"
-      [filter]="1 === 1">
-      </app-tabla-component>
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE SALA</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+
+      <div class="modal-body">
+
+            <form  [formGroup]="validate">
+
+              <div class="form-group">
+                  <input
+                [class.is-invalid]="validate.get('nombre').touched && validate.get('nombre').invalid"
+                name="nombre" type="text" class="form-control"
+                  placeholder="Digite nombre de la sala" required
+                  formControlName="nombre" />
+              </div>
+
+              <div class="form-group">
+                <label>Edificio</label>
+                <select  formControlName="edificio" name="hospital"
+                  class="form-control" required>
+                  <option value="">Seleccione Hospital</option>
+                  <option *ngFor="let item of edificios" [value]="item.value">{{ item.dato }}</option>
+                </select>
+              </div>
+
+            </form>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button (click)="add()"   class="btn btn-outline-info text-right">Save changes</button>
+      </div>
     </div>
   </div>
-</mat-grid-tile>
-<mat-grid-tile>
-  <div class="card ">
-    <div class="card-body">
+</div>
 
-      <app-tabla-component
-      [data]=registros
-      [headersInput]="headersUsuarios"
-      [information]="informationTable"
-      [filter]="1 === 1">
-      </app-tabla-component>
-
-    </div>
-  </div>
-</mat-grid-tile>
-</mat-grid-list>
+</div>
+</div>
+</div>
 

@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 export interface IHeaderTemplate {
   text: string;
   value: string;
-  templateRef: TemplateRef<any>
+  templateRef: TemplateRef<any>;
 }
 export interface IInformationTemplate {
   title: string;
@@ -20,8 +20,8 @@ export interface IInformationTemplate {
   styleUrls: ['./tabla-component.component.css']
 })
 export class TablaComponentComponent implements OnInit, AfterViewInit {
-  @ContentChild('rows', { static: false }) templateRef: TemplateRef<any>;
-  @ViewChild('table', { static: false }) private tableView;
+  @ContentChild('rows') templateRef: TemplateRef<any>;
+  @ViewChild('table') private tableView;
   headers: IHeaderTemplate[];
   @Input() set headersInput(value) {
     if (value) {
@@ -45,7 +45,7 @@ export class TablaComponentComponent implements OnInit, AfterViewInit {
   headerValues: string[] = [];
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatSort) sort: MatSort;
   constructor() {
   }
 
