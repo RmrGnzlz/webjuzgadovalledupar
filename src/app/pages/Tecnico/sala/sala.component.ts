@@ -17,7 +17,7 @@ export class SalaComponent implements OnInit {
 
   Sala: SalaModel;
 
-  @ViewChild('rows', { static: false }) rows: TemplateRef<any>;
+  @ViewChild('rows') rows: TemplateRef<any>;
   registros = [
     { codigo: '1', nombre: 'sdsdsd' },
     { codigo: '1', nombre: 'sdsdsd' },
