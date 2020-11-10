@@ -10,6 +10,7 @@ import { SalaComponent } from './Tecnico/sala/sala.component';
 import { MaterialModule } from '../material.module';
 import { ComponentsModule } from '../components/components.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DespachoComponent } from './tecnico/despacho/despacho.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     UsuarioComponent,
     DashboardComponent,
     PruebaComponent,
-    SalaComponent
+    SalaComponent,
+    DespachoComponent
   ],
   imports: [
     CommonModule,

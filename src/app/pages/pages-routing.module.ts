@@ -5,6 +5,7 @@ import { UsuarioComponent } from './usuario/usuario.component';
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SalaComponent } from './Tecnico/sala/sala.component';
+import { DespachoComponent } from './tecnico/despacho/despacho.component';
 
 const pagesRoute: Routes = [
 { path: '',
@@ -13,6 +14,7 @@ const pagesRoute: Routes = [
     { path: 'dashboard', component: DashboardComponent },
     { path: 'usuario', component: UsuarioComponent },
     { path: 'sala', component: SalaComponent },
+    { path: 'despacho', component: DespachoComponent },
     { path: '', pathMatch: 'full', redirectTo: '/dashboard' }
   ]
 },
