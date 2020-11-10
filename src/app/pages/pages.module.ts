@@ -2,6 +2,9 @@ import { SharedModule } from './../shared/shared.module';
 import { PagesRoutingModule } from './pages-routing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+
+
 import { UsuarioComponent } from './usuario/usuario.component';
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -28,7 +31,8 @@ import { DespachoComponent } from './tecnico/despacho/despacho.component';
     PagesRoutingModule,
     MaterialModule,
     ComponentsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SweetAlert2Module.forRoot()
 
   ],
   exports: [
