@@ -6,4 +6,13 @@ import { Injectable } from '@angular/core';
 export class SalaService {
 
   constructor() { }
+
+  add(){
+
+  }
+
+  GetAll(){
+
+  }
+
 }

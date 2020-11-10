@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 export interface IHeaderTemplate {
   text: string;
   value: string;
-  templateRef: TemplateRef<any>
+  templateRef: TemplateRef<any>;
 }
 export interface IInformationTemplate {
   title: string;

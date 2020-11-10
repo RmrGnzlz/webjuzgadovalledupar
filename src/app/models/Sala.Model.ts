@@ -1,4 +1,6 @@
 export interface SalaModel {
-codigo: number;
-nombre: string;
+Key: string;
+Nombre: string;
+Estado: boolean;
+EdificioKey: string;
 }

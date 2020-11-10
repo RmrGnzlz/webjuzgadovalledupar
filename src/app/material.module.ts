@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule,MatTableDataSource} from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule, MatGridListModule, MatIconModule, MatInputModule, MatPaginatorModule } from '@angular/material';
+import { MatCardModule, MatDialogModule, MatGridListModule, MatIconModule, MatInputModule, MatPaginatorModule } from '@angular/material';
 
 @NgModule({
   declarations: [],
@@ -20,7 +20,8 @@ import { MatCardModule, MatGridListModule, MatIconModule, MatInputModule, MatPag
     MatPaginatorModule,
     MatCardModule,
     MatIconModule,
-    MatGridListModule
+    MatGridListModule,
+    MatDialogModule
   ]
 })
 export class MaterialModule { }
