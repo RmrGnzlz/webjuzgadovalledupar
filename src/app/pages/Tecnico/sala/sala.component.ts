@@ -1,3 +1,4 @@
+import { EdificioModel } from './../../../models/EdificioModel';
 import { SalaModel } from './../../../models/Sala.Model';
 import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
@@ -5,7 +6,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { IHeaderTemplate, IInformationTemplate } from 'src/app/components/tabla-component/tabla-component.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-declare let alertify: any;
+import * as alertify from 'alertifyjs';
+import { EdificioService } from '../../../Service/Edificio/edificio.service';
+import { SalaService } from '../../../Service/Sala/sala.service';
 
 @Component({
   selector: 'app-sala',
@@ -13,35 +16,21 @@ declare let alertify: any;
   styleUrls: ['./sala.component.css']
 })
 export class SalaComponent implements OnInit {
-  constructor() { }
+
+  ListaEdificios: EdificioModel[] = [];
+  ListaSalas: SalaModel[] = [];
+
+  constructor(private _ServcioEdificio: EdificioService,
+    private _ServicioSala: SalaService) { }
+
+  ngOnInit(): void {
+    this._ServcioEdificio.GetAll().subscribe(res => this.ListaEdificios = res);
+    this._ServicioSala.GetAll().subscribe(res => this.ListaSalas = res);
+  }
 
   Sala: SalaModel;
 
   @ViewChild('rows') rows: TemplateRef<any>;
-  registros = [
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-  ];
-
-  edificios = [
-    {value: '1', dato: 'sdsd' },
-    {value: '1', dato: 'sdsd' },
-    {value: '1', dato: 'sdsd' },
-    {value: '1', dato: 'sdsd' }
-  ];
-
   headersUsuarios: IHeaderTemplate[];
   informationTable: IInformationTemplate = { title: 'Sala de audiencia', subTitle: 'Información de sala' };
 
@@ -50,9 +39,7 @@ export class SalaComponent implements OnInit {
     edificio: new FormControl('', Validators.required)
   });
 
-  ngOnInit(): void {
 
-  }
   // tslint:disable-next-line: use-lifecycle-interface
   ngAfterViewInit(): void {
     this.headersUsuarios = [
@@ -68,10 +55,11 @@ export class SalaComponent implements OnInit {
 
   add() {
     if (this.validate.invalid) {
-      console.log('hola');
-      alertify.alert('Ready!')
+      alertify.prompt('Prompt Message');
+      console.log('error en los datos');
+      return;
     }
-
+    _Ser
     console.log(this.validate.valid);
 
   }
