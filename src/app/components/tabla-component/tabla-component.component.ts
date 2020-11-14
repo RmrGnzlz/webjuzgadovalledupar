@@ -21,8 +21,11 @@ export interface IInformationTemplate {
 })
 export class TablaComponentComponent implements OnInit, AfterViewInit {
   @ContentChild('rows') templateRef: TemplateRef<any>;
+
   @ViewChild('table') private tableView;
+
   headers: IHeaderTemplate[];
+
   @Input() set headersInput(value) {
     if (value) {
 
@@ -46,6 +49,8 @@ export class TablaComponentComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<any>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+
+
   constructor() {
   }
 

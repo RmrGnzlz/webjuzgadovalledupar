@@ -1,23 +1,51 @@
+
 <!-- <mat-card> -->
-  <button (click)="add()">probar</button>
 
-  <div class="text-right">
-    <button class="btn btn-outline-info text-right"
-    data-toggle="modal" data-target="#exampleModal">
-      <i class="fa fa-plus-square"></i>
-      Crear Sala
-    </button>
+<!-- <div class="text-right"></div> -->
 
-  </div>
-
-
-  <app-tabla-component
-  [data]=registros
+<app-tabla-component
+  [data]="ListaSalas"
   [headersInput]="headersUsuarios"
   [information]="informationTable"
-  [filter]="1 === 1">
-  </app-tabla-component>
-<!-- </mat-card> -->
+  [filter]="1 === 1"
+>
+  <button
+    class="btn btn-outline-info text-right"
+    slot="button"
+    data-toggle="modal"
+    data-target="#exampleModal"
+  >
+    <i class="fa fa-plus-square"></i>
+    Crear Sala
+  </button>
+
+  <ng-template let-element="element" let-colunm="column" #rows>
+    <div
+      class="tag-color"
+      [ngClass]="{
+        'text-danger': element.estado === 'Inactivo',
+        'text-success': element.estado === 'Activo'
+      }"
+    >
+      <p *ngIf="colunm.value == 'estado'">
+        {{ element.estado === "Activo" ? "Habilitada" : "Inhabilitada" }}
+      </p>
+    </div>
+
+    <div   *ngIf="colunm.value == 'opciones'">
+
+      <button class="btn btn-primary" (click)="ActualizarSala(element)"  >
+        <i class="fa fa-save "></i>
+      </button>
+      <button class="btn btn-danger"
+      (click)="Eliminar(element)"
+      >
+        <i class="fa fa-trash-o "></i>
+      </button>
+  </div>
+  </ng-template>
+</app-tabla-component> -->
+<!-- </mat-card>
 
 
 
@@ -25,46 +53,74 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE SALA</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
 
-
       <div class="modal-body">
-            <form  [formGroup]="validate">
+        <form [formGroup]="validate" name="form">
+          <div class="form-group">
+            <input
+              [class.is-invalid]="
+                validate.get('nombre').touched && validate.get('nombre').invalid
+              "
+              name="nombre"
+              type="text"
+              class="form-control"
+              placeholder="Digite nombre de la sala"
+              required
+              formControlName="nombre"
+            />
+          </div>
 
-              <div class="form-group">
-                  <input
-                [class.is-invalid]="validate.get('nombre').touched && validate.get('nombre').invalid"
-                name="nombre" type="text" class="form-control"
-                  placeholder="Digite nombre de la sala" required
-                  formControlName="nombre" />
-              </div>
+          <div class="form-group">
+            <label>Edificio</label>
+            <select
+              formControlName="edificio"
+              name="hospital"
+              class="form-control"
+              required
+              [class.is-invalid]="
+                validate.get('edificio').touched &&
+                validate.get('edificio').invalid
+              "
+            >
+              <option value="">Seleccione Edificio</option>
+              <option *ngFor="let item of ListaEdificios" [value]="item.key">
+                {{ item.nombre }}
+              </option>
+            </select>
+          </div>
+        </form>
 
-              <div class="form-group">
-                <label>Edificio</label>
-                <select  formControlName="edificio" name="hospital"
-                  class="form-control" required>
-                  <option value="">Seleccione Hospital</option>
-                  <option *ngFor="let item of edificios" [value]="item.value">{{ item.dato }}</option>
-                </select>
-              </div>
-
-            </form>
-
-
+        <!-- [disabled]="!validate.valid" -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button (click)="add()"   class="btn btn-outline-info text-right">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <button (click)="add()" class="btn btn-outline-info text-right">
+          Save changes
+        </button>
       </div>
     </div>
   </div>
 </div>
-
