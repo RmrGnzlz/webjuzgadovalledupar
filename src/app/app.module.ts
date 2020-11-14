@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 
 // RUTAS
 import { AppRoutingModule } from './app-routing.module';
@@ -36,6 +37,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     ServiceModule,
     BrowserAnimationsModule,
+    HttpClientModule
     // ReactiveFormsModule
 
     // SharedModule

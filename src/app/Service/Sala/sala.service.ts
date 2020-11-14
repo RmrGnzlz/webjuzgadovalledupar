@@ -1,5 +1,5 @@
+import { SalaResponse } from './../../models/Sala.Model';
 import { EdificioModel } from './../../models/EdificioModel';
-import { SalaModel } from './../../models/Sala.Model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {  Observable } from 'rxjs';
@@ -16,12 +16,11 @@ export class SalaService {
 
    }
 
-  add(sala: SalaModel){
-    return this.http.post(this.UrlGeneral, sala);
-  }
-
-  GetAll(): Observable<SalaModel[]>{
-  return this.http.get<SalaModel[]>(this.UrlGeneral);
+   add(nombre: string , edificio: number){
+    return this.http.post(this.UrlGeneral, {nombre, edificio});
+   }
+  GetAll(): Observable<SalaResponse[]>{
+  return this.http.get<SalaResponse[]>(this.UrlGeneral);
   }
 
 

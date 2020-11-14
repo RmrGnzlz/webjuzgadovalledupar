@@ -12,10 +12,44 @@
 
 
   <app-tabla-component
-  [data]=registros
+  [data]=ListaSalas
   [headersInput]="headersUsuarios"
   [information]="informationTable"
   [filter]="1 === 1">
+  <button
+  class="btn btn-outline-info text-right"
+  slot="button"
+  data-toggle="modal"
+  data-target="#exampleModal"
+>
+  <i class="fa fa-plus-square"></i>
+  Crear Sala
+</button>
+<ng-template let-element="element" let-colunm="column" #rows>
+  <div
+    class="tag-color"
+    [ngClass]="{
+      'text-danger': element.estado === 'Inactivo',
+      'text-success': element.estado === 'Activo'
+    }"
+  >
+    <p *ngIf="colunm.value == 'estado'">
+      {{ element.estado === "Activo" ? "Habilitada" : "Inhabilitada" }}
+    </p>
+  </div>
+
+  <div   *ngIf="colunm.value == 'opciones'">
+
+    <button class="btn btn-primary" (click)="ActualizarSala(element)"  >
+      <i class="fa fa-save "></i>
+    </button>
+    <button class="btn btn-danger"
+
+    >
+      <i class="fa fa-trash-o "></i>
+    </button>
+</div>
+</ng-template>
   </app-tabla-component>
 <!-- </mat-card> -->
 
@@ -52,7 +86,7 @@
                 <select  formControlName="edificio" name="hospital"
                   class="form-control" required>
                   <option value="">Seleccione Hospital</option>
-                  <option *ngFor="let item of edificios" [value]="item.value">{{ item.dato }}</option>
+                  <option *ngFor="let item of ListaEdificios" [value]="item.key">{{ item.nombre }}</option>
                 </select>
               </div>
 
