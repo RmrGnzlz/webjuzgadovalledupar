@@ -12,8 +12,9 @@ import { PruebaComponent } from './prueba/prueba.component';
 import { SalaComponent } from './Tecnico/sala/sala.component';
 import { MaterialModule } from '../material.module';
 import { ComponentsModule } from '../components/components.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { DespachoComponent } from './tecnico/despacho/despacho.component';
+
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { DespachoComponent } from './tecnico/despacho/despacho.component';
     MaterialModule,
     ComponentsModule,
     ReactiveFormsModule,
-    SweetAlert2Module.forRoot(),
+    SweetAlert2Module.forRoot()
 
   ],
   exports: [

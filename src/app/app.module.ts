@@ -16,8 +16,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginComponent } from './login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { FlexLayoutModule } from '@angular/flex-layout';
+
 
 
 
@@ -37,8 +36,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     AppRoutingModule,
     ServiceModule,
     BrowserAnimationsModule,
-    HttpClientModule,
-    FlexLayoutModule
     // ReactiveFormsModule
 
     // SharedModule

@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-
+import { EdificioModel } from '../../models/EdificioModel';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +10,10 @@ import { map, catchError } from 'rxjs/operators';
 export class EdificioService {
 
   url = environment.URL_SERVICIO + `edificio`;
-  constructor(private http: HttpClient) { }
+  constructor(private htt: HttpClient) { }
 
-  GetAll() {
-    return this.http.get(this.url);
+  GetAll(): Observable<EdificioModel[]>{
+    return this.htt.get<EdificioModel[]>(this.url);
   }
 
 
