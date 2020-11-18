@@ -17,6 +17,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginComponent } from './login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
+
 
 
 
@@ -37,7 +39,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     ServiceModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    // ToastrModule.forRoot({
+    //   timeOut:100,
+    //   progressBar:true,
+    //   progressAnimation: 'increasing',
+    //   preventDuplicates: true,
+    //   countDuplicates: true
+
+    // }),
+    SnotifyModule
     // ReactiveFormsModule
 
     // SharedModule
@@ -45,7 +56,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   exports: [
 
   ],
-  providers: [],
+  providers: [
+
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

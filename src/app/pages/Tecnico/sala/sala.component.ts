@@ -3,7 +3,6 @@ import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angul
 import { MatTableDataSource } from '@angular/material/table';
 import { IHeaderTemplate, IInformationTemplate } from 'src/app/components/tabla-component/tabla-component.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import Swal from 'sweetalert2';
 import { EdificioService } from '../../../Service/Edificio/edificio.service';
 import { SalaService } from '../../../Service/Sala/sala.service';
 import { Edificio } from 'src/app/models/Edificio.Model';
@@ -84,25 +83,18 @@ export class SalaComponent implements OnInit {
   add() {
     if (this.validate.invalid) {
       console.log('error en los datos');
-      Swal.fire({
-        icon: 'error',
-        title: 'Error en los datos',
-      });
+
       return;
     }
 
 
     this._ServicioSala.add(this.validate.get('nombre').value, this.validate.get('edificio').value)
       .subscribe(res => {
-        Swal.fire({
-          icon: 'success',
-          text: 'Sala agregada!'
-        });
+        console.log('succes');
+
       }, err => {
-        Swal.fire({
-          icon: 'error',
-          text: 'Ocurrio un error!'
-        });
+       console.log('error');
+
       });
 
 

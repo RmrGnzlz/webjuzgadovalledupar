@@ -2,7 +2,6 @@ import { SharedModule } from './../shared/shared.module';
 import { PagesRoutingModule } from './pages-routing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 
 import { UsuarioComponent } from './usuario/usuario.component';
@@ -14,6 +13,7 @@ import { MaterialModule } from '../material.module';
 import { ComponentsModule } from '../components/components.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DespachoComponent } from './tecnico/despacho/despacho.component';
+import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 
 
 @NgModule({
@@ -32,12 +32,16 @@ import { DespachoComponent } from './tecnico/despacho/despacho.component';
     MaterialModule,
     ComponentsModule,
     ReactiveFormsModule,
-    SweetAlert2Module.forRoot()
+    SnotifyModule.forRoot()
 
   ],
   exports: [
     UsuarioComponent,
     DashboardComponent
+  ],
+  providers: [
+    { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
+    SnotifyService
   ]
 })
 export class PagesModule { }
