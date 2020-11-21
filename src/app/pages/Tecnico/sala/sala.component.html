@@ -1,15 +1,5 @@
 <!-- <mat-card> -->
-  <button (click)="add()">probar</button>
-
-  <div class="text-right">
-    <button class="btn btn-outline-info text-right"
-    data-toggle="modal" data-target="#exampleModal">
-      <i class="fa fa-plus-square"></i>
-      Crear Sala
-    </button>
-
-  </div>
-
+  <ng-snotify></ng-snotify>
 
   <app-tabla-component
   [data]=ListaSalas
@@ -40,11 +30,12 @@
 
   <div   *ngIf="colunm.value == 'opciones'">
 
-    <button class="btn btn-primary" (click)="ActualizarSala(element)"  >
-      <i class="fa fa-save "></i>
+    <button data-toggle="modal"
+    data-target="#exampleModal"class="btn btn-outline-info" (click)="ShowSala(element)"  >
+      <i class="fa fa-edit "></i>
     </button>
-    <button class="btn btn-danger"
-
+    <button class="btn waves-effect waves-light btn-outline-danger"
+      (click)="delete(element)"
     >
       <i class="fa fa-trash-o "></i>
     </button>
@@ -64,30 +55,66 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE SALA</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button #botonCerrar (click)="closeModal()"  type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
 
-
+      <!--  -->
       <div class="modal-body">
-            <form  [formGroup]="validate">
+            <form  [formGroup]="form">
+
+              <input type="hidden" name="key" formControlName="key">
 
               <div class="form-group">
                   <input
-                [class.is-invalid]="validate.get('nombre').touched && validate.get('nombre').invalid"
-                name="nombre" type="text" class="form-control"
+                  [ngClass]="{'form-submitted': formSubmitted}"
+                 name="nombre" id="nombre" type="text" class="form-control"
                   placeholder="Digite nombre de la sala" required
                   formControlName="nombre" />
+                  <div class="alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)" >
+                      <div class="container-error-message" *ngIf="nombre.errors.required">
+                        nombre es requerido
+                      </div>
+                      <div class="container-error-message" *ngIf="nombre.errors.minlength">
+                        Nombre debe contener minimo 5 caracteres
+                      </div>
+                  </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group" *ngIf="!Actualizar">
                 <label>Edificio</label>
-                <select  formControlName="edificio" name="hospital"
+                <select
+                [ngClass]="{'form-submitted': formSubmitted}"
+                formControlName="edificio" id="edificio" name="edificio"
                   class="form-control" required>
-                  <option value="">Seleccione Hospital</option>
+                  <option value="">Seleccione</option>
                   <option *ngFor="let item of ListaEdificios" [value]="item.key">{{ item.nombre }}</option>
                 </select>
+                <div class="alert-danger" *ngIf="edificio.invalid && (edificio.dirty || edificio.touched)" >
+                  <div class="container-error-message" *ngIf="edificio.errors.required">
+                    Edificio es requerido
+                  </div>
+
+              </div>
+              </div>
+
+              <div class="form-group" >
+                <label>Estado</label>
+                <select
+                [ngClass]="{'form-submitted': formSubmitted}"
+                  formControlName="estado"
+                  id="estado" name="estado"
+                  class="form-control" required>
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let item of Estados" [value]="item.value">{{item.text}}</option>
+                </select>
+                <div class="alert-danger" *ngIf="estado.invalid && (estado.dirty || estado.touched)" >
+                  <div class="container-error-message" *ngIf="estado.errors.required">
+                    Estado es requerido
+                  </div>
+
+              </div>
               </div>
 
             </form>
@@ -95,8 +122,15 @@
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button (click)="add()"   class="btn btn-outline-info text-right">Save changes</button>
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+
+        <div *ngIf="!Actualizar" >
+          <button (click)="add()"  [disabled]=!this.form.valid  class="btn btn-outline-info text-right">Guardar </button>
+        </div>
+        <div *ngIf="Actualizar" >
+          <button (click)="Update()" [disabled]=!this.form.valid  class="btn btn-outline-info text-right">Actualizar </button>
+        </div>
+
       </div>
     </div>
   </div>

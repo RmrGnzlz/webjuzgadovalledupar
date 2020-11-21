@@ -1,5 +1,4 @@
-import { SalaResponse } from './../../models/Sala.Model';
-import { EdificioModel } from './../../models/EdificioModel';
+import { Sala } from './../../models/Sala.Model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {  Observable } from 'rxjs';
@@ -16,11 +15,20 @@ export class SalaService {
 
    }
 
-   add(nombre: string , edificio: number){
-    return this.http.post(this.UrlGeneral, {nombre, edificio});
+   add(salaRequest: any){
+    return this.http.post(this.UrlGeneral, salaRequest);
    }
-  GetAll(): Observable<SalaResponse[]>{
-  return this.http.get<SalaResponse[]>(this.UrlGeneral);
+
+  GetAll(): Observable<Sala[]>{
+  return this.http.get<Sala[]>(this.UrlGeneral);
+  }
+
+  Update(salaRequest: any){
+    return this.http.put(this.UrlGeneral, salaRequest);
+  }
+
+  Delete(salaRequest: any){
+    return this.http.delete(this.UrlGeneral, salaRequest);
   }
 
 

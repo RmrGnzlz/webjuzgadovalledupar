@@ -1,14 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
+//HELPERS
+import { Validators } from '@angular/forms';
+import { ValidatorHelper } from './utils/validator-helper';
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+// tslint:disable-next-line: align
+export class AppComponent implements OnInit{
   title = 'WebJuzgadoValledupar';
 constructor(){
 
+}
+
+ngOnInit(): void {
+  Validators.minLength = ValidatorHelper.minLength;
 }
 
 }

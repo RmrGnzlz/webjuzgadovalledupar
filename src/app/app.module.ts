@@ -17,7 +17,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginComponent } from './login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
+import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
+
 
 
 
@@ -48,8 +49,8 @@ import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
     //   countDuplicates: true
 
     // }),
-    SnotifyModule
-    // ReactiveFormsModule
+    ReactiveFormsModule,
+    RxReactiveFormsModule
 
     // SharedModule
   ],
