@@ -9,11 +9,11 @@ import { Edificio } from 'src/app/models/Edificio.Model';
 })
 export class EdificioService {
 
-  url = environment.URL_SERVICIO + `edificio`;
+  url = `${environment.URL_SERVICIO}edificio`;
   constructor(private htt: HttpClient) { }
 
-  GetAll(): Observable<Edificio[]>{
-    return this.htt.get<Edificio[]>(this.url);
+  GetAll(){
+    return this.htt.get(this.url);
   }
 
 

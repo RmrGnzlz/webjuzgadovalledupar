@@ -8,8 +8,8 @@ public edificio: Edificio;
 }
 
 export enum EstadoSala{
-  Habilitada= 1,
   Inhabilitada= 0,
+  Habilitada= 1,
   Eliminada = 2
 }
 

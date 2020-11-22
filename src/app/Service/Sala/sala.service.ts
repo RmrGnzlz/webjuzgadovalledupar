@@ -24,11 +24,14 @@ export class SalaService {
   }
 
   Update(salaRequest: any){
-    return this.http.put(this.UrlGeneral, salaRequest);
+    console.log(salaRequest);
+    return this.http.put(`${this.UrlGeneral}/${salaRequest.id}`, salaRequest);
   }
 
-  Delete(salaRequest: any){
-    return this.http.delete(this.UrlGeneral, salaRequest);
+  Delete(id: number){
+    console.log('sala: ' + id);
+
+    return this.http.delete(`${this.UrlGeneral}/${id}`);
   }
 
 

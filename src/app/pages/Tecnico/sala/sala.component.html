@@ -16,15 +16,17 @@
   Crear Sala
 </button>
 <ng-template let-element="element" let-colunm="column" #rows>
+  <div *ngIf="colunm.value == 'edificio.nombre'">{{ element.edificio.nombre }}</div>
+
   <div
     class="tag-color"
     [ngClass]="{
-      'text-danger': element.estado === 'Inactivo',
-      'text-success': element.estado === 'Activo'
+      'text-danger': element.estado === 0,
+      'text-success': element.estado === 1
     }"
   >
     <p *ngIf="colunm.value == 'estado'">
-      {{ element.estado === "Activo" ? "Habilitada" : "Inhabilitada" }}
+      {{ element.estado === 1 ? "Habilitada" : "Inhabilitada" }}
     </p>
   </div>
 

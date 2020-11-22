@@ -46,22 +46,11 @@ export class SalaComponent implements OnInit {
       this.ListaEdificios = res.data;
     },
       err => console.log('error al traer edificios')
-
     );
 
-    this.ListaSalas = [
-      { key: 1, nombre: 'sala1', estado: EstadoSala.Habilitada, edificio: null },
-      { key: 1, nombre: 'sala3', estado: EstadoSala.Habilitada, edificio: null },
-      { key: 1, nombre: 'sala2', estado: EstadoSala.Habilitada, edificio: null },
-      { key: 1, nombre: 'sala3', estado: EstadoSala.Habilitada, edificio: null },
-      { key: 1, nombre: 'sala3', estado: EstadoSala.Habilitada, edificio: null },
-      { key: 1, nombre: 'sala3', estado: EstadoSala.Eliminada, edificio: null },
-      { key: 1, nombre: 'sala3', estado: EstadoSala.Eliminada, edificio: null },
-      { key: 1, nombre: 'sala3', estado: EstadoSala.Eliminada, edificio: null },
-      { key: 1, nombre: 'sala3', estado: EstadoSala.Eliminada, edificio: null },
-      { key: 1, nombre: 'sala3', estado: EstadoSala.Eliminada, edificio: null },
+    this.loadSala();
 
-    ];
+
 
     this.buildForm();
 
@@ -89,13 +78,10 @@ export class SalaComponent implements OnInit {
   ngAfterViewInit(): void {
     this.headersUsuarios = [
       { value: 'key', text: 'Codigo', templateRef: undefined },
-      { value: 'edificio.nombre', text: 'Edificio', templateRef: undefined },
+      { value: 'edificio.nombre', text: 'Edificio', templateRef: this.rows },
       { value: 'nombre', text: 'Sala', templateRef: undefined },
       { value: 'estado', text: 'Estado', templateRef: this.rows },
       { value: 'opciones', text: 'Opciones', templateRef: this.rows },
-      // { value: 'identificacion', text: 'Identificación', templateRef: this.rows },
-      // { value: 'role.nombre', text: 'Role', templateRef: this.rows },
-      // { value: 'verMas', text: 'Ver Más', templateRef: this.rows },
     ];
   }
 
@@ -107,21 +93,31 @@ export class SalaComponent implements OnInit {
     control.updateValueAndValidity();
 
   }
-  Update(){
 
-    if (this.validateForm){
+  loadSala(){
+    this._ServicioSala.GetAll().subscribe((res: any) => {
+      this.ListaSalas = res.data;
+
+    },
+    err => console.log('error al traer SALAS'));
+  }
+
+  Update(){
+  if (this.validateForm){
       const salaRequest: any = {
-        id: this.form.get('key').value,
+        id: + this.form.get('key').value,
         nombre: this.form.get('nombre').value,
-        estado: this.form.get('estado').value
+        estado: + this.form.get('estado').value,
+        edificiokey: 1
       };
       this._ServicioSala.Update(salaRequest)
       .subscribe(res => {
-        this.service.success('REGISTRO EXITOSO', 'Informacion', {position: SnotifyPosition.rightTop});
+        this.service.success('ACTUALIZACIÓN EXITOSA', 'INFORMACIÓN', {position: SnotifyPosition.rightTop});
         this.closeModal();
+        this.loadSala();
         return;
-      });
-      this.service.error('Ocurrio un error', 'Informacion', {position: SnotifyPosition.rightTop});
+      }, err => this.service.error('Ocurrio un error', 'Informacion', {position: SnotifyPosition.rightTop}));
+
 
     }
 
@@ -129,20 +125,21 @@ export class SalaComponent implements OnInit {
   }
 
   add() {
-      if (this.validateForm){
+    if (this.validateForm){
         const salaRequest: any = {
-          edificio: this.form.get('edificio').value,
+          edificioKey: + this.form.get('edificio').value,
           nombre: this.form.get('nombre').value,
-          estado: this.form.get('estado').value
+          estado: + this.form.get('estado').value
         };
-
         this._ServicioSala.add(salaRequest)
         .subscribe(resp => {
           this.service.success('REGISTRO EXITOSO', 'Informacion', {position: SnotifyPosition.rightTop});
           this.closeModal();
+          this.loadSala();
           return;
-        });
-        this.service.error('Ocurrio un error', 'Informacion', {position: SnotifyPosition.rightTop});
+        },
+        err => this.service.error('Ocurrio un error', 'Informacion', {position: SnotifyPosition.rightTop}));
+
 
 
       }
@@ -152,6 +149,8 @@ export class SalaComponent implements OnInit {
   }
 
   delete(sala: any){
+    console.log(sala);
+
     this.service.error('Seguro desea borrar', sala.nombre, {
       timeout: 50000,
       position: SnotifyPosition.rightTop,
@@ -161,10 +160,12 @@ export class SalaComponent implements OnInit {
       buttons: [
         {text: 'No', action: (toast) => this.service.remove(toast.id)},
         {text: 'Si', action: () =>
-
-        this._ServicioSala.
-
-        , bold: false},
+        this._ServicioSala.Delete(sala.key)
+        .subscribe(res => {
+          this.service.success('Sala eliminada', {position: SnotifyPosition.rightTop});
+          this.loadSala();
+      }, err => this.service.error('Error al eliminar sala', {position: SnotifyPosition.rightTop}))
+      },
       ]
     });
   }
