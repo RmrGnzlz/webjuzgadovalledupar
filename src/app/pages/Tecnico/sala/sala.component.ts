@@ -1,13 +1,11 @@
 import {Sala} from './../../../models/Sala.Model';
-import { AfterViewInit, Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import {  Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { IHeaderTemplate, IInformationTemplate } from 'src/app/components/tabla-component/tabla-component.component';
 import { FormGroup, FormBuilder, Validators} from '@angular/forms';
 import { EdificioService } from '../../../Service/Edificio/edificio.service';
 import { SalaService } from '../../../Service/Sala/sala.service';
 import { Edificio } from 'src/app/models/Edificio.Model';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
-import { LoginComponent } from '../../../login/login.component';
 import { EstadoSala } from '../../../models/Sala.Model';
 
 
@@ -28,7 +26,7 @@ export class SalaComponent implements OnInit {
 
   @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
   @ViewChild('rows') rows: TemplateRef<any>;
-  headersUsuarios: IHeaderTemplate[];
+  headerSala: IHeaderTemplate[];
   informationTable: IInformationTemplate = { title: 'Sala de audiencia', subTitle: 'Información de sala' };
 
   constructor(private _ServcioEdificio: EdificioService,
@@ -76,7 +74,7 @@ export class SalaComponent implements OnInit {
 
   // tslint:disable-next-line: use-lifecycle-interface
   ngAfterViewInit(): void {
-    this.headersUsuarios = [
+    this.headerSala = [
       { value: 'key', text: 'Codigo', templateRef: undefined },
       { value: 'edificio.nombre', text: 'Edificio', templateRef: this.rows },
       { value: 'nombre', text: 'Sala', templateRef: undefined },
