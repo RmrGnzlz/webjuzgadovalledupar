@@ -1,3 +1,4 @@
+import { EdificioService } from './../../../Service/Edificio/edificio.service';
 import { DespachoService } from './../../../Service/despacho/despacho.service';
 import { Despacho, EstadoDespacho } from './../../../models/Despacho.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
@@ -29,15 +30,21 @@ export class DespachoComponent implements OnInit {
   // private toastr: ToastrService,
   constructor(private service: SnotifyService,
     private formBuilder: FormBuilder,
-    private _servicioDespacho: DespachoService) { }
+    private _servicioDespacho: DespachoService,
+    private _ServcioEdificio: EdificioService) { }
 
   ngOnInit(): void {
+    this._ServcioEdificio.GetAll().subscribe((res: any) => {
+      this.ListaEdificios = res.data;
+    },
+      err => console.log('error al traer edificios')
+    );
 
     this.buildForm();
 
-    for (const item in EstadoDespacho){
-      if (isNaN(Number(item))){
-        this.Estados.push({text: item, value: EstadoDespacho[item]});
+    for (const item in EstadoDespacho) {
+      if (isNaN(Number(item))) {
+        this.Estados.push({ text: item, value: EstadoDespacho[item] });
       }
     }
   }
@@ -60,7 +67,12 @@ export class DespachoComponent implements OnInit {
       telefono: ['', [Validators.pattern('/^([0-9])*$/'), Validators.min(7), Validators.max(10)]]
     });
   }
+
   delete(element) {
+    this._servicioDespacho.Delete(element.id)
+    .subscribe(resp => {
+      this.service.success('Registro eliminado', 'INFORMACIÓN', { position: SnotifyPosition.rightTop });
+    }, err => this.service.error('Error al eliminar', 'INFORMACIÓN', { position: SnotifyPosition.rightTop }));
 
   }
 
@@ -71,25 +83,27 @@ export class DespachoComponent implements OnInit {
   ShowModal() {
 
   }
-  loadDespacho(){
+  loadDespacho() {
     this._servicioDespacho.GetAll()
-    .subscribe(res=>this.ListaDespachos=res),
-    err=>console.log('error al cargar despachos');
+      .subscribe(res => this.ListaDespachos = res),
+      err => console.log('error al cargar despachos');
 
   }
 
   add() {
-    const despacho= new Despacho;
-    despacho.nombre=this.nombre.value;
-    despacho.edificio=this.edificio.value;
-    despacho.estado=this.estado.value;
-    despacho.telefono=this.telefono.value;
-    this._servicioDespacho.add(despacho)
-    .subscribe(resp=>{
-      this.service.success('ACTUALIZACIÓN EXITOSA', 'INFORMACIÓN', {position: SnotifyPosition.rightTop});
-            this.closeModal();
-            this.loadDespacho();
-    },err=>this.service.error('ACTUALIZACIÓN EXITOSA', 'INFORMACIÓN', {position: SnotifyPosition.rightTop}));
+    if (this.validateForm()) {
+      const despacho = new Despacho;
+      despacho.nombre = this.nombre.value;
+      despacho.edificio = this.edificio.value;
+      despacho.estado = this.estado.value;
+      despacho.telefono = this.telefono.value;
+      this._servicioDespacho.add(despacho)
+        .subscribe(resp => {
+          this.service.success('REGISTRO EXITOSO', 'INFORMACIÓN', { position: SnotifyPosition.rightTop });
+          this.closeModal();
+          this.loadDespacho();
+        }, err => this.service.error('ERROR AL REGISTRAR', 'INFORMACIÓN', { position: SnotifyPosition.rightTop }));
+    }
   }
 
 
