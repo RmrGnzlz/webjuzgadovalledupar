@@ -15,8 +15,12 @@ export class SalaService {
 
    }
 
-   add(salaRequest: any){
-    return this.http.post(this.UrlGeneral, salaRequest);
+   addSalaFisica(salaRequest: any){
+    return this.http.post(`${this.UrlGeneral}/fisica`, salaRequest);
+   }
+
+   addSalaVirtual(salaRequest: any){
+    return this.http.post(`${this.UrlGeneral}/virtual`, salaRequest);
    }
 
   GetAll(): Observable<Sala[]>{

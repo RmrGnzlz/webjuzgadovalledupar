@@ -1,3 +1,4 @@
+import { DespachoService } from './../../../Service/despacho/despacho.service';
 import { Despacho, EstadoDespacho } from './../../../models/Despacho.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
@@ -27,7 +28,8 @@ export class DespachoComponent implements OnInit {
 
   // private toastr: ToastrService,
   constructor(private service: SnotifyService,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private _servicioDespacho: DespachoService) { }
 
   ngOnInit(): void {
 
@@ -69,10 +71,27 @@ export class DespachoComponent implements OnInit {
   ShowModal() {
 
   }
-
-  add() {
+  loadDespacho(){
+    this._servicioDespacho.GetAll()
+    .subscribe(res=>this.ListaDespachos=res),
+    err=>console.log('error al cargar despachos');
 
   }
+
+  add() {
+    const despacho= new Despacho;
+    despacho.nombre=this.nombre.value;
+    despacho.edificio=this.edificio.value;
+    despacho.estado=this.estado.value;
+    despacho.telefono=this.telefono.value;
+    this._servicioDespacho.add(despacho)
+    .subscribe(resp=>{
+      this.service.success('ACTUALIZACIÓN EXITOSA', 'INFORMACIÓN', {position: SnotifyPosition.rightTop});
+            this.closeModal();
+            this.loadDespacho();
+    },err=>this.service.error('ACTUALIZACIÓN EXITOSA', 'INFORMACIÓN', {position: SnotifyPosition.rightTop}));
+  }
+
 
   Update() {
     // if (this.validateForm){
