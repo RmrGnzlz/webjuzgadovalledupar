@@ -9,6 +9,8 @@ public edificioKey: number;
 public TipoSala: TipoSalaEnum;
 }
 
+// probando azure devops commit
+
 export class SalaFisica extends Sala{
 public numero: string;
 public piso: string;
