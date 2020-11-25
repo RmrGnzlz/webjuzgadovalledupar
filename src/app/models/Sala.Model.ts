@@ -5,6 +5,7 @@ export  class Sala extends BaseModel  {
 public nombre: string;
 public estado: EstadoSalaEnum;
 public edificio: Edificio;
+public edificioKey: number;
 public TipoSala: TipoSalaEnum;
 }
 
@@ -14,7 +15,7 @@ public piso: string;
 }
 
 export class SalaVirtual extends Sala{
-public plataforma: PlataformaEnum;
+public plataforma: string;
 public link: string;
 }
 

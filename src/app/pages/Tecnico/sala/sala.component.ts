@@ -7,6 +7,7 @@ import { SalaService } from '../../../Service/Sala/sala.service';
 import { Edificio } from 'src/app/models/Edificio.Model';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { TipoSalaEnum, PlataformaEnum, SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
+import { disable } from '@rxweb/reactive-form-validators';
 
 
 
@@ -21,7 +22,6 @@ export class SalaComponent implements OnInit {
   ListaSalas: Sala[] = [];
   Estados: any[] = [];
   Tipos: any[] = [];
-  Plataformas: any[] = [];
   Actualizar = false;
   form: FormGroup;
   formSubmitted = false;
@@ -32,9 +32,9 @@ export class SalaComponent implements OnInit {
   informationTable: IInformationTemplate = { title: 'Sala de audiencia', subTitle: 'Información de sala' };
 
   constructor(private _ServcioEdificio: EdificioService,
-    private _ServicioSala: SalaService,
-    private service: SnotifyService,
-    private formBuilder: FormBuilder) {
+              private _ServicioSala: SalaService,
+              private service: SnotifyService,
+              private formBuilder: FormBuilder) {
   }
 
 
@@ -67,21 +67,17 @@ export class SalaComponent implements OnInit {
         this.Tipos.push({ text: item, value: TipoSalaEnum[item] });
       }
     }
-    for (const item in PlataformaEnum) {
-      if (isNaN(Number(item))) {
-        this.Plataformas.push({ text: item, value: PlataformaEnum[item] });
-      }
-    }
+
   }
 
   buildForm() {
     this.form = this.formBuilder.group({
       key: [''],
       nombre: ['', [Validators.minLength(4)]],
-      estado: [EstadoSalaEnum.Habilitada, [Validators.required]],
+      estado: ['', [Validators.required]],
       edificio: ['', [Validators.required]],
-      tipo: [TipoSalaEnum.Fisica, [Validators.required]],
-      plataforma: [PlataformaEnum.MicrosoftTeams, [Validators.required]],
+      tipo: ['', [Validators.required]],
+      plataforma: ['Microsoft Teams', [Validators.required, Validators.minLength(5)]],
       link: ['', [Validators.required]],
       numero: [''],
       piso: ['', [Validators.required]]
@@ -96,23 +92,16 @@ export class SalaComponent implements OnInit {
     this.form.get('tipo').valueChanges
       .subscribe(tip => {
 
-        console.log(tip);
-        if (tip === '') {
-          this.form.get('tipo').setValue(TipoSalaEnum.Fisica);
-        }
-
-        if (tip === TipoSalaEnum.Fisica) {
-          console.log('FISICA');
+        if (tip == TipoSalaEnum.Fisica || tip === '') {
           pisoControl.setValidators([Validators.required, Validators.minLength(1)]);
           linkControl.setValidators(null);
           plataformaControl.setValidators(null);
 
         }
-        if (tip === TipoSalaEnum.Virtual) {
-          console.log('VIRTUAL');
+        if (tip == TipoSalaEnum.Virtual) {
           pisoControl.setValidators(null);
           linkControl.setValidators([Validators.required, Validators.minLength(10)]);
-          plataformaControl.setValidators(Validators.required);
+          plataformaControl.setValidators([Validators.minLength(1), Validators.required]);
         }
 
         pisoControl.updateValueAndValidity();
@@ -130,29 +119,50 @@ export class SalaComponent implements OnInit {
       { value: 'key', text: 'Codigo', templateRef: undefined },
       { value: 'edificio.nombre', text: 'Edificio', templateRef: this.rows },
       { value: 'nombre', text: 'Sala', templateRef: undefined },
+      { value: 'tipo', text: 'Tipo', templateRef: this.rows },
       { value: 'estado', text: 'Estado', templateRef: this.rows },
       { value: 'opciones', text: 'Opciones', templateRef: this.rows },
     ];
   }
 
   ShowSala(element) {
+    console.log(element);
     this.Actualizar = true;
     this.form.patchValue(element);
-    const control = this.form.get('edificio');
-    control.setValidators(null);
-    control.updateValueAndValidity();
+    this.edificio.setValidators(null);
+    this.tipo.setValidators(null);
+
+
+
+    // this._ServicioSala.getId(element.key, element.tipo)
+    // .subscribe((res: any) => {
+    //   if (res.data.tipo == 0){
+    //     this.link.setValue(res.data.link);
+    //     this.plataforma.setValue(res.data.plataforma);
+    //   }
+    //   if (res.data.tipo == 1) {
+    //     this.piso.setValue(res.data.piso);
+    //     this.numero.setValue(res.data.numero);
+    //   }
+    // });
+
+    this.tipo.updateValueAndValidity();
+    this.edificio.updateValueAndValidity();
 
   }
 
   loadSala() {
     this._ServicioSala.GetAll().subscribe((res: any) => {
       this.ListaSalas = res.data;
+      console.log(res.data);
+
 
     },
       err => console.log('error al traer SALAS'));
   }
 
   Update() {
+
     if (this.validateForm) {
       const salaRequest: any = {
         id: + this.form.get('key').value,
@@ -161,12 +171,14 @@ export class SalaComponent implements OnInit {
         edificiokey: 1
       };
       this._ServicioSala.Update(salaRequest)
-        .subscribe(res => {
-          this.service.success('ACTUALIZACIÓN EXITOSA', 'INFORMACIÓN', { position: SnotifyPosition.rightTop });
+        .subscribe((res: any) => {
+          this.service.success(res.mensaje, 'Información', { position: SnotifyPosition.rightTop });
           this.closeModal();
           this.loadSala();
           return;
-        }, err => this.service.error('Ocurrio un error', 'Informacion', { position: SnotifyPosition.rightTop }));
+        }, err => {this.service.error(err.error.mensaje, 'Error', { position: SnotifyPosition.rightTop });
+
+      });
 
 
     }
@@ -175,21 +187,17 @@ export class SalaComponent implements OnInit {
   }
 
   add() {
+
     if (this.validateForm) {
 
-      const salaRequest: any = {
-        edificioKey: + this.form.get('edificio').value,
-        nombre: this.form.get('nombre').value,
-        estado: + this.form.get('estado').value
-      };
-
-      if (this.tipo.value === TipoSalaEnum.Fisica) {
-        let salaFisica = new SalaFisica();
+      if (this.tipo.value == TipoSalaEnum.Fisica) {
+        const salaFisica = new SalaFisica();
         salaFisica.nombre = this.nombre.value;
-        salaFisica.edificio = this.edificio.value;
-        salaFisica.estado = this.estado.value;
+        salaFisica.edificioKey = this.edificio.value;
+        salaFisica.estado = +this.estado.value;
         salaFisica.numero = this.numero.value;
         salaFisica.piso = this.piso.value;
+
         this._ServicioSala.addSalaFisica(salaFisica)
           .subscribe(resp => {
             this.service.success('REGISTRO EXITOSO', 'Informacion', { position: SnotifyPosition.rightTop });
@@ -197,15 +205,17 @@ export class SalaComponent implements OnInit {
             this.loadSala();
             return;
           },
-            err => this.service.error('Ocurrio un error', 'Informacion', { position: SnotifyPosition.rightTop }));
+            err => { console.log(err);
+                     this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
 
       } else {
-        let salaVirtual = new SalaVirtual();
+        const salaVirtual = new SalaVirtual();
         salaVirtual.nombre = this.nombre.value;
-        salaVirtual.edificio = this.edificio.value;
-        salaVirtual.estado = this.estado.value;
+        salaVirtual.edificioKey = this.edificio.value;
+        salaVirtual.estado = +this.estado.value;
         salaVirtual.link = this.link.value;
         salaVirtual.plataforma = this.plataforma.value;
+        console.log(salaVirtual);
         this._ServicioSala.addSalaVirtual(salaVirtual)
           .subscribe(resp => {
             this.service.success('REGISTRO EXITOSO', 'Informacion', { position: SnotifyPosition.rightTop });
@@ -213,7 +223,7 @@ export class SalaComponent implements OnInit {
             this.loadSala();
             return;
           },
-            err => this.service.error('Ocurrio un error', 'Informacion', { position: SnotifyPosition.rightTop }));
+          err => {this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
       }
 
     }

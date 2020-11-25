@@ -52,9 +52,9 @@ export class DespachoComponent implements OnInit {
     this.headerDespacho = [
       { value: 'key', text: 'Codigo', templateRef: undefined },
       { value: 'nombre', text: 'Nombre', templateRef: undefined },
+      { value: 'edificio.nombre', text: 'Edificio', templateRef: this.rows },
       { value: 'telefono', text: 'Telefono', templateRef: undefined },
       { value: 'estado', text: 'Estado', templateRef: this.rows },
-      { value: 'edificio.nombre', text: 'Edificio', templateRef: this.rows },
       { value: 'opciones', text: 'Opciones', templateRef: this.rows },
     ];
   }
@@ -64,7 +64,7 @@ export class DespachoComponent implements OnInit {
       nombre: ['', [Validators.required, Validators.minLength(4)]],
       estado: ['', [Validators.required]],
       edificio: ['', [Validators.required]],
-      telefono: ['', [Validators.pattern('/^([0-9])*$/'), Validators.min(7), Validators.max(10)]]
+      telefono: ['', [Validators.required, Validators.pattern(/^[1-9]\d{6,10}$/), Validators.minLength(7)]]
     });
   }
 
@@ -92,17 +92,21 @@ export class DespachoComponent implements OnInit {
 
   add() {
     if (this.validateForm()) {
-      const despacho = new Despacho;
-      despacho.nombre = this.nombre.value;
-      despacho.edificio = this.edificio.value;
-      despacho.estado = this.estado.value;
-      despacho.telefono = this.telefono.value;
-      this._servicioDespacho.add(despacho)
+      const despachoRequest: any={
+        nombre : this.nombre.value,
+        telefono: this.telefono.value,
+        estado: +this.estado.value,
+        edificioKey: +this.edificio.value
+      }
+      console.log(despachoRequest);
+
+      this._servicioDespacho.add(despachoRequest)
         .subscribe(resp => {
-          this.service.success('REGISTRO EXITOSO', 'INFORMACIÓN', { position: SnotifyPosition.rightTop });
+          this.service.success('Registro exitoso', 'INFORMACIÓN', { position: SnotifyPosition.rightTop });
           this.closeModal();
           this.loadDespacho();
-        }, err => this.service.error('ERROR AL REGISTRAR', 'INFORMACIÓN', { position: SnotifyPosition.rightTop }));
+        }, err => {console.log(err);
+         this.service.error(err.error.mensaje, 'INFORMACIÓN', { position: SnotifyPosition.rightTop });});
     }
   }
 

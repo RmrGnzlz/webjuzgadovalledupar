@@ -15,6 +15,18 @@ export class SalaService {
 
    }
 
+   getId(id: number, tipo: number): Observable<object>{
+    // return this.http.get(`${this.UrlGeneral}/${id}`);
+      const salaResponse : any = {
+        tipo: 1,
+        piso : '3434',
+        numero: '454545'
+      };
+
+      return salaResponse;
+
+  }
+
    addSalaFisica(salaRequest: any){
     return this.http.post(`${this.UrlGeneral}/fisica`, salaRequest);
    }
