@@ -7,14 +7,14 @@ import { TablaComponentComponent } from './tabla-component/tabla-component.compo
 
 @NgModule({
   declarations: [
-    TablaComponentComponent
+    TablaComponentComponent,
   ],
   imports: [
     CommonModule,
     MaterialModule
   ],
   exports: [
-    TablaComponentComponent
+    TablaComponentComponent,
   ]
 })
 export class ComponentsModule { }

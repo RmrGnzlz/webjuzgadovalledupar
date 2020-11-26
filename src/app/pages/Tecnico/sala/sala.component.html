@@ -1,31 +1,353 @@
-<mat-grid-list cols=2>
-<mat-grid-tile>
-  <div class="card ">
-    <div class="card-body">
+<!-- <mat-card> -->
+<ng-snotify></ng-snotify>
 
-      <app-tabla-component
-      [data]=registros
-      [headersInput]="headersUsuarios"
-      [information]="informationTable"
-      [filter]="1 === 1">
-      </app-tabla-component>
+<app-tabla-component
+  [data]="ListaSalas"
+  [headersInput]="headerSala"
+  [information]="informationTable"
+  [filter]="1 === 1"
+>
+  <button
+    class="btn btn-outline-info text-right"
+    slot="button"
+    data-toggle="modal"
+    data-target="#exampleModal"
+  >
+    <i class="fa fa-plus-square"></i>
+    Crear Sala
+  </button>
+  <ng-template let-element="element" let-colunm="column" #rows>
+    <div *ngIf="colunm.value == 'edificio.nombre'">
+      <div *ngIf="element.edificio==null">
+        Sin registro
+      </div>
+      <div *ngIf="element.edificio!=null">
+        {{ element.edificio.nombre }}
+
+      </div>
+    </div>
+
+    <!-- TIPO -->
+    <div *ngIf="colunm.value == 'tipo'" >
+      <span class="label label-info label-rounded" *ngIf="element.tipo==0" >Virtual</span>
+      <span class="label label-primary label-rounded" *ngIf="element.tipo==1" >Fisica</span>
 
     </div>
-  </div>
-</mat-grid-tile>
-<mat-grid-tile>
-  <div class="card ">
-    <div class="card-body">
 
-      <app-tabla-component
-      [data]=registros
-      [headersInput]="headersUsuarios"
-      [information]="informationTable"
-      [filter]="1 === 1">
-      </app-tabla-component>
+    <!-- ESTADO -->
+    <div *ngIf="colunm.value == 'estado'" >
+      <span class="label label-danger" *ngIf="element.estado==0" >Inhabilitada</span>
+      <span class="label label-success" *ngIf="element.estado==1" >Habilitada</span>
 
     </div>
-  </div>
-</mat-grid-tile>
-</mat-grid-list>
 
+
+    <div *ngIf="colunm.value == 'opciones'">
+      <button
+        data-toggle="modal"
+        data-target="#exampleModal"
+        class="btn btn-outline-info"
+        (click)="ShowSala(element)"
+      >
+        <i class="fa fa-edit"></i>
+      </button>
+      <button
+        class="btn waves-effect waves-light btn-outline-danger"
+        (click)="delete(element)"
+      >
+        <i class="fa fa-trash-o"></i>
+      </button>
+    </div>
+  </ng-template>
+</app-tabla-component>
+<!-- </mat-card> -->
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE SALA</h5>
+        <button
+          #botonCerrar
+          (click)="closeModal()"
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!--  -->
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <input type="hidden" name="key" formControlName="key" />
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <input
+                  [ngClass]="{ 'form-submitted': formSubmitted }"
+                  name="nombre"
+                  id="nombre"
+                  type="text"
+                  class="form-control"
+                  placeholder="Digite nombre de la sala"
+                  required
+                  formControlName="nombre"
+                />
+                <div
+                  *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)"
+                >
+
+                  <div
+                    class="container-error-message"
+                    *ngIf="nombre.errors.minlength"
+                  >
+                  <small class="text-danger">
+                    Nombre debe contener minimo 5 caracteres
+                  </small>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group" *ngIf="!Actualizar">
+                <label>Edificio</label>
+                <select
+                  [ngClass]="{ 'form-submitted': formSubmitted }"
+                  formControlName="edificio"
+                  id="edificio"
+                  name="edificio"
+                  class="form-control"
+                  required
+                >
+                  <option value="">Seleccione</option>
+                  <option
+                    *ngFor="let item of ListaEdificios"
+                    [value]="item.key"
+                  >
+                    {{ item.nombre }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="
+                    edificio.invalid && (edificio.dirty || edificio.touched)
+                  "
+                >
+                  <div *ngIf="edificio.errors.required">
+                    <small class="text-danger"
+                      >Edificio es requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- [ngClass]="{ 'form-submitted': formSubmitted }" -->
+          <div class="row p-t-20">
+            <div [ngClass]="{'col-md-6':!Actualizar,'col-md-12':Actualizar}">
+              <div class="form-group">
+                <label>Estado</label>
+                <select
+                  formControlName="estado"
+                  id="estado"
+                  name="estado"
+                  class="form-control"
+                  required
+                >
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let item of Estados" [value]="item.value">
+                    {{ item.text }}
+                  </option>
+                </select>
+                <div
+                  class=""
+                  *ngIf="estado.invalid && (estado.dirty || estado.touched)"
+                >
+                  <div *ngIf="estado.errors.required">
+                    <small class="text-danger">
+                      Estado requerido.
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--/span-->
+            <!-- [ngClass]="{ 'form-submitted': formSubmitted }" -->
+
+            <div  class="col-md-6" *ngIf="!Actualizar" >
+              <div class="form-group"  >
+                <label>Tipo Sala</label>
+                <select
+                  formControlName="tipo"
+                  id="tipo"
+                  name="tipo"
+                  class="form-control"
+                  required
+                >
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let item of Tipos" [value]="item.value">
+                    {{ item.text }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="tipo.invalid && (tipo.dirty || tipo.touched)"
+                >
+                  <div
+                    class="container-error-message"
+                    *ngIf="tipo.errors.required"
+                  >
+                  <small class="text-danger">
+                    Tipo requerido.
+                  </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--/span-->
+          </div>
+
+
+
+
+          <!-- DATOS SALAS FISICA -->
+          <div class="row" *ngIf="form.get('tipo').value==1">
+            <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="numero">Numero</label>
+                    <input formControlName="numero" type="text" name="numero" id="numero" class="form-control" placeholder="Numero de la sala" >
+                    </div>
+            </div>
+
+            <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="piso">Piso</label>
+                    <input type="text" formControlName="piso" name="piso" id="piso" class="form-control" placeholder="Ubicación Sala" aria-describedby="helpId">
+                    <div
+                    *ngIf="piso.invalid && (piso.dirty || piso.touched)"
+                  >
+                    <div
+                      class="container-error-message"
+                      *ngIf="piso.errors.required"
+                    >
+                    <small class="text-danger">
+                      Piso edificio requerido.
+                    </small>
+                    </div>
+                    <div
+                    class="container-error-message"
+                    *ngIf="piso.errors.minlength"
+                  >
+                  <small class="text-danger">
+                     Debe contener minimo 1 digito
+                  </small>
+
+                  </div>
+                  </div>
+                  </div>
+            </div>
+
+          </div>
+
+          <!-- DATOS SALA VIRTUALES -->
+          <div class="row" *ngIf="form.get('tipo').value==0" >
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="link">Link</label>
+                <input type="text" formControlName="link" name="link" id="link" class="form-control" placeholder="https://meet.google.com/cwz-itxg" aria-describedby="helpId">
+                <div
+                *ngIf="link.invalid && (link.dirty || link.touched)"
+              >
+                <div
+                  class="container-error-message"
+                  *ngIf="link.errors.required"
+                >
+                <small class="text-danger">
+                  link de la reunion requerido.
+                </small>
+                </div>
+                <div
+                class="container-error-message"
+                *ngIf="link.errors.minlength"
+              >
+              <small class="text-danger">
+                Link debe contener minimo 10 caracteres
+              </small>
+
+              </div>
+              </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+            <!-- platafoama -->
+              <div class="form-group">
+                <label for="plataforma">Plataforma</label>
+                <input type="text" formControlName="plataforma" name="plataforma" id="plataforma" class="form-control" placeholder=" Microsoft Teams" aria-describedby="helpId">
+                <div
+                *ngIf="plataforma.invalid && (plataforma.dirty || plataforma.touched)"
+              >
+                <div
+                  class="container-error-message"
+                  *ngIf="plataforma.errors.required"
+                >
+                <small class="text-danger">
+                  Plataforma requerida.
+                </small>
+                </div>
+                <div
+                class="container-error-message"
+                *ngIf="plataforma.errors.minlength"
+              >
+              <small class="text-danger">
+                 Debe contener minimo 5 cacteres
+              </small>
+
+              </div>
+              </div>
+              </div>
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Close
+        </button>
+
+        <div *ngIf="!Actualizar">
+          <button
+            (click)="add()"
+            class="btn btn-outline-info text-right"
+            [disabled]="!this.form.valid"
+          >
+            Guardar
+          </button>
+        </div>
+        <div *ngIf="Actualizar">
+          <button
+          (click)="Update()"
+          class="btn btn-outline-info text-right"
+          [disabled]="!this.form.valid"
+          >
+            Actualizar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
