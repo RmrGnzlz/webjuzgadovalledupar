@@ -41,14 +41,7 @@ import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
     ServiceModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    // ToastrModule.forRoot({
-    //   timeOut:100,
-    //   progressBar:true,
-    //   progressAnimation: 'increasing',
-    //   preventDuplicates: true,
-    //   countDuplicates: true
 
-    // }),
     ReactiveFormsModule,
     RxReactiveFormsModule
 

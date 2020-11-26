@@ -7,6 +7,13 @@ public estado: EstadoSalaEnum;
 public edificio: Edificio;
 public edificioKey: number;
 public TipoSala: TipoSalaEnum;
+
+constructor(nombre: string, estado: EstadoSalaEnum, edificioKey: number){
+  super();
+  this.nombre = nombre;
+  this.estado = estado;
+  this.edificioKey = edificioKey;
+}
 }
 
 // probando azure devops commit
@@ -14,11 +21,25 @@ public TipoSala: TipoSalaEnum;
 export class SalaFisica extends Sala{
 public numero: string;
 public piso: string;
+constructor(nombre: string, estado: EstadoSalaEnum, edificioKey: number, numero: string, piso: string){
+  super(nombre, estado, edificioKey);
+  this.numero = numero;
+  this.piso = piso;
+}
+
+
 }
 
 export class SalaVirtual extends Sala{
 public plataforma: string;
 public link: string;
+
+constructor(nombre: string, estado: EstadoSalaEnum, edificioKey: number, link: string, plataforma: string){
+  super(nombre, estado, edificioKey);
+  this.plataforma = link;
+  this.link = plataforma;
+}
+
 }
 
 export enum EstadoSalaEnum{

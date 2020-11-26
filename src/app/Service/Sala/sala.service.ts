@@ -1,8 +1,9 @@
 import { Sala } from './../../models/Sala.Model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {  Observable } from 'rxjs';
+import {  Observable, of } from 'rxjs';
 import {environment} from 'src/environments/environment';
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,15 +16,14 @@ export class SalaService {
 
    }
 
-   getId(id: number, tipo: number): Observable<object>{
-    // return this.http.get(`${this.UrlGeneral}/${id}`);
-      const salaResponse : any = {
-        tipo: 1,
-        piso : '3434',
-        numero: '454545'
-      };
+   getId(id: number){
+    return  this.http.get(`${this.UrlGeneral}/${id}`)
+    .pipe(
+      map((resp: any) => {
+        return resp.data;
+      })
+    );
 
-      return salaResponse;
 
   }
 
@@ -35,11 +35,22 @@ export class SalaService {
     return this.http.post(`${this.UrlGeneral}/virtual`, salaRequest);
    }
 
-  GetAll(): Observable<Sala[]>{
-  return this.http.get<Sala[]>(this.UrlGeneral);
+   GetAll(): Observable<Sala[]>{
+  return this.http.get<Sala[]>(this.UrlGeneral)
+    .pipe(
+      map((resp: any) => {
+        return resp.data;
+      })
+    );
+
   }
 
-  Update(salaRequest: any){
+
+  UpdateSalaFisica(salaRequest: any){
+    console.log(salaRequest);
+    return this.http.put(`${this.UrlGeneral}/${salaRequest.id}`, salaRequest);
+  }
+  UpdateSalaVirtual(salaRequest: any){
     console.log(salaRequest);
     return this.http.put(`${this.UrlGeneral}/${salaRequest.id}`, salaRequest);
   }
@@ -49,6 +60,8 @@ export class SalaService {
 
     return this.http.delete(`${this.UrlGeneral}/${id}`);
   }
+
+
 
 
 }

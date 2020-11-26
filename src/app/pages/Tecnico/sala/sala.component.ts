@@ -125,61 +125,83 @@ export class SalaComponent implements OnInit {
     ];
   }
 
-  ShowSala(element) {
-    console.log(element);
+   ShowSala(element: any) {
+
+    // console.log(element);
+
     this.Actualizar = true;
     this.form.patchValue(element);
     this.edificio.setValidators(null);
     this.tipo.setValidators(null);
+    this._ServicioSala.getId(element.key).toPromise()
+    .then((res) => {
+      console.log(res.tipo);
+
+      if (res[0].tipo === 0){
+        console.log('es tipo 0');
+        this.link.setValue(res[0].link);
+        this.plataforma.setValue(res[0].plataforma);
+      }
+      if (res[0].tipo === 1) {
+        console.log('es tipo 1');
+
+        this.piso.setValue(res[0].piso);
+        this.numero.setValue(res[0].numero);
+      }
+
+    });
 
 
 
-    // this._ServicioSala.getId(element.key, element.tipo)
-    // .subscribe((res: any) => {
-    //   if (res.data.tipo == 0){
-    //     this.link.setValue(res.data.link);
-    //     this.plataforma.setValue(res.data.plataforma);
-    //   }
-    //   if (res.data.tipo == 1) {
-    //     this.piso.setValue(res.data.piso);
-    //     this.numero.setValue(res.data.numero);
-    //   }
-    // });
 
-    this.tipo.updateValueAndValidity();
-    this.edificio.updateValueAndValidity();
+    this.form.updateValueAndValidity();
+
+    // this.tipo.updateValueAndValidity();
+    // this.edificio.updateValueAndValidity();
 
   }
 
   loadSala() {
-    this._ServicioSala.GetAll().subscribe((res: any) => {
-      this.ListaSalas = res.data;
-      console.log(res.data);
+    // this._ServicioSala.GetPrueba()
+    // .subscribe(res => console.log(res));
 
-
+    this._ServicioSala.GetAll().subscribe(res => {
+      this.ListaSalas = res;
     },
-      err => console.log('error al traer SALAS'));
+      err => console.log(err));
   }
 
   Update() {
-
     if (this.validateForm) {
-      const salaRequest: any = {
-        id: + this.form.get('key').value,
-        nombre: this.form.get('nombre').value,
-        estado: + this.form.get('estado').value,
-        edificiokey: 1
-      };
-      this._ServicioSala.Update(salaRequest)
-        .subscribe((res: any) => {
-          this.service.success(res.mensaje, 'Información', { position: SnotifyPosition.rightTop });
-          this.closeModal();
-          this.loadSala();
-          return;
-        }, err => {this.service.error(err.error.mensaje, 'Error', { position: SnotifyPosition.rightTop });
 
-      });
+      if (this.tipo.value == TipoSalaEnum.Fisica) {
+        // tslint:disable-next-line: max-line-length
+        const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value,  this.edificio.value, this.numero.value, this.piso.value);
+        salaFisica.key = this.key.value;
+        this._ServicioSala.UpdateSalaFisica(salaFisica)
+          .subscribe(resp => {
+            this.service.success('Actualizacion Exitosa', 'Informacion', { position: SnotifyPosition.rightTop });
+            this.closeModal();
+            this.loadSala();
+            return;
+          },
+            err => { console.log(err);
+                     this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
 
+      } else {
+        // tslint:disable-next-line: max-line-length
+        const salaVirtual = new SalaVirtual(this.nombre.value, +this.estado.value, this.edificio.value, this.link.value, this.plataforma.value);
+        salaVirtual.key = this.key.value;
+        this._ServicioSala.UpdateSalaVirtual(salaVirtual)
+          .subscribe(resp => {
+            this.service.success('Actualizacion Exitosa', 'Informacion', { position: SnotifyPosition.rightTop });
+            this.closeModal();
+            this.loadSala();
+            return;
+          },
+          err => {console.log(err);
+                  this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
+      }
 
     }
 
@@ -191,13 +213,8 @@ export class SalaComponent implements OnInit {
     if (this.validateForm) {
 
       if (this.tipo.value == TipoSalaEnum.Fisica) {
-        const salaFisica = new SalaFisica();
-        salaFisica.nombre = this.nombre.value;
-        salaFisica.edificioKey = this.edificio.value;
-        salaFisica.estado = +this.estado.value;
-        salaFisica.numero = this.numero.value;
-        salaFisica.piso = this.piso.value;
-
+        // tslint:disable-next-line: max-line-length
+        const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
         this._ServicioSala.addSalaFisica(salaFisica)
           .subscribe(resp => {
             this.service.success('REGISTRO EXITOSO', 'Informacion', { position: SnotifyPosition.rightTop });
@@ -209,21 +226,17 @@ export class SalaComponent implements OnInit {
                      this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
 
       } else {
-        const salaVirtual = new SalaVirtual();
-        salaVirtual.nombre = this.nombre.value;
-        salaVirtual.edificioKey = this.edificio.value;
-        salaVirtual.estado = +this.estado.value;
-        salaVirtual.link = this.link.value;
-        salaVirtual.plataforma = this.plataforma.value;
-        console.log(salaVirtual);
+        // tslint:disable-next-line: max-line-length
+        const salaVirtual = new SalaVirtual(this.nombre.value, +this.estado.value, this.edificio.value, this.link.value, this.plataforma.value);
         this._ServicioSala.addSalaVirtual(salaVirtual)
           .subscribe(resp => {
-            this.service.success('REGISTRO EXITOSO', 'Informacion', { position: SnotifyPosition.rightTop });
+            this.service.success('Registro Exitoso', 'Informacion', { position: SnotifyPosition.rightTop });
             this.closeModal();
             this.loadSala();
             return;
           },
-          err => {this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
+          err => {console.log(err);
+                  this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
       }
 
     }
@@ -265,10 +278,17 @@ export class SalaComponent implements OnInit {
   }
 
 
+
   closeModal() {
     this.botonCerrar.nativeElement.click();
     this.Actualizar = false;
     this.form.reset();
+  }
+
+  actualizarForm(){
+    // this.tipo.updateValueAndValidity();
+    // this.edificio.updateValueAndValidity();
+    this.form.updateValueAndValidity();
   }
 
 
@@ -280,5 +300,7 @@ export class SalaComponent implements OnInit {
   get link() { return this.form.get('link'); }
   get piso() { return this.form.get('piso'); }
   get numero() { return this.form.get('numero'); }
+  get key() { return this.form.get('key'); }
+
 
 }
