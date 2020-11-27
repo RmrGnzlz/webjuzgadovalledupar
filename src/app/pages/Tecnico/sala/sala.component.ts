@@ -1,3 +1,4 @@
+import { Columns, Config, DefaultConfig } from 'ngx-easy-table';
 import { EstadoSalaEnum, Sala } from './../../../models/Sala.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { IHeaderTemplate, IInformationTemplate } from 'src/app/components/tabla-component/tabla-component.component';
@@ -8,6 +9,8 @@ import { Edificio } from 'src/app/models/Edificio.Model';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { TipoSalaEnum, PlataformaEnum, SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
 import { disable } from '@rxweb/reactive-form-validators';
+import { Observable } from 'rxjs';
+import { HttpResponse } from '@angular/common/http';
 
 
 
@@ -17,6 +20,10 @@ import { disable } from '@rxweb/reactive-form-validators';
   styleUrls: ['./sala.component.css']
 })
 export class SalaComponent implements OnInit {
+
+  public configuration: Config;
+  public data$: Observable<HttpResponse<Sala[]>>;
+  public columns: Columns[];
 
   ListaEdificios: Edificio[] = [];
   ListaSalas: Sala[] = [];
@@ -41,6 +48,8 @@ export class SalaComponent implements OnInit {
 
 
   ngOnInit() {
+
+    this.configuration = { ...DefaultConfig };
 
     this._ServcioEdificio.GetAll().subscribe((res: any) => {
       this.ListaEdificios = res.data;
