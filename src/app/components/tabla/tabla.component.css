@@ -1,0 +1,11 @@
+/* :host ::ng-deep .ngx-table__header-title {
+  color:#198dff;
+}
+
+:host ::ng-deep #table > tbody > tr > td {
+  color:black;
+}
+
+:host ::ng-deep #pagination-controls > pagination-template > ul > li > a > span {
+  color:#198dff;
+} */

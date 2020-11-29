@@ -1,5 +1,5 @@
 import { Company } from './../../../assets/data';
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { API, APIDefinition, Columns, Config, DefaultConfig } from 'ngx-easy-table';
 import { data } from '../../../assets/data';
 
@@ -9,46 +9,20 @@ import { data } from '../../../assets/data';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsuarioComponent implements OnInit {
-  modal = false;
-  selected;
-  @ViewChild('table', { static: true }) table: APIDefinition;
-  public columns: Columns[] = [
-    { key: 'age', title: 'Age' },
-    { key: 'company', title: 'Company' },
-    { key: 'name', title: 'Name' },
-    { key: 'isActive', title: 'STATUS' },
-    { key: 'isActive', title: 'Edit' },
-  ];
+  @ViewChild('phoneTpl', { static: true }) phoneTpl: TemplateRef<any>;
+  @ViewChild('isActiveTpl', { static: true }) isActiveTpl: TemplateRef<any>;
+  public columns: Columns[];
   data: Company[] = [];
   public configuration: Config;
-
   ngOnInit(): void {
+    this.columns = [
+      { key: 'phone', title: 'Phone', cellTemplate: this.phoneTpl },
+      { key: 'age', title: 'Age' },
+      { key: 'company', title: 'Company' },
+      { key: 'name', title: 'Name' },
+      { key: 'isActive', title: 'STATUS',cellTemplate:this.isActiveTpl },
+    ];
     this.configuration = { ...DefaultConfig };
-    this.configuration.tableLayout.striped = !this.configuration.tableLayout.striped;
-    this.configuration.tableLayout.style = 'tiny';
-
     this.data = data;
   }
-
-  onEvent(event: { event: string; value: any }): void {
-    this.selected = JSON.stringify(event.value.row, null, 2);
-  }
-
-  showModal(row:any): void {
-    console.log('abrir modal');
-    console.log(row);
-
-    this.modal = true;
-  }
-
-  hideModal(): void {
-    this.modal = false;
-  }
-  onChange(name: string): void {
-    this.table.apiEvent({
-      type: API.onGlobalSearch,
-      value: name,
-    });
-  }
-
 }

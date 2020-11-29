@@ -6,6 +6,7 @@ import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { IHeaderTemplate, IInformationTemplate } from 'src/app/components/tabla-component/tabla-component.component';
 import { Edificio } from 'src/app/models/Edificio.Model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Columns } from 'ngx-easy-table';
 
 @Component({
   selector: 'app-despacho',
@@ -13,13 +14,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class DespachoComponent implements OnInit {
   @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
-  @ViewChild('rows') rows: TemplateRef<any>;
-  headerDespacho: IHeaderTemplate[];
-  informationTable: IInformationTemplate = { title: 'Despachos', subTitle: 'Gestion de despachos' };
+  @ViewChild('estadoTpl', { static: true }) estadoTpl: TemplateRef<any>;
   ListaDespachos: Despacho[] = [];
   ListaEdificios: Edificio[] = [];
   Estados: any[] = [];
-
+  public Columns: Columns[];
   form: FormGroup;
   Actualizar = false;
   formSubmitted = false;
@@ -47,17 +46,16 @@ export class DespachoComponent implements OnInit {
         this.Estados.push({ text: item, value: EstadoDespacho[item] });
       }
     }
-  }
-  ngAfterViewInit(): void {
-    this.headerDespacho = [
-      { value: 'key', text: 'Codigo', templateRef: undefined },
-      { value: 'nombre', text: 'Nombre', templateRef: undefined },
-      { value: 'edificio.nombre', text: 'Edificio', templateRef: this.rows },
-      { value: 'telefono', text: 'Telefono', templateRef: undefined },
-      { value: 'estado', text: 'Estado', templateRef: this.rows },
-      { value: 'opciones', text: 'Opciones', templateRef: this.rows },
+    this.Columns = [
+      { key: 'key', title: '#' },
+      { key: 'nombre', title: 'Despacho' },
+      { key: 'edificio.nombre', title: 'Edificio' },
+      { key: 'telefono', title: 'Telefono' },
+      { key: 'estado', title: 'Estado', cellTemplate: this.estadoTpl },
+      { key: 'opciones', title: 'Opciones'},
     ];
   }
+
   buildForm() {
     this.form = this.formBuilder.group({
       key: [''],

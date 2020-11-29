@@ -9,7 +9,6 @@ import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PruebaComponent } from './prueba/prueba.component';
 import { SalaComponent } from './Tecnico/sala/sala.component';
-import { MaterialModule } from '../material.module';
 import { ComponentsModule } from '../components/components.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DespachoComponent } from './tecnico/despacho/despacho.component';
@@ -28,10 +27,9 @@ import { TableModule } from 'ngx-easy-table';
   ],
   imports: [
     CommonModule,
-    SharedModule,
     TableModule,
+    SharedModule,
     PagesRoutingModule,
-    MaterialModule,
     ComponentsModule,
     ReactiveFormsModule,
     FormsModule,

@@ -34,6 +34,7 @@ import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
 
   ],
   imports: [
+
     BrowserModule,
     PagesModule,
     AppRoutingModule,

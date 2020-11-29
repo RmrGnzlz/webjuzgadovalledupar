@@ -1,4 +1,4 @@
-import { SnotifyModule, SnotifyService,ToastDefaults } from 'ng-snotify';
+import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DespachoComponent } from './despacho.component';
@@ -13,7 +13,7 @@ describe('DespachoComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ DespachoComponent ],
       providers: [{ provide: 'SnotifyToastConfig', useValue: ToastDefaults }, SnotifyService],
-      imports:[SnotifyModule,ReactiveFormsModule, HttpClientModule]
+      imports: [SnotifyModule, ReactiveFormsModule, HttpClientModule]
     })
     .compileComponents();
   });
