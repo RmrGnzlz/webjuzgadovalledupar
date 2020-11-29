@@ -1,3 +1,4 @@
+import { Columns, Config, DefaultConfig } from 'ngx-easy-table';
 import { EstadoSalaEnum, Sala } from './../../../models/Sala.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { IHeaderTemplate, IInformationTemplate } from 'src/app/components/tabla-component/tabla-component.component';
@@ -8,6 +9,8 @@ import { Edificio } from 'src/app/models/Edificio.Model';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { TipoSalaEnum, PlataformaEnum, SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
 import { disable } from '@rxweb/reactive-form-validators';
+import { Observable } from 'rxjs';
+import { HttpResponse } from '@angular/common/http';
 
 
 
@@ -18,6 +21,8 @@ import { disable } from '@rxweb/reactive-form-validators';
 })
 export class SalaComponent implements OnInit {
 
+  public configuration: Config;
+
   ListaEdificios: Edificio[] = [];
   ListaSalas: Sala[] = [];
   Estados: any[] = [];
@@ -25,16 +30,17 @@ export class SalaComponent implements OnInit {
   Actualizar = false;
   form: FormGroup;
   formSubmitted = false;
+  public Columns: Columns[];
 
   @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
-  @ViewChild('rows') rows: TemplateRef<any>;
-  headerSala: IHeaderTemplate[];
-  informationTable: IInformationTemplate = { title: 'Sala de audiencia', subTitle: 'Información de sala' };
+  @ViewChild('tipoTpl', { static: true }) tipoTpl: TemplateRef<any>;
+  @ViewChild('estadoTpl', { static: true }) estadoTpl: TemplateRef<any>;
+  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(private _ServcioEdificio: EdificioService,
-              private _ServicioSala: SalaService,
-              private service: SnotifyService,
-              private formBuilder: FormBuilder) {
+    private _ServicioSala: SalaService,
+    private service: SnotifyService,
+    private formBuilder: FormBuilder) {
   }
 
 
@@ -42,16 +48,26 @@ export class SalaComponent implements OnInit {
 
   ngOnInit() {
 
+
     this._ServcioEdificio.GetAll().subscribe((res: any) => {
       this.ListaEdificios = res.data;
     },
       err => console.log('error al traer edificios')
     );
-    this.loadSala();
     this.buildForm();
     this.setSalaTipoValidator();
     this.LoadEnums();
+    this.Columns = [
+      { key: 'key', title: '#' },
+      { key: 'edificio.nombre', title: 'Edificio' },
+      { key: 'nombre', title: 'Sala' },
+      { key: 'tipo', title: 'Tipo', cellTemplate: this.tipoTpl },
+      { key: 'estado', title: 'Estado', cellTemplate: this.estadoTpl },
+      { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl },
+    ];
 
+    this.configuration = { ...DefaultConfig };
+    this.loadSala();
 
   }
 
@@ -112,20 +128,7 @@ export class SalaComponent implements OnInit {
 
 
 
-
-  // tslint:disable-next-line: use-lifecycle-interface
-  ngAfterViewInit(): void {
-    this.headerSala = [
-      { value: 'key', text: 'Codigo', templateRef: undefined },
-      { value: 'edificio.nombre', text: 'Edificio', templateRef: this.rows },
-      { value: 'nombre', text: 'Sala', templateRef: undefined },
-      { value: 'tipo', text: 'Tipo', templateRef: this.rows },
-      { value: 'estado', text: 'Estado', templateRef: this.rows },
-      { value: 'opciones', text: 'Opciones', templateRef: this.rows },
-    ];
-  }
-
-   ShowSala(element: any) {
+  ShowSala(element: any) {
 
     // console.log(element);
 
@@ -134,37 +137,22 @@ export class SalaComponent implements OnInit {
     this.edificio.setValidators(null);
     this.tipo.setValidators(null);
     this._ServicioSala.getId(element.key).toPromise()
-    .then((res) => {
-      console.log(res.tipo);
+      .then((res) => {
 
-      if (res[0].tipo === 0){
-        console.log('es tipo 0');
-        this.link.setValue(res[0].link);
-        this.plataforma.setValue(res[0].plataforma);
-      }
-      if (res[0].tipo === 1) {
-        console.log('es tipo 1');
+        if (res.tipo === 0) {
+          this.link.setValue(res.link);
+          this.plataforma.setValue(res.plataforma);
+        }
+        if (res.tipo === 1) {
+          this.piso.setValue(res.piso);
+          this.numero.setValue(res.numero);
+        }
 
-        this.piso.setValue(res[0].piso);
-        this.numero.setValue(res[0].numero);
-      }
-
-    });
-
-
-
-
+      });
     this.form.updateValueAndValidity();
-
-    // this.tipo.updateValueAndValidity();
-    // this.edificio.updateValueAndValidity();
-
   }
 
   loadSala() {
-    // this._ServicioSala.GetPrueba()
-    // .subscribe(res => console.log(res));
-
     this._ServicioSala.GetAll().subscribe(res => {
       this.ListaSalas = res;
     },
@@ -176,7 +164,7 @@ export class SalaComponent implements OnInit {
 
       if (this.tipo.value == TipoSalaEnum.Fisica) {
         // tslint:disable-next-line: max-line-length
-        const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value,  this.edificio.value, this.numero.value, this.piso.value);
+        const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
         salaFisica.key = this.key.value;
         this._ServicioSala.UpdateSalaFisica(salaFisica)
           .subscribe(resp => {
@@ -185,8 +173,10 @@ export class SalaComponent implements OnInit {
             this.loadSala();
             return;
           },
-            err => { console.log(err);
-                     this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
+            err => {
+              console.log(err);
+              this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop });
+            });
 
       } else {
         // tslint:disable-next-line: max-line-length
@@ -199,8 +189,10 @@ export class SalaComponent implements OnInit {
             this.loadSala();
             return;
           },
-          err => {console.log(err);
-                  this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
+            err => {
+              console.log(err);
+              this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop });
+            });
       }
 
     }
@@ -222,8 +214,10 @@ export class SalaComponent implements OnInit {
             this.loadSala();
             return;
           },
-            err => { console.log(err);
-                     this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
+            err => {
+              console.log(err);
+              this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop });
+            });
 
       } else {
         // tslint:disable-next-line: max-line-length
@@ -235,8 +229,10 @@ export class SalaComponent implements OnInit {
             this.loadSala();
             return;
           },
-          err => {console.log(err);
-                  this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop }); });
+            err => {
+              console.log(err);
+              this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop });
+            });
       }
 
     }
@@ -285,9 +281,7 @@ export class SalaComponent implements OnInit {
     this.form.reset();
   }
 
-  actualizarForm(){
-    // this.tipo.updateValueAndValidity();
-    // this.edificio.updateValueAndValidity();
+  actualizarForm() {
     this.form.updateValueAndValidity();
   }
 

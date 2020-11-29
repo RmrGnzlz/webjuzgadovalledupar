@@ -50,10 +50,10 @@ export class TablaComponentComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.table.emit(this.tableView);
   }
 
   ngOnInit(): void {
+    this.table.emit(this.tableView);
   }
 
   applyFilter(event: Event) {

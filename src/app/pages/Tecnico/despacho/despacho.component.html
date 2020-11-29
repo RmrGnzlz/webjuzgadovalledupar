@@ -1,50 +1,28 @@
 
 <ng-snotify></ng-snotify>
 
-<app-tabla-component
-  [data]=ListaDespachos
-  [headersInput]="headerDespacho"
-  [information]="informationTable"
-  [filter]="1 === 1">
-  <button
-  class="btn btn-outline-info text-right"
-  slot="button"
-  data-toggle="modal"
-  data-target="#exampleModal"
->
-  <i class="fa fa-plus-square"></i>
-  Crear Despacho
-</button>
-<ng-template let-element="element" let-colunm="column" #rows>
-  <div *ngIf="colunm.value == 'edificio.nombre'">{{ element.edificio.nombre }}</div>
 
-  <div
-    class="tag-color"
-    [ngClass]="{
-      'text-danger': element.estado === 0,
-      'text-success': element.estado === 1
-    }"
-  >
-    <p *ngIf="colunm.value == 'estado'">
-      {{ element.estado === 1 ? "Habilitada" : "Inhabilitada" }}
-    </p>
-  </div>
-
-  <div   *ngIf="colunm.value == 'opciones'">
-
-    <button data-toggle="modal"
-    data-target="#exampleModal"class="btn btn-outline-info" (click)="showDespacho(element)"  >
-      <i class="fa fa-edit "></i>
-    </button>
-    <button class="btn waves-effect waves-light btn-outline-danger"
-      (click)="delete(element)"
+  <app-tabla [Data]="ListaDespachos" [Columns]="Columns">
+    <button
+      data-toggle="modal"
+      data-target="#exampleModal"
+      type="button"
+      class="btn btn-outline-info text-right"
     >
-      <i class="fa fa-trash-o "></i>
+      <i class="fa fa-plus-square"></i> Crear Despacho
     </button>
-</div>
-</ng-template>
-  </app-tabla-component>
+  </app-tabla>
 
+  <ng-template #estadoTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <div>
+      <span class="label label-info label-rounded" *ngIf="row.estado == 0"
+        >Inhabilitado</span
+      >
+      <span class="label label-primary label-rounded" *ngIf="row.estado == 1"
+        >Habilitado</span
+      >
+    </div>
+  </ng-template>
 
 
 <!-- Modal -->
