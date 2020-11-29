@@ -1,7 +1,6 @@
 import { Columns, Config, DefaultConfig } from 'ngx-easy-table';
 import { EstadoSalaEnum, Sala } from './../../../models/Sala.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { IHeaderTemplate, IInformationTemplate } from 'src/app/components/tabla-component/tabla-component.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EdificioService } from '../../../Service/Edificio/edificio.service';
 import { SalaService } from '../../../Service/Sala/sala.service';

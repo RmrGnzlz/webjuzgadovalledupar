@@ -3,7 +3,6 @@ import { DespachoService } from './../../../Service/despacho/despacho.service';
 import { Despacho, EstadoDespacho } from './../../../models/Despacho.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
-import { IHeaderTemplate, IInformationTemplate } from 'src/app/components/tabla-component/tabla-component.component';
 import { Edificio } from 'src/app/models/Edificio.Model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Columns } from 'ngx-easy-table';
