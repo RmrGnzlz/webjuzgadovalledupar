@@ -34,15 +34,15 @@ import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
 
   ],
   imports: [
-    FormsModule,
+
     BrowserModule,
     PagesModule,
     AppRoutingModule,
     ServiceModule,
     BrowserAnimationsModule,
     HttpClientModule,
-
     ReactiveFormsModule,
+    FormsModule,
     RxReactiveFormsModule
 
     // SharedModule
