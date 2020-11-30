@@ -14,6 +14,8 @@ export class DespachoService {
   constructor(private http: HttpClient) { }
 
   add(DespachoRequest: Despacho){
+    console.log(DespachoRequest);
+
     return this.http.post(this.UrlGeneral, DespachoRequest);
    }
 

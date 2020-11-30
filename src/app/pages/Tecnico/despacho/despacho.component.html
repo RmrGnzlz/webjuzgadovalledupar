@@ -24,6 +24,25 @@
     </div>
   </ng-template>
 
+  <ng-template #actionTpl let-row let-rowIndex="rowIndex">
+    <div>
+      <button
+        data-toggle="modal"
+        data-target="#exampleModal"
+        class="btn btn-outline-info"
+        (click)="showDespacho(row)"
+      >
+        <i class="fa fa-edit"></i>
+      </button>
+      <button
+        class="btn waves-effect waves-light btn-outline-danger"
+        (click)="delete(row)"
+      >
+        <i class="fa fa-trash-o"></i>
+      </button>
+    </div>
+  </ng-template>
+
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

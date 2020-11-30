@@ -14,6 +14,7 @@ import { Columns } from 'ngx-easy-table';
 export class DespachoComponent implements OnInit {
   @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
   @ViewChild('estadoTpl', { static: true }) estadoTpl: TemplateRef<any>;
+  @ViewChild('actionTpl',{static:true}) actionTpl: TemplateRef<any>;
   ListaDespachos: Despacho[] = [];
   ListaEdificios: Edificio[] = [];
   Estados: any[] = [];
@@ -54,7 +55,7 @@ export class DespachoComponent implements OnInit {
       { key: 'edificio.nombre', title: 'Edificio' },
       { key: 'telefono', title: 'Telefono' },
       { key: 'estado', title: 'Estado', cellTemplate: this.estadoTpl },
-      { key: 'opciones', title: 'Opciones'},
+      { key: 'opciones', title: 'Opciones',cellTemplate:this.actionTpl},
     ];
   }
 
@@ -93,6 +94,7 @@ export class DespachoComponent implements OnInit {
   }
 
   add() {
+
     if (this.validateForm()) {
       this._servicioDespacho.add(new Despacho(this.nombre.value,this.telefono.value,+this.estado.value,this.edificio.value))
         .subscribe(resp => {
