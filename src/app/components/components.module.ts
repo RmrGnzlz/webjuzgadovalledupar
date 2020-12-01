@@ -14,7 +14,8 @@ import { TableModule } from 'ngx-easy-table';
     TableModule,
   ],
   exports: [
-    TablaComponent
+    TablaComponent,
+    TableModule
   ]
 })
 export class ComponentsModule { }
