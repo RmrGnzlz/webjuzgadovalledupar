@@ -1,16 +1,13 @@
 import { ServicieGeneric } from './../../../Service/ServiceGeneric';
-import { Columns, Config, DefaultConfig } from 'ngx-easy-table';
+import { Columns } from 'ngx-easy-table';
 import { EstadoSalaEnum, Sala } from './../../../models/Sala.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EdificioService } from '../../../Service/Edificio/edificio.service';
-import { SalaService } from '../../../Service/Sala/sala.service';
 import { Edificio } from 'src/app/models/Edificio.Model';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
-import { TipoSalaEnum, PlataformaEnum, SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
-import { disable } from '@rxweb/reactive-form-validators';
-import { Observable } from 'rxjs';
-import { HttpResponse } from '@angular/common/http';
+import { TipoSalaEnum,  SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
+
 
 
 
@@ -21,7 +18,6 @@ import { HttpResponse } from '@angular/common/http';
 })
 export class SalaComponent implements OnInit {
 
-  public configuration: Config;
 
   ListaEdificios: Edificio[] = [];
   ListaSalas: Sala[] = [];
@@ -34,11 +30,11 @@ export class SalaComponent implements OnInit {
 
   @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
   @ViewChild('tipoTpl', { static: true }) tipoTpl: TemplateRef<any>;
+  @ViewChild('numeroTpl', { static: true }) numeroTpl: TemplateRef<any>;
   @ViewChild('estadoTpl', { static: true }) estadoTpl: TemplateRef<any>;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
-  constructor(private _ServcioEdificio: EdificioService,
-    private _ServicioSala: SalaService,
+  constructor(
     private service: SnotifyService,
     private formBuilder: FormBuilder,
     private _ServiceGeneric: ServicieGeneric) {
@@ -49,17 +45,20 @@ export class SalaComponent implements OnInit {
 
   ngOnInit() {
 
+    this._ServiceGeneric.getRemove<Edificio[]>(null, 'edificio')
+    .subscribe({
+      next: (res: any) => {
+        this.ListaEdificios = res.data;
+      },
+      error: console.error
 
-    this._ServcioEdificio.GetAll().subscribe((res: any) => {
-      this.ListaEdificios = res.data;
-    },
-      err => console.log('error al traer edificios')
-    );
+    });
+
     this.buildForm();
     this.setSalaTipoValidator();
     this.LoadEnums();
     this.Columns = [
-      { key: 'key', title: '#' },
+      { key: 'key', title: '#',cellTemplate: this.numeroTpl },
       { key: 'edificio.nombre', title: 'Edificio' },
       { key: 'nombre', title: 'Sala' },
       { key: 'tipo', title: 'Tipo', cellTemplate: this.tipoTpl },
@@ -67,7 +66,7 @@ export class SalaComponent implements OnInit {
       { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl },
     ];
 
-    this.configuration = { ...DefaultConfig };
+
     this.loadSala();
 
   }
@@ -134,16 +133,17 @@ export class SalaComponent implements OnInit {
     this.form.patchValue(element);
     this.edificio.setValidators(null);
     this.tipo.setValidators(null);
-    this._ServicioSala.getId(element.key).toPromise()
-      .then((res) => {
 
-        if (res.tipo === 0) {
-          this.link.setValue(res.link);
-          this.plataforma.setValue(res.plataforma);
+    this._ServiceGeneric.getRemove<any>(element.key, 'sala').toPromise()
+      .then((res) => {
+        if (res.data.tipo === 0) {
+          this.link.setValue(res.data.link);
+          this.plataforma.setValue(res.data.plataforma);
         }
-        if (res.tipo === 1) {
-          this.piso.setValue(res.piso);
-          this.numero.setValue(res.numero);
+        if (res.data.tipo === 1) {
+          console.log(res.data);
+          this.piso.setValue(res.data.piso);
+          this.numero.setValue(res.data.numero);
         }
 
       });

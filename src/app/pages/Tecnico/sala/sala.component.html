@@ -12,6 +12,11 @@
   </button>
 </app-tabla>
 
+
+<ng-template #numeroTpl let-row let-rowIndex="rowIndex" let-column="column">
+  <div>{{rowIndex+1}}</div>
+</ng-template>
+
 <ng-template #tipoTpl let-row let-rowIndex="rowIndex" let-column="column">
   <div>
     <span class="label label-info label-rounded" *ngIf="row.tipo == 0"
@@ -52,80 +57,14 @@
   </div>
 </ng-template>
 
-<!-- <div class="columns">
-  <div class="column col-12">
-    <ngx-table [data]="data$ | async" [configuration]="configuration" [columns]="columns">
-    </ngx-table>
-  </div>
-</div> -->
 
-<!-- <app-tabla-component
-  [data]="ListaSalas"
-  [headersInput]="headerSala"
-  [information]="informationTable"
-  [filter]="1 === 1"
->
-  <button
-    class="btn btn-outline-info text-right"
-    slot="button"
-    data-toggle="modal"
-    data-target="#exampleModal"
-  >
-    <i class="fa fa-plus-square"></i>
-    Crear Sala
-  </button>
-  <ng-template let-element="element" let-colunm="column" #rows>
-    <div *ngIf="colunm.value == 'edificio.nombre'">
-      <div *ngIf="element.edificio==null">
-        Sin registro
-      </div>
-      <div *ngIf="element.edificio!=null">
-        {{ element.edificio.nombre }}
-
-      </div>
-    </div>
-
-    <!-- TIPO -->
-<!-- <div *ngIf="colunm.value == 'tipo'" >
-      <span class="label label-info label-rounded" *ngIf="element.tipo==0" >Virtual</span>
-      <span class="label label-primary label-rounded" *ngIf="element.tipo==1" >Fisica</span>
-
-    </div> -->
-
-<!-- ESTADO -->
-<!-- <div *ngIf="colunm.value == 'estado'" >
-      <span class="label label-danger" *ngIf="element.estado==0" >Inhabilitada</span>
-      <span class="label label-success" *ngIf="element.estado==1" >Habilitada</span>
-
-    </div>
-
-
-    <div *ngIf="colunm.value == 'opciones'">
-      <button
-        data-toggle="modal"
-        data-target="#exampleModal"
-        class="btn btn-outline-info"
-        (click)="ShowSala(element)"
-      >
-        <i class="fa fa-edit"></i>
-      </button>
-      <button
-        class="btn waves-effect waves-light btn-outline-danger"
-        (click)="delete(element)"
-      >
-        <i class="fa fa-trash-o"></i>
-      </button>
-    </div>
-  </ng-template>
-</app-tabla-component> -->
--->
-<!-- </mat-card> -->
 
 <!-- Modal -->
 <div
   class="modal fade"
   id="exampleModal"
   tabindex="-1"
+  data-backdrop="static" data-keyboard="false"
   role="dialog"
   aria-labelledby="exampleModalLabel"
   aria-hidden="true"
@@ -133,7 +72,9 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE SALA</h5>
+          <div *ngIf="Actualizar" ><h5 class="modal-title" id="exampleModalLabel">Actualizar Sala</h5></div>
+        <div *ngIf="!Actualizar" ><h5 class="modal-title" id="exampleModalLabel">Registrar Sala</h5></div>
+
         <button
           #botonCerrar
           (click)="closeModal()"
