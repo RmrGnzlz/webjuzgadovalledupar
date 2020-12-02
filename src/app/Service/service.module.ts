@@ -5,7 +5,9 @@ import { CommonModule } from '@angular/common';
 
 import {
 UsuarioService,
-SalaService
+SalaService,
+EdificioService,
+ServicieGeneric
 } from './service.index';
 
 @NgModule({
@@ -15,7 +17,9 @@ SalaService
   ],
   providers:[
   UsuarioService,
-  SalaService
+  SalaService,
+  EdificioService,
+  ServicieGeneric
   ]
 })
 export class ServiceModule { }

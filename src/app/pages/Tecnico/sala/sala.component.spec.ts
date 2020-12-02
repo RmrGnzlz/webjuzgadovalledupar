@@ -1,6 +1,9 @@
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SalaComponent } from './sala.component';
+import { SnotifyService, ToastDefaults } from 'ng-snotify';
 
 describe('SalaComponent', () => {
   let component: SalaComponent;
@@ -8,7 +11,10 @@ describe('SalaComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SalaComponent ]
+      declarations: [ SalaComponent ],
+      imports:[HttpClientModule, ReactiveFormsModule],
+      providers: [{ provide: 'SnotifyToastConfig', useValue: ToastDefaults }, SnotifyService],
+
     })
     .compileComponents();
   }));

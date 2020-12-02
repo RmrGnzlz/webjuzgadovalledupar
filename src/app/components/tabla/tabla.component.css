@@ -1,0 +1,17 @@
+/* :host ::ng-deep .ngx-table__header-title {
+  color:#198dff;
+}
+
+:host ::ng-deep #table > tbody > tr > td {
+  color:black;
+}
+
+:host ::ng-deep #pagination-controls > pagination-template > ul > li > a > span {
+  color:#198dff;
+} */
+
+.card{
+  -webkit-box-shadow: 6px 11px 9px 2px rgba(0,0,0,0.25);
+-moz-box-shadow: 6px 11px 9px 2px rgba(0,0,0,0.25);
+box-shadow: 6px 11px 9px 2px rgba(0,0,0,0.25);
+}

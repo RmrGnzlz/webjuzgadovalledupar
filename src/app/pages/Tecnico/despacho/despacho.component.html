@@ -1,0 +1,178 @@
+
+<ng-snotify></ng-snotify>
+
+  <app-tabla [Data]="ListaDespachos" [Columns]="Columns">
+    <button
+      data-toggle="modal"
+      data-target="#exampleModal"
+      type="button"
+      class="btn btn-outline-info text-right"
+    >
+      <i class="fa fa-plus-square"></i> Crear Despacho
+    </button>
+  </app-tabla>
+
+  <ng-template #estadoTpl let-row let-rowIndex="rowIndex" let-column="column">
+    <div>
+      <span class="label label-info label-rounded" *ngIf="row.estado == 0"
+        >Inhabilitado</span
+      >
+      <span class="label label-primary label-rounded" *ngIf="row.estado == 1"
+        >Habilitado</span
+      >
+    </div>
+  </ng-template>
+
+  <ng-template #actionTpl let-row let-rowIndex="rowIndex">
+    <div>
+      <button
+        data-toggle="modal"
+        data-target="#exampleModal"
+        class="btn btn-outline-info"
+        (click)="showDespacho(row)"
+      >
+        <i class="fa fa-edit"></i>
+      </button>
+      <button
+        class="btn waves-effect waves-light btn-outline-danger"
+        (click)="delete(row)"
+      >
+        <i class="fa fa-trash-o"></i>
+      </button>
+    </div>
+  </ng-template>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE DESPACHO</h5>
+        <button #botonCerrar (click)="closeModal()"  type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!--  -->
+      <div class="modal-body">
+            <form  [formGroup]="form">
+
+              <input type="hidden" name="key" formControlName="key">
+
+              <div class="form-group">
+                  <input
+                  [ngClass]="{'form-submitted': formSubmitted}"
+                 name="nombre" id="nombre" type="text" class="form-control"
+                  placeholder="Digite nombre del despacho" required
+                  formControlName="nombre" />
+                  <div class="alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)" >
+                      <div class="container-error-message" *ngIf="nombre.errors.required">
+                        nombre es requerido
+                      </div>
+                      <div class="container-error-message" *ngIf="nombre.errors.minlength">
+                        Nombre debe contener minimo 5 caracteres
+                      </div>
+                  </div>
+              </div>
+
+              <div class="form-group" *ngIf="!Actualizar">
+                <label>Edificio</label>
+                <select
+                [ngClass]="{'form-submitted': formSubmitted}"
+                formControlName="edificio" id="edificio" name="edificio"
+                  class="form-control" required>
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let item of ListaEdificios" [value]="item.key">{{ item.nombre }}</option>
+                </select>
+                <div class="alert-danger" *ngIf="edificio.invalid && (edificio.dirty || edificio.touched)" >
+                  <div class="container-error-message" *ngIf="edificio.errors.required">
+                    Edificio es requerido
+                  </div>
+
+              </div>
+              </div>
+
+
+
+              <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="link">Telefono</label>
+                        <input type="text" formControlName="telefono" class="form-control" placeholder="" aria-describedby="helpId">
+                        <div
+                        *ngIf="telefono.invalid && (telefono.dirty || telefono.touched)"
+                      >
+                        <div
+                          class="container-error-message"
+                          *ngIf="telefono.errors.required"
+                        >
+                        <small class="text-danger">
+                          Telefono  requerido.
+                        </small>
+                        </div>
+                        <div
+                        class="container-error-message"
+                        *ngIf="telefono.errors.minlength"
+                      >
+                      <small class="text-danger">
+                        telefono debe contener minimo 7 caracteres numericos
+                      </small>
+
+                      </div>
+
+                      <div
+                      class="container-error-message"
+                      *ngIf="telefono.errors.pattern"
+                    >
+                    <small class="text-danger">
+                     Solo caracteres numericos
+                    </small>
+
+                    </div>
+                      </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="form-group" >
+                        <label>Estado</label>
+                        <select
+                        [ngClass]="{'form-submitted': formSubmitted}"
+                          formControlName="estado"
+                          id="estado" name="estado"
+                          class="form-control" required>
+                          <option value="">Seleccione</option>
+                          <option *ngFor="let item of Estados" [value]="item.value">{{item.text}}</option>
+                        </select>
+                        <div class="alert-danger" *ngIf="estado.invalid && (estado.dirty || estado.touched)" >
+                          <div class="container-error-message" *ngIf="estado.errors.required">
+                            Estado es requerido
+                          </div>
+
+                      </div>
+                      </div>
+
+                    </div>
+              </div>
+
+
+            </form>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+
+        <div *ngIf="!Actualizar" >
+          <button (click)="add()"  [disabled]=!this.form.valid  class="btn btn-outline-info text-right">Guardar </button>
+        </div>
+        <div *ngIf="Actualizar" >
+          <button (click)="Update()" [disabled]=!this.form.valid  class="btn btn-outline-info text-right">Actualizar </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+

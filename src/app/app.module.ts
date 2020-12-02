@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 
 // RUTAS
 import { AppRoutingModule } from './app-routing.module';
@@ -15,6 +16,10 @@ import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LoginComponent } from './login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
+
+
 
 
 
@@ -29,18 +34,25 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
   ],
   imports: [
+
     BrowserModule,
     PagesModule,
     AppRoutingModule,
     ServiceModule,
     BrowserAnimationsModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RxReactiveFormsModule
 
     // SharedModule
   ],
   exports: [
 
   ],
-  providers: [],
+  providers: [
+
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

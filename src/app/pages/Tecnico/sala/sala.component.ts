@@ -1,7 +1,15 @@
-import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
-import { MatTableDataSource } from '@angular/material/table';
-import { IHeaderTemplate, IInformationTemplate } from 'src/app/components/tabla-component/tabla-component.component';
+import { ServicieGeneric } from './../../../Service/ServiceGeneric';
+import { Columns } from 'ngx-easy-table';
+import { EstadoSalaEnum, Sala } from './../../../models/Sala.Model';
+import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { EdificioService } from '../../../Service/Edificio/edificio.service';
+import { Edificio } from 'src/app/models/Edificio.Model';
+import { SnotifyPosition, SnotifyService } from 'ng-snotify';
+import { TipoSalaEnum,  SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
+
+
+
 
 @Component({
   selector: 'app-sala',
@@ -9,44 +17,258 @@ import { IHeaderTemplate, IInformationTemplate } from 'src/app/components/tabla-
   styleUrls: ['./sala.component.css']
 })
 export class SalaComponent implements OnInit {
-  @ViewChild('rows',{static: false}) rows: TemplateRef<any>;
-  registros = [
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-    { codigo: '1', nombre: 'sdsdsd' },
-  ]
-  headersUsuarios: IHeaderTemplate[];
-  informationTable: IInformationTemplate = { title: 'Sala de audiencia', subTitle: 'Información de sala' };
 
-  ngOnInit(): void {
 
+  ListaEdificios: Edificio[] = [];
+  ListaSalas: Sala[] = [];
+  Estados: any[] = [];
+  Tipos: any[] = [];
+  Actualizar = false;
+  form: FormGroup;
+  formSubmitted = false;
+  public Columns: Columns[];
+
+  @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
+  @ViewChild('tipoTpl', { static: true }) tipoTpl: TemplateRef<any>;
+  @ViewChild('numeroTpl', { static: true }) numeroTpl: TemplateRef<any>;
+  @ViewChild('estadoTpl', { static: true }) estadoTpl: TemplateRef<any>;
+  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
+
+  constructor(
+    private service: SnotifyService,
+    private formBuilder: FormBuilder,
+    private _ServiceGeneric: ServicieGeneric) {
   }
-  constructor() { }
-  // tslint:disable-next-line: use-lifecycle-interface
-  ngAfterViewInit(): void {
-    this.headersUsuarios = [
-      { value: 'codigo', text: 'cod Identificacion', templateRef: undefined },
-      // { value: 'identificacion', text: 'Identificación', templateRef: this.rows },
-      { value: 'nombre', text: 'nombre sala', templateRef: undefined },
-      // { value: 'role.nombre', text: 'Role', templateRef: this.rows },
-      // { value: 'actions', text: 'Bloquear', templateRef: this.rows },
-      // { value: 'verMas', text: 'Ver Más', templateRef: this.rows },
+
+
+
+
+  ngOnInit() {
+
+    this._ServiceGeneric.getRemove<Edificio[]>(null, 'edificio')
+    .subscribe({
+      next: (res: any) => {
+        this.ListaEdificios = res.data;
+      },
+      error: console.error
+
+    });
+
+    this.buildForm();
+    this.setSalaTipoValidator();
+    this.LoadEnums();
+    this.Columns = [
+      { key: 'key', title: '#',cellTemplate: this.numeroTpl },
+      { key: 'edificio.nombre', title: 'Edificio' },
+      { key: 'nombre', title: 'Sala' },
+      { key: 'tipo', title: 'Tipo', cellTemplate: this.tipoTpl },
+      { key: 'estado', title: 'Estado', cellTemplate: this.estadoTpl },
+      { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl },
     ];
+
+
+    this.loadSala();
+
+  }
+
+  LoadEnums() {
+    for (const item in EstadoSalaEnum) {
+      if (isNaN(Number(item))) {
+        this.Estados.push({ text: item, value: EstadoSalaEnum[item] });
+      }
+    }
+
+    for (const item in TipoSalaEnum) {
+      if (isNaN(Number(item))) {
+        this.Tipos.push({ text: item, value: TipoSalaEnum[item] });
+      }
+    }
+
+  }
+
+  buildForm() {
+    this.form = this.formBuilder.group({
+      key: [''],
+      nombre: ['', [Validators.minLength(4)]],
+      estado: ['', [Validators.required]],
+      edificio: ['', [Validators.required]],
+      tipo: ['', [Validators.required]],
+      plataforma: ['Microsoft Teams', [Validators.required, Validators.minLength(5)]],
+      link: ['', [Validators.required]],
+      numero: [''],
+      piso: ['', [Validators.required]]
+    });
+  }
+
+  setSalaTipoValidator() {
+    const plataformaControl = this.form.get('plataforma');
+    const linkControl = this.form.get('link');
+    const pisoControl = this.form.get('piso');
+
+    this.form.get('tipo').valueChanges
+      .subscribe(tip => {
+
+        if (tip == TipoSalaEnum.Fisica || tip === '') {
+          pisoControl.setValidators([Validators.required, Validators.minLength(1)]);
+          linkControl.setValidators(null);
+          plataformaControl.setValidators(null);
+
+        }
+        if (tip == TipoSalaEnum.Virtual) {
+          pisoControl.setValidators(null);
+          linkControl.setValidators([Validators.required, Validators.minLength(10)]);
+          plataformaControl.setValidators([Validators.minLength(1), Validators.required]);
+        }
+
+        pisoControl.updateValueAndValidity();
+        linkControl.updateValueAndValidity();
+        plataformaControl.updateValueAndValidity();
+      });
   }
 
 
 
+  ShowSala(element: any) {
+    this.Actualizar = true;
+    this.form.patchValue(element);
+    this.edificio.setValidators(null);
+    this.tipo.setValidators(null);
+
+    this._ServiceGeneric.getRemove<any>(element.key, 'sala').toPromise()
+      .then((res) => {
+        if (res.data.tipo === 0) {
+          this.link.setValue(res.data.link);
+          this.plataforma.setValue(res.data.plataforma);
+        }
+        if (res.data.tipo === 1) {
+          console.log(res.data);
+          this.piso.setValue(res.data.piso);
+          this.numero.setValue(res.data.numero);
+        }
+
+      });
+    this.form.updateValueAndValidity();
+  }
+
+  loadSala() {
+    this._ServiceGeneric.getRemove<Sala[]>(null, 'sala')
+      .subscribe({
+        next: (res: any) => {
+          this.ListaSalas = res.data;
+        },
+        error: console.error
+
+      });
+  }
+
+  Update() {
+    if (this.validateForm) {
+
+      if (this.tipo.value == TipoSalaEnum.Fisica) {
+        // tslint:disable-next-line: max-line-length
+        const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
+        salaFisica.key = this.key.value;
+        this.PeticionPostYPut(SalaFisica, 'fisica', 'put');
+        return;
+      } else {
+        // tslint:disable-next-line: max-line-length
+        const salaVirtual = new SalaVirtual(this.nombre.value, +this.estado.value, this.edificio.value, this.link.value, this.plataforma.value);
+        salaVirtual.key = this.key.value;
+        this.PeticionPostYPut(salaVirtual, 'virtual', 'put');
+        return;
+      }
+
+    }
+
+
+  }
+
+  PeticionPostYPut(sala: any, tipo: string, metodo: any) {
+    // tslint:disable-next-line: max-line-length
+    this._ServiceGeneric.postPatch<any>(`sala/${tipo}`, sala, null, metodo)
+      .subscribe(res => {
+        this.service.success('Transacción exitosa', 'Información', { position: SnotifyPosition.rightTop });
+        this.closeModal();
+        this.loadSala();
+      },
+        err => this.service.error(err.error.mensaje, 'Información', { position: SnotifyPosition.rightTop }));
+
+  }
+
+  add() {
+
+    if (this.validateForm) {
+
+      if (this.tipo.value == TipoSalaEnum.Fisica) {
+        // tslint:disable-next-line: max-line-length
+        const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
+        this.PeticionPostYPut(salaFisica, 'fisica', 'post');
+        return;
+      } else {
+        // tslint:disable-next-line: max-line-length
+        const salaVirtual = new SalaVirtual(this.nombre.value, +this.estado.value, this.edificio.value, this.link.value, this.plataforma.value);
+        this.PeticionPostYPut(salaVirtual, 'virtual', 'post');
+        return;
+      }
+
+    }
+
+
+
+  }
+
+  delete(sala: any) {
+    this.service.error('Seguro desea borrar', sala.nombre, {
+      timeout: 50000,
+      position: SnotifyPosition.rightTop,
+      showProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      buttons: [
+        { text: 'No', action: (toast) => this.service.remove(toast.id) },
+        {
+          text: 'Si', action: () =>
+
+            this._ServiceGeneric.getRemove<any>(sala.key, 'sala', null, 'delete')
+              .subscribe({
+                next: (p: unknown) => {
+                  this.service.success('Registro eliminado', 'Información', { position: SnotifyPosition.rightTop });
+                  this.loadSala();
+                },
+                error: console.error
+              })
+        },
+      ]
+    });
+  }
+
+  validateForm(): boolean {
+    if (this.form.valid) {
+      // this.service.success('REGISTRO EXITOSO', 'Informacion', {position: SnotifyPosition.rightTop});
+      return true;
+    }
+    this.service.error('Datos inconsistentes...', 'Información', { position: SnotifyPosition.rightTop });
+    return false;
+  }
+
+
+
+  closeModal() {
+    this.botonCerrar.nativeElement.click();
+    this.Actualizar = false;
+    this.form.reset();
+  }
+
+
+  get nombre() { return this.form.get('nombre'); }
+  get edificio() { return this.form.get('edificio'); }
+  get estado() { return this.form.get('estado'); }
+  get tipo() { return this.form.get('tipo'); }
+  get plataforma() { return this.form.get('plataforma'); }
+  get link() { return this.form.get('link'); }
+  get piso() { return this.form.get('piso'); }
+  get numero() { return this.form.get('numero'); }
+  get key() { return this.form.get('key'); }
 
 
 }
