@@ -6,6 +6,7 @@ import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SalaComponent } from './Tecnico/sala/sala.component';
 import { DespachoComponent } from './tecnico/despacho/despacho.component';
+import { JuzgadoComponent } from './Tecnico/juzgado/juzgado.component';
 
 const pagesRoute: Routes = [
 { path: '',
@@ -15,6 +16,7 @@ const pagesRoute: Routes = [
     { path: 'usuario', component: UsuarioComponent },
     { path: 'sala', component: SalaComponent },
     { path: 'despacho', component: DespachoComponent },
+    { path: 'juzgado', component: JuzgadoComponent },
     { path: '', pathMatch: 'full', redirectTo: '/dashboard' }
   ]
 },

@@ -13,6 +13,8 @@ import { ComponentsModule } from '../components/components.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DespachoComponent } from './tecnico/despacho/despacho.component';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
+import { JuzgadoComponent } from './Tecnico/juzgado/juzgado.component';
+import { JuzgadosComponent } from './Tecnico/juzgado/juzgados.component';
 
 
 @NgModule({
@@ -23,6 +25,8 @@ import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
     PruebaComponent,
     SalaComponent,
     DespachoComponent,
+    JuzgadoComponent,
+    JuzgadosComponent
   ],
   imports: [
     CommonModule,
