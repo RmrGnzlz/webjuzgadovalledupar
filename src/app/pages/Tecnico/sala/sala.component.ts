@@ -1,15 +1,13 @@
-import { Columns, Config, DefaultConfig } from 'ngx-easy-table';
+import { ServicieGeneric } from './../../../Service/ServiceGeneric';
+import { Columns } from 'ngx-easy-table';
 import { EstadoSalaEnum, Sala } from './../../../models/Sala.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EdificioService } from '../../../Service/Edificio/edificio.service';
-import { SalaService } from '../../../Service/Sala/sala.service';
 import { Edificio } from 'src/app/models/Edificio.Model';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
-import { TipoSalaEnum, PlataformaEnum, SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
-import { disable } from '@rxweb/reactive-form-validators';
-import { Observable } from 'rxjs';
-import { HttpResponse } from '@angular/common/http';
+import { TipoSalaEnum,  SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
+
 
 
 
@@ -20,7 +18,6 @@ import { HttpResponse } from '@angular/common/http';
 })
 export class SalaComponent implements OnInit {
 
-  public configuration: Config;
 
   ListaEdificios: Edificio[] = [];
   ListaSalas: Sala[] = [];
@@ -33,13 +30,14 @@ export class SalaComponent implements OnInit {
 
   @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
   @ViewChild('tipoTpl', { static: true }) tipoTpl: TemplateRef<any>;
+  @ViewChild('numeroTpl', { static: true }) numeroTpl: TemplateRef<any>;
   @ViewChild('estadoTpl', { static: true }) estadoTpl: TemplateRef<any>;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
-  constructor(private _ServcioEdificio: EdificioService,
-    private _ServicioSala: SalaService,
+  constructor(
     private service: SnotifyService,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private _ServiceGeneric: ServicieGeneric) {
   }
 
 
@@ -47,17 +45,20 @@ export class SalaComponent implements OnInit {
 
   ngOnInit() {
 
+    this._ServiceGeneric.getRemove<Edificio[]>(null, 'edificio')
+    .subscribe({
+      next: (res: any) => {
+        this.ListaEdificios = res.data;
+      },
+      error: console.error
 
-    this._ServcioEdificio.GetAll().subscribe((res: any) => {
-      this.ListaEdificios = res.data;
-    },
-      err => console.log('error al traer edificios')
-    );
+    });
+
     this.buildForm();
     this.setSalaTipoValidator();
     this.LoadEnums();
     this.Columns = [
-      { key: 'key', title: '#' },
+      { key: 'key', title: '#',cellTemplate: this.numeroTpl },
       { key: 'edificio.nombre', title: 'Edificio' },
       { key: 'nombre', title: 'Sala' },
       { key: 'tipo', title: 'Tipo', cellTemplate: this.tipoTpl },
@@ -65,7 +66,7 @@ export class SalaComponent implements OnInit {
       { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl },
     ];
 
-    this.configuration = { ...DefaultConfig };
+
     this.loadSala();
 
   }
@@ -128,23 +129,21 @@ export class SalaComponent implements OnInit {
 
 
   ShowSala(element: any) {
-
-    // console.log(element);
-
     this.Actualizar = true;
     this.form.patchValue(element);
     this.edificio.setValidators(null);
     this.tipo.setValidators(null);
-    this._ServicioSala.getId(element.key).toPromise()
-      .then((res) => {
 
-        if (res.tipo === 0) {
-          this.link.setValue(res.link);
-          this.plataforma.setValue(res.plataforma);
+    this._ServiceGeneric.getRemove<any>(element.key, 'sala').toPromise()
+      .then((res) => {
+        if (res.data.tipo === 0) {
+          this.link.setValue(res.data.link);
+          this.plataforma.setValue(res.data.plataforma);
         }
-        if (res.tipo === 1) {
-          this.piso.setValue(res.piso);
-          this.numero.setValue(res.numero);
+        if (res.data.tipo === 1) {
+          console.log(res.data);
+          this.piso.setValue(res.data.piso);
+          this.numero.setValue(res.data.numero);
         }
 
       });
@@ -152,10 +151,14 @@ export class SalaComponent implements OnInit {
   }
 
   loadSala() {
-    this._ServicioSala.GetAll().subscribe(res => {
-      this.ListaSalas = res;
-    },
-      err => console.log(err));
+    this._ServiceGeneric.getRemove<Sala[]>(null, 'sala')
+      .subscribe({
+        next: (res: any) => {
+          this.ListaSalas = res.data;
+        },
+        error: console.error
+
+      });
   }
 
   Update() {
@@ -165,37 +168,30 @@ export class SalaComponent implements OnInit {
         // tslint:disable-next-line: max-line-length
         const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
         salaFisica.key = this.key.value;
-        this._ServicioSala.UpdateSalaFisica(salaFisica)
-          .subscribe(resp => {
-            this.service.success('Actualizacion Exitosa', 'Informacion', { position: SnotifyPosition.rightTop });
-            this.closeModal();
-            this.loadSala();
-            return;
-          },
-            err => {
-              console.log(err);
-              this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop });
-            });
-
+        this.PeticionPostYPut(SalaFisica, 'fisica', 'put');
+        return;
       } else {
         // tslint:disable-next-line: max-line-length
         const salaVirtual = new SalaVirtual(this.nombre.value, +this.estado.value, this.edificio.value, this.link.value, this.plataforma.value);
         salaVirtual.key = this.key.value;
-        this._ServicioSala.UpdateSalaVirtual(salaVirtual)
-          .subscribe(resp => {
-            this.service.success('Actualizacion Exitosa', 'Informacion', { position: SnotifyPosition.rightTop });
-            this.closeModal();
-            this.loadSala();
-            return;
-          },
-            err => {
-              console.log(err);
-              this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop });
-            });
+        this.PeticionPostYPut(salaVirtual, 'virtual', 'put');
+        return;
       }
 
     }
 
+
+  }
+
+  PeticionPostYPut(sala: any, tipo: string, metodo: any) {
+    // tslint:disable-next-line: max-line-length
+    this._ServiceGeneric.postPatch<any>(`sala/${tipo}`, sala, null, metodo)
+      .subscribe(res => {
+        this.service.success('Transacción exitosa', 'Información', { position: SnotifyPosition.rightTop });
+        this.closeModal();
+        this.loadSala();
+      },
+        err => this.service.error(err.error.mensaje, 'Información', { position: SnotifyPosition.rightTop }));
 
   }
 
@@ -206,32 +202,13 @@ export class SalaComponent implements OnInit {
       if (this.tipo.value == TipoSalaEnum.Fisica) {
         // tslint:disable-next-line: max-line-length
         const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
-        this._ServicioSala.addSalaFisica(salaFisica)
-          .subscribe(resp => {
-            this.service.success('REGISTRO EXITOSO', 'Informacion', { position: SnotifyPosition.rightTop });
-            this.closeModal();
-            this.loadSala();
-            return;
-          },
-            err => {
-              console.log(err);
-              this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop });
-            });
-
+        this.PeticionPostYPut(salaFisica, 'fisica', 'post');
+        return;
       } else {
         // tslint:disable-next-line: max-line-length
         const salaVirtual = new SalaVirtual(this.nombre.value, +this.estado.value, this.edificio.value, this.link.value, this.plataforma.value);
-        this._ServicioSala.addSalaVirtual(salaVirtual)
-          .subscribe(resp => {
-            this.service.success('Registro Exitoso', 'Informacion', { position: SnotifyPosition.rightTop });
-            this.closeModal();
-            this.loadSala();
-            return;
-          },
-            err => {
-              console.log(err);
-              this.service.error(err.error.mensaje, 'Informacion', { position: SnotifyPosition.rightTop });
-            });
+        this.PeticionPostYPut(salaVirtual, 'virtual', 'post');
+        return;
       }
 
     }
@@ -241,8 +218,6 @@ export class SalaComponent implements OnInit {
   }
 
   delete(sala: any) {
-    console.log(sala);
-
     this.service.error('Seguro desea borrar', sala.nombre, {
       timeout: 50000,
       position: SnotifyPosition.rightTop,
@@ -253,11 +228,15 @@ export class SalaComponent implements OnInit {
         { text: 'No', action: (toast) => this.service.remove(toast.id) },
         {
           text: 'Si', action: () =>
-            this._ServicioSala.Delete(sala.key)
-              .subscribe(res => {
-                this.service.success('Sala eliminada', { position: SnotifyPosition.rightTop });
-                this.loadSala();
-              }, err => this.service.error('Error al eliminar sala', { position: SnotifyPosition.rightTop }))
+
+            this._ServiceGeneric.getRemove<any>(sala.key, 'sala', null, 'delete')
+              .subscribe({
+                next: (p: unknown) => {
+                  this.service.success('Registro eliminado', 'Información', { position: SnotifyPosition.rightTop });
+                  this.loadSala();
+                },
+                error: console.error
+              })
         },
       ]
     });
@@ -278,10 +257,6 @@ export class SalaComponent implements OnInit {
     this.botonCerrar.nativeElement.click();
     this.Actualizar = false;
     this.form.reset();
-  }
-
-  actualizarForm() {
-    this.form.updateValueAndValidity();
   }
 
 

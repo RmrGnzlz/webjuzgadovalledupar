@@ -13,7 +13,6 @@ import { ComponentsModule } from '../components/components.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DespachoComponent } from './tecnico/despacho/despacho.component';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
-import { TableModule } from 'ngx-easy-table';
 
 
 @NgModule({
@@ -23,22 +22,20 @@ import { TableModule } from 'ngx-easy-table';
     DashboardComponent,
     PruebaComponent,
     SalaComponent,
-    DespachoComponent
+    DespachoComponent,
   ],
   imports: [
     CommonModule,
-    TableModule,
     SharedModule,
-    PagesRoutingModule,
     ComponentsModule,
+    PagesRoutingModule,
     ReactiveFormsModule,
     FormsModule,
     SnotifyModule.forRoot()
 
   ],
   exports: [
-    UsuarioComponent,
-    DashboardComponent
+
   ],
   providers: [
     { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
