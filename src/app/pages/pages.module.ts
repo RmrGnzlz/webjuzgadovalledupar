@@ -15,6 +15,12 @@ import { DespachoComponent } from './tecnico/despacho/despacho.component';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 import { TableModule } from 'ngx-easy-table';
 
+import { NgWizardModule, NgWizardConfig, THEME } from 'ng-wizard';
+
+const ngWizardConfig: NgWizardConfig = {
+  theme: THEME.dots
+};
+
 
 @NgModule({
   declarations: [
@@ -33,7 +39,8 @@ import { TableModule } from 'ngx-easy-table';
     ComponentsModule,
     ReactiveFormsModule,
     FormsModule,
-    SnotifyModule.forRoot()
+    SnotifyModule.forRoot(),
+    NgWizardModule.forRoot(ngWizardConfig)
 
   ],
   exports: [
