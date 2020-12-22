@@ -1,0 +1,246 @@
+<ng-snotify></ng-snotify>
+<app-tabla [Data]="listaJuzgado" [Columns]="Columns">
+  <button
+    data-toggle="modal"
+    data-target="#exampleModal"
+    type="button"
+    class="btn btn-outline-info text-right"
+  >
+    <i class="fa fa-plus-square"></i> Crear Juzgado
+  </button>
+</app-tabla>
+
+
+<ng-template #tipoTpl let-row let-rowIndex="rowIndex" let-column="column">
+  <div>
+    <span class="label label-info label-rounded" *ngIf="row.tipo == 0"
+      >Programada</span>
+    <span class="label label-primary label-rounded" *ngIf="row.tipo == 1"
+      >Conocimiento</span>
+      <span class="label label-primary label-rounded" *ngIf="row.tipo == 2"
+      >Magistrados</span>
+  </div>
+</ng-template>
+
+
+<ng-template #actionTpl let-row let-rowIndex="rowIndex">
+  <div>
+    <button
+      data-toggle="modal"
+      data-target="#exampleModal"
+      class="btn btn-outline-info"
+      (click)="showJuzgado(row)"
+    >
+      <i class="fa fa-edit"></i>
+    </button>
+    <button
+      class="btn waves-effect waves-light btn-outline-danger"
+      (click)="delete(row)"
+    >
+      <i class="fa fa-trash-o"></i>
+    </button>
+  </div>
+</ng-template>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  data-backdrop="static"
+  data-keyboard="false"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE JUZGADO</h5>
+        <button
+          #botonCerrar
+          (click)="closeModal()"
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!--  -->
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <input type="hidden" name="key" formControlName="key" />
+          <div class="form-group">
+            <input
+              name="nombre"
+              id="nombre"
+              type="text"
+              class="form-control"
+              placeholder="Digite nombre del Juzgado"
+              required
+              formControlName="nombre"
+            />
+            <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+              <div
+                class="container-error-message"
+                *ngIf="nombre.errors.required"
+              >
+                <small class="text-danger"> nombre es requerido </small>
+              </div>
+              <div
+                class="container-error-message"
+                *ngIf="nombre.errors.minlength"
+              >
+                <small class="text-danger">
+                  Nombre debe contener minimo 5 caracteres
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <select
+                  class="select2 form-control custom-select"
+                  formControlName="despacho"
+                  id="despacho"
+                  name="despacho"
+                >
+                  <option value="">Selecione Despacho</option>
+                  <optgroup
+                    *ngFor="let item of ListadoDespacho"
+                    [label]="item.nombre"
+                  >
+                    <option
+                      *ngFor="let item2 of item.despachos"
+                      [value]="item2.key"
+                    >
+                      {{ item2.nombre }}
+                    </option>
+                  </optgroup>
+                </select>
+                <div
+                  *ngIf="
+                    despacho.invalid && (despacho.dirty || despacho.touched)
+                  "
+                >
+                  <div
+                    class="container-error-message"
+                    *ngIf="despacho.errors.required"
+                  >
+                    <small class="text-danger"> Despacho requerido </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <select
+                  formControlName="tipo"
+                  class="form-control"
+                >
+                  <option value="">Seleccione Area</option>
+                  <option *ngFor="let item of Areas" [value]="item.value">
+                    {{ item.text }}
+                  </option>
+                </select>
+                <div *ngIf="tipo.invalid && (tipo.dirty || tipo.touched)">
+                  <div
+                    class="container-error-message"
+                    *ngIf="tipo.errors.required"
+                  >
+                    <small class="text-danger"> Area requerida </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div [ngClass]="Actualizar ? 'col-md-6' : 'col-md-12'">
+              <div class="form-group">
+                <label for="link">Correo</label>
+                <input
+                  type="text"
+                  formControlName="email"
+                  class="form-control"
+                  placeholder="juzgado@gmail.com"
+                  aria-describedby="helpId"
+                />
+                <div *ngIf="email.invalid && (email.dirty || email.touched)">
+                  <div
+                    class="container-error-message"
+                    *ngIf="email.errors.required"
+                  >
+                    <small class="text-danger"> Correo requerido. </small>
+                  </div>
+
+                  <div
+                    class="container-error-message"
+                    *ngIf="email.errors.email"
+                  >
+                    <small class="text-danger"> Correo no valido </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="Actualizar">
+              <div class="form-group">
+                <label>Estado</label>
+                <select
+                  formControlName="estado"
+                  id="estado"
+                  name="estado"
+                  class="form-control"
+                  required
+                >
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let item of Estados" [value]="item.value">
+                    {{ item.text }}
+                  </option>
+                </select>
+
+                <div *ngIf="estado.invalid && (estado.dirty || estado.touched)">
+                  <div
+                    class="container-error-message"
+                    *ngIf="estado.errors.required"
+                  >
+                    <small class="text-danger"> Estado requerido </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Close
+        </button>
+
+        <div *ngIf="!Actualizar">
+          <button
+            (click)="add()"
+            [disabled]="!this.form.valid"
+            class="btn btn-outline-info text-right"
+          >
+            Guardar
+          </button>
+        </div>
+        <div *ngIf="Actualizar">
+          <button
+            (click)="update()"
+            [disabled]="!this.form.valid"
+            class="btn btn-outline-info text-right"
+          >
+            Actualizar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
