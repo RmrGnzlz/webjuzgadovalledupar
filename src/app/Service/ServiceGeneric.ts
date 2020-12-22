@@ -45,7 +45,7 @@ export class ServicieGeneric{
     route: string,
     data: any,
     id: number = null,
-    method: 'post' | 'patch' | 'put',
+    method: 'post' | 'put' = 'post',
     qp: QueryParams = {}
   ): Observable<returnType> {
     const cfqu = this.correctFormatForQueryUrl(qp);

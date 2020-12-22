@@ -28,7 +28,8 @@ export class DespachoComponent implements OnInit {
 
 
   // private toastr: ToastrService,
-  constructor(private service: SnotifyService,
+  constructor(
+    private service: SnotifyService,
     private formBuilder: FormBuilder,
     private _servicioDespacho: DespachoService,
     private _ServcioEdificio: EdificioService,
