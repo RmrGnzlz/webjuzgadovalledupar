@@ -3,10 +3,10 @@ import { EdificioService } from './../../../Service/Edificio/edificio.service';
 import { DespachoService } from './../../../Service/despacho/despacho.service';
 import { Despacho, EstadoDespacho } from './../../../models/Despacho.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { Edificio } from 'src/app/models/Edificio.Model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Columns } from 'ngx-easy-table';
+import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';
 
 @Component({
   selector: 'app-despacho',
@@ -29,7 +29,7 @@ export class DespachoComponent implements OnInit {
 
   // private toastr: ToastrService,
   constructor(
-    private service: SnotifyService,
+    private notificacion: NotificacionServiceService,
     private formBuilder: FormBuilder,
     private _servicioDespacho: DespachoService,
     private _ServcioEdificio: EdificioService,
@@ -79,11 +79,6 @@ export class DespachoComponent implements OnInit {
 
     });
   }
-
-
-
-
-
   buildForm() {
     this.form = this.formBuilder.group({
       key: [''],
@@ -95,28 +90,19 @@ export class DespachoComponent implements OnInit {
   }
 
 
-  delete(element) {
-    this.service.error('Seguro desea borrar', element.nombre, {
-      timeout: 50000,
-      position: SnotifyPosition.rightTop,
-      showProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      buttons: [
-        { text: 'No', action: (toast) => this.service.remove(toast.id) },
-        {
-          text: 'Si', action: () =>
-          this._ServiceGeneric.getRemove<any>(element.key,'despacho',null,'delete')
-          .subscribe({
-            next:(p: unknown)=>{
-              this.service.success('Registro eliminado', 'INFORMACIÓN', { position: SnotifyPosition.rightTop });
-                this.loadDespachos();
-            },
-            error : console.error
-          })
+  async delete(element) {
+    var res=await this.notificacion.MensajeConfir(element.nombre);
+    if (res) {
+      this._ServiceGeneric.getRemove<any>(element.key,'despacho',null,'delete')
+      .subscribe({
+        next:(p: unknown)=>{
+          this.notificacion.MensajeSuccess
+            this.loadDespachos();
         },
-      ]
-    });
+        error : console.error
+      })
+    }
+
 
   }
 
@@ -139,11 +125,11 @@ export class DespachoComponent implements OnInit {
 
       this._ServiceGeneric.postPatch<any>('despacho',new Despacho(this.nombre.value,this.telefono.value,+this.estado.value,this.edificio.value),null,'post')
       .subscribe(res=>{
-        this.service.success('Registro exitoso', 'Información', { position: SnotifyPosition.rightTop });
+        this.notificacion.MensajeSuccess
         this.closeModal();
         this.loadDespachos();
       },
-      err=>this.service.error(err.error.mensaje, 'Información', { position: SnotifyPosition.rightTop }));
+      err=>this.notificacion.MensajeError);
 
     }
   }
@@ -156,21 +142,21 @@ export class DespachoComponent implements OnInit {
 
         this._ServiceGeneric.postPatch<any>('despacho',DespachoRequest,null,'put')
         .subscribe(res=>{
-          this.service.success('Actualizacion exitosa', 'Información', { position: SnotifyPosition.rightTop });
+          this.notificacion.MensajeSuccess
           this.closeModal();
           this.loadDespachos();
         },
-        err=>this.service.error(err.error.mensaje, 'Información', { position: SnotifyPosition.rightTop }));
+        err=>
+        this.notificacion.MensajeError
+        );
 
       }
-
-
   }
   validateForm(): boolean {
     if (this.form.valid) {
       return true;
     }
-    this.service.error('Datos inconsistentes...', 'Información', { position: SnotifyPosition.rightTop });
+    this.notificacion.MensajeError('Datos inconsistentes...', 'Información');
     return false;
   }
   closeModal() {

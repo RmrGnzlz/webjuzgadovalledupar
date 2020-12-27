@@ -7,6 +7,7 @@ import { EdificioService } from '../../../Service/Edificio/edificio.service';
 import { Edificio } from 'src/app/models/Edificio.Model';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { TipoSalaEnum,  SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
+import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';
 
 
 
@@ -35,9 +36,9 @@ export class SalaComponent implements OnInit {
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
-    private service: SnotifyService,
     private formBuilder: FormBuilder,
-    private _ServiceGeneric: ServicieGeneric) {
+    private _ServiceGeneric: ServicieGeneric,
+    private notificacion: NotificacionServiceService) {
   }
 
 
@@ -160,10 +161,8 @@ export class SalaComponent implements OnInit {
 
       });
   }
-
   Update() {
     if (this.validateForm) {
-
       if (this.tipo.value == TipoSalaEnum.Fisica) {
         // tslint:disable-next-line: max-line-length
         const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
@@ -179,26 +178,21 @@ export class SalaComponent implements OnInit {
       }
 
     }
-
-
   }
 
   PeticionPostYPut(sala: any, tipo: string, metodo: any) {
     // tslint:disable-next-line: max-line-length
     this._ServiceGeneric.postPatch<any>(`sala/${tipo}`, sala, null, metodo)
       .subscribe(res => {
-        this.service.success('Transacción exitosa', 'Información', { position: SnotifyPosition.rightTop });
+        this.notificacion.MensajeSuccess;
         this.closeModal();
         this.loadSala();
       },
-        err => this.service.error(err.error.mensaje, 'Información', { position: SnotifyPosition.rightTop }));
-
+        err => this.notificacion.MensajeError);
   }
 
   add() {
-
-    if (this.validateForm) {
-
+   if (this.validateForm) {
       if (this.tipo.value == TipoSalaEnum.Fisica) {
         // tslint:disable-next-line: max-line-length
         const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
@@ -210,36 +204,22 @@ export class SalaComponent implements OnInit {
         this.PeticionPostYPut(salaVirtual, 'virtual', 'post');
         return;
       }
-
     }
-
-
-
   }
 
-  delete(sala: any) {
-    this.service.error('Seguro desea borrar', sala.nombre, {
-      timeout: 50000,
-      position: SnotifyPosition.rightTop,
-      showProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      buttons: [
-        { text: 'No', action: (toast) => this.service.remove(toast.id) },
-        {
-          text: 'Si', action: () =>
-
-            this._ServiceGeneric.getRemove<any>(sala.key, 'sala', null, 'delete')
-              .subscribe({
-                next: (p: unknown) => {
-                  this.service.success('Registro eliminado', 'Información', { position: SnotifyPosition.rightTop });
-                  this.loadSala();
-                },
-                error: console.error
-              })
+  async delete(sala: any) {
+    var res=await this.notificacion.MensajeConfir(sala.nombre);
+    if (res) {
+      this._ServiceGeneric.getRemove<any>(sala.key, 'sala', null, 'delete')
+      .subscribe({
+        next: (p: unknown) => {
+          this.notificacion.MensajeSuccess("Registro eliminado","Exitoso")
+          this.loadSala();
         },
-      ]
-    });
+        error: console.error
+      })
+    }
+
   }
 
   validateForm(): boolean {
@@ -247,7 +227,7 @@ export class SalaComponent implements OnInit {
       // this.service.success('REGISTRO EXITOSO', 'Informacion', {position: SnotifyPosition.rightTop});
       return true;
     }
-    this.service.error('Datos inconsistentes...', 'Información', { position: SnotifyPosition.rightTop });
+    this.notificacion.MensajeError('Datos inconsistentes...', 'Información');
     return false;
   }
 
