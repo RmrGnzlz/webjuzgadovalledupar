@@ -18,6 +18,7 @@ import { LoginComponent } from './login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
+import { SolitudAnonimaComponent } from './solitud-anonima/solitud-anonima.component';
 
 
 
@@ -28,7 +29,8 @@ import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
   declarations: [
     AppComponent,
     NotFoundComponent,
-    LoginComponent
+    LoginComponent,
+    SolitudAnonimaComponent
 
 
 
