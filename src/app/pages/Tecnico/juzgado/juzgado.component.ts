@@ -112,6 +112,7 @@ export class JuzgadoComponent implements OnInit {
 
   async delete(element: any) {
   var res=await this.notificacion.MensajeConfir(element.nombre);
+
     if(res){
       this._ServiceGeneric.getRemove<any>(element.key, 'juzgado', null, 'delete')
       .subscribe({

@@ -57,34 +57,39 @@ export class SolitudAnonimaComponent implements OnInit {
     this.loadEnums();
   }
 
-  registrarPersona(): boolean{
+  SolicitarRespuesta(url:string, data:any){
+    let respuesta:boolean;
+    return new Promise(resolve=>{
+    this._ServiceGeneric.postPatch<any>(url,data)
+    .subscribe((res:any)=>{
+      resolve(res);
+      },err=>{resolve(false)});
+    });
+
+
+
+    return respuesta;
+  }
+
+ async registrarPersona(){
     let respuesta:boolean;
     if (this.personaForm.invalid) {
       this.notificacion.MensajeError('Formulario invalido','Información');
       return false;
     }
-    this._ServiceGeneric.postPatch<any>(`persona`,this.persona)
-    .subscribe((res:any)=>{
-      console.log(res);
-      respuesta= res.estado;
-    },err=>{respuesta=false;});
-    return respuesta;
+
+    return await this.SolicitarRespuesta(`persona`,this.persona);
+
   }
 
-  registrarSolicitud():boolean{
+  async registrarSolicitud(){
     let respuesta: boolean;
     if (this.solicitudForm.invalid) {
       this.notificacion.MensajeError('Formulario invalido','Información');
       return false;
     }
-    this.solicitudAudiencia.solicitante=this.persona.NumeroDocumento;
-    this._ServiceGeneric.postPatch<any>(`solicitud`,this.solicitudAudiencia)
-    .subscribe((res:any)=>{
-      this.solicitudAudiencia=res.data;
-      this.exitosa=true;
-      respuesta=res.estado;
-      },err=>{respuesta=false;});
-      return respuesta;
+    return await this.SolicitarRespuesta(`solicitud`,SolicitudAudienciaRequest);
+
   }
 
   loadEnums(){
@@ -155,20 +160,17 @@ export class SolitudAnonimaComponent implements OnInit {
 
       if (this.personaForm.invalid) {
         this.notificacion.MensajeError("Formulario invalidos","Error");
-        return true;
+        return false;
       }else{
 
-        let res=this.registrarPersona();
-        console.log("respuesta de persona "+res);
-
-        return  res;
+         return this.registrarPersona();
       }
     }
     if (args.fromStep.index==1 ) {
         console.log(this.solicitudForm);
       if (this.solicitudForm.invalid) {
         this.notificacion.MensajeError("Formulario invalidos","Error");
-        return true;
+        return false;
       }else{
         return this.registrarSolicitud();
       }

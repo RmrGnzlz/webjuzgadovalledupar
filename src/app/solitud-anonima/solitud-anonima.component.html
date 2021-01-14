@@ -338,8 +338,7 @@
                       id="inputTelefono"
                       #telefonoControl="ngModel"
                       required
-                      minlength="10"
-                      maxlength="10"
+                      mask="(000) 000 00 00"
                       (keypress)="onlyNumberKey($event)"
                     />
                     <span class="bar"></span>
@@ -353,14 +352,14 @@
                       >
                         <small class="text-danger"> Campo requerido </small>
                       </div>
-                      <div
+                      <!-- <div
                         *ngIf="telefonoControl.errors.minlength"
                         class="container-error-message"
                       >
                         <small class="text-danger">
                           Requerido 10 digitos
                         </small>
-                      </div>
+                      </div> -->
                     </ng-container>
                   </div>
                 </div>
@@ -418,9 +417,10 @@
                     id="cui"
                     placeholder="Código Único investigación"
                     required
-                    maxlength="21"
-                    minlength="21"
+
+                    mask="000 - 000 - 00 - 00000 - 0000 - 00000"
                   />
+                  {{solicitudAudiencia | json}}
                   <ng-container
                     *ngIf="cuiControl.invalid && cuiControl.touched"
                   >
@@ -430,18 +430,7 @@
                     >
                       <small class="text-danger"> Campo requerido </small>
                     </div>
-                    <div
-                    *ngIf="cuiControl.errors.minlength"
-                    class="container-error-message"
-                  >
-                    <small class="text-danger"> Minimo 10 digitos</small>
-                  </div>
-                  <div
-                    *ngIf="cuiControl.errors.maxlength"
-                    class="container-error-message"
-                  >
-                    <small class="text-danger"> Maximo 10 digitos</small>
-                  </div>
+
                   </ng-container>
 
                 </div>

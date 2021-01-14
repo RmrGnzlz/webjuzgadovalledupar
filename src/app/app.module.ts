@@ -23,6 +23,7 @@ import { SolitudAnonimaComponent } from './solitud-anonima/solitud-anonima.compo
 
 import { NgWizardModule, NgWizardConfig, THEME } from 'ng-wizard';
 import { SnotifyModule } from 'ng-snotify';
+import { NgxMaskModule } from 'ngx-mask';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.dots
@@ -42,6 +43,7 @@ const ngWizardConfig: NgWizardConfig = {
     PagesModule,
     AppRoutingModule,
     ServiceModule,
+    NgxMaskModule.forRoot(),
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
