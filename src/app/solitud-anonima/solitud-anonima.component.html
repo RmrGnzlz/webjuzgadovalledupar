@@ -1,87 +1,625 @@
+<ng-snotify></ng-snotify>
+
 <div class="container">
   <div class="row justify-content-center">
     <div class="card w-75 text-center">
       <div class="card-header">
         <div class="row justify-content-around">
-          <div class="col-6">
-            NUEVA SOLICITUD DE AUDIENCIA
-          </div>
-          <div class="col-4">
-           2020/02/02
-          </div>
+          <div class="col-6">NUEVA SOLICITUD DE AUDIENCIA</div>
+          <div class="col-4">{{ CurrentDate | date: "yyyy-MM-dd" }}</div>
         </div>
       </div>
-      <br>
+      <br />
       <div class="card-body">
-        <form class="form-horizontal p-t-20">
-            <div class="form-group row">
+        <ng-wizard [config]="config" (stepChanged)="stepChanged($event)">
+          <ng-wizard-step
+            [description]="'Datos Basicos'"
+            [canEnter]="isValidTypeBoolean"
+            [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+          >
+            <span>Datos basicos del solicitante</span>
+            <br />
+            <div class="row">
+              <div class="col-8">
+                <span
+                  ><strong>NOTA: </strong>El solicitante debe estar vinculado al
+                  proceso
+                </span>
+              </div>
+            </div>
+            <form class="floating-labels m-t-40" #personaForm="ngForm">
+              <div class="row">
+                <div class="col">
+                  <div class="form-group m-b-40">
+                    <select
+                      [(ngModel)]="persona.TipoDocumento"
+                      class="form-control p-0"
+                      id="TipoDocumento"
+                      name="TipoDocumento"
+                      required
+                      #TipoDocumentoControl="ngModel"
+                    >
+                      <option></option>
+                      <option>Cedula ciudadania</option>
+                      <option>Pasaporte</option></select
+                    ><span class="bar"></span>
+                    <label for="TipoDocumento">Tipo de documento</label>
+                    <ng-container
+                      *ngIf="
+                        TipoDocumentoControl.invalid &&
+                        TipoDocumentoControl.touched
+                      "
+                    >
+                      <div
+                        *ngIf="TipoDocumentoControl.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group m-b-40">
+                    <input
+                      [(ngModel)]="persona.NumeroDocumento"
+                      name="NumeroDocumento"
+                      type="text"
+                      class="form-control"
+                      id="NumeroDocumento"
+                      required
+                      minlength="8"
+                      maxlength="11"
+                      (keypress)="onlyNumberKey($event)"
+                      #NumeroDocumentoControl="ngModel"
+                    />
+                    <span class="bar"></span>
+                    <label for="NumeroDocumento">Numero documento</label>
+                    <ng-container
+                      *ngIf="
+                        NumeroDocumentoControl.invalid &&
+                        NumeroDocumentoControl.touched
+                      "
+                    >
+                      <div
+                        *ngIf="NumeroDocumentoControl.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                      <div
+                        *ngIf="NumeroDocumentoControl.errors.minlength"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Minimo 8 digitos</small>
+                      </div>
+                      <div
+                        *ngIf="NumeroDocumentoControl.errors.maxlength"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Maximo 11 digitos</small>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group m-b-40">
+                    <input
+                      type="date"
+                      [(ngModel)]="persona.ExpedicionDocumento"
+                      name="ExpedicionDocumento"
+                      class="form-control"
+                      id="ExpedicionDocumento"
+                      required
+                      minlength="3"
+                      #ExpedicionDocumentoControl="ngModel"
+                    />
+                    <span class="bar"></span>
+                    <label for="ExpedicionDocumento">Fecha expedición</label>
+                    <ng-container
+                      *ngIf="
+                        ExpedicionDocumentoControl.invalid &&
+                        ExpedicionDocumentoControl.touched
+                      "
+                    >
+                      <div
+                        *ngIf="ExpedicionDocumentoControl.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                      <div
+                        *ngIf="ExpedicionDocumentoControl.errors.minlength"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Minimo 3 caracteres </small>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">
+                  <div class="form-group m-b-40">
+                    <input
+                      type="text"
+                      [(ngModel)]="nombresYapellidos[0]"
+                      name="nombre1"
+                      class="form-control"
+                      id="nombre1"
+                      required
+                      minlength="3"
+                      #nombre1Control="ngModel"
+                      (blur)="
+                        nombresYapellidos[0] = nombresYapellidos[0].trim()
+                      "
+                    />
+                    <span class="bar"></span>
+                    <label for="nombre1">Primer Nombre*</label>
+                    <ng-container
+                      *ngIf="nombre1Control.invalid && nombre1Control.touched"
+                    >
+                      <div
+                        *ngIf="nombre1Control.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                      <div
+                        *ngIf="nombre1Control.errors.minlength"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Minimo 3 caracteres </small>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-group m-b-40">
+                    <input
+                      [(ngModel)]="nombresYapellidos[1]"
+                      name="nombre2"
+                      type="text"
+                      class="form-control"
+                      id="input2Nombre"
+                      (blur)="
+                        nombresYapellidos[1] = nombresYapellidos[1].trim()
+                      "
+                    />
+                    <label for="input2Nombre">Segundo Nombre</label>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-group m-b-40">
+                    <input
+                      [(ngModel)]="nombresYapellidos[2]"
+                      name="apellido1"
+                      type="text"
+                      class="form-control"
+                      id="input1Apellido"
+                      required
+                      minlength="3"
+                      #apellido1Control="ngModel"
+                      (blur)="
+                        nombresYapellidos[2] = nombresYapellidos[2].trim()
+                      "
+                    />
+                    <label for="input1Apellido">Primer Apellido</label>
+                    <ng-container
+                      *ngIf="
+                        apellido1Control.invalid && apellido1Control.touched
+                      "
+                    >
+                      <div
+                        *ngIf="apellido1Control.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                      <div
+                        *ngIf="apellido1Control.errors.minlength"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Minimo 3 caracteres </small>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-group m-b-40">
+                    <input
+                      [(ngModel)]="nombresYapellidos[3]"
+                      name="apellido2"
+                      type="text"
+                      class="form-control"
+                      id="input2Apellido"
+                      required
+                      minlength="3"
+                      #apellido2Control="ngModel"
+                      (blur)="
+                        nombresYapellidos[3] = nombresYapellidos[3].trim()
+                      "
+                    />
+                    <span class="bar"></span>
+                    <label for="input2Apellido">Segundo Apellido</label>
+                    <ng-container
+                      *ngIf="
+                        apellido2Control.invalid && apellido2Control.touched
+                      "
+                    >
+                      <div
+                        *ngIf="apellido2Control.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                      <div
+                        *ngIf="apellido2Control.errors.minlength"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Minimo 3 caracteres </small>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group m-b-40">
+                    <select
+                      required
+                      [(ngModel)]="persona.Nacionalidad"
+                      class="form-control p-0"
+                      id="inputNacionalidad"
+                      name="Nacionalidad"
+                      #nacionalidadControl="ngModel"
+                    >
+                      <option></option>
+                      <option>Colombiano</option>
+                      <option>Venezolano</option></select
+                    ><span class="bar"></span>
+                    <label for="inputNacionalidad">Nacionalidad</label>
+                    <ng-container
+                      *ngIf="
+                        nacionalidadControl.invalid &&
+                        nacionalidadControl.touched
+                      "
+                    >
+                      <div
+                        *ngIf="nacionalidadControl.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group m-b-40">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputDireccion"
+                      [(ngModel)]="persona.Dirrecion"
+                      name="Dirrecion"
+                      #direccionControl="ngModel"
+                      required
+                      minlength="5"
+                    />
+                    <span class="bar"></span>
+                    <label for="inputDireccion">Direccion Residencia</label>
+                    <ng-container
+                      *ngIf="
+                        direccionControl.invalid && direccionControl.touched
+                      "
+                    >
+                      <div
+                        *ngIf="direccionControl.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                      <div
+                        *ngIf="direccionControl.errors.minlength"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Minimo 5 caracteres </small>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group m-b-40">
+                    <input
+                      [(ngModel)]="persona.Telefono"
+                      name="Telefono"
+                      type="text"
+                      class="form-control"
+                      id="inputTelefono"
+                      #telefonoControl="ngModel"
+                      required
+                      minlength="10"
+                      maxlength="10"
+                      (keypress)="onlyNumberKey($event)"
+                    />
+                    <span class="bar"></span>
+                    <label for="inputTelefono">Telefono</label>
+                    <ng-container
+                      *ngIf="telefonoControl.invalid && telefonoControl.touched"
+                    >
+                      <div
+                        *ngIf="telefonoControl.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                      <div
+                        *ngIf="telefonoControl.errors.minlength"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger">
+                          Requerido 10 digitos
+                        </small>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group m-b-40">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputCorreo"
+                      [(ngModel)]="persona.Email"
+                      name="Email"
+                      #emailControl="ngModel"
+                      required
+                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+                    />
+                    <span class="bar"></span>
+                    <label for="inputCorreo">Correo</label>
+                    <ng-container
+                      *ngIf="emailControl.invalid && emailControl.touched"
+                    >
+                      <div
+                        *ngIf="emailControl.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                      <div
+                        *ngIf="emailControl.errors.pattern"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Correo invalido </small>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </ng-wizard-step>
 
-              <label for="exampleInputuname3" class="col-sm-3 control-label">C.U.I*</label>
-                <div class="col-sm-9">
-                    <div class="input-group">
-                        <div class="input-group-addon"><i class="ti-user"></i></div>
-                        <input type="text" class="form-control" id="exampleInputuname3" placeholder="Código Único investigación">
+          <ng-wizard-step
+          [description]="'Solicitud'"
+          [canEnter]="isValidTypeBoolean"
+          [canExit]="isValidFunctionReturnsBoolean.bind(this)">
+            <span>Step 2 content</span>
+            <form class="form-horizontal p-t-20" #solicitudForm="ngForm" >
+              <div class="form-group row">
+                <label class="control-label text-left col-md-3">C.U.I*</label>
+                <div class="col-md-9">
+                  <input
+                    type="text"
+                    [(ngModel)]="solicitudAudiencia.proceso"
+                    name="cui"
+                    #cuiControl="ngModel"
+                    class="form-control"
+                    id="cui"
+                    placeholder="Código Único investigación"
+                    required
+                    maxlength="21"
+                    minlength="21"
+                  />
+                  <ng-container
+                    *ngIf="cuiControl.invalid && cuiControl.touched"
+                  >
+                    <div
+                      *ngIf="cuiControl.errors.required"
+                      class="container-error-message"
+                    >
+                      <small class="text-danger"> Campo requerido </small>
                     </div>
+                    <div
+                    *ngIf="cuiControl.errors.minlength"
+                    class="container-error-message"
+                  >
+                    <small class="text-danger"> Minimo 10 digitos</small>
+                  </div>
+                  <div
+                    *ngIf="cuiControl.errors.maxlength"
+                    class="container-error-message"
+                  >
+                    <small class="text-danger"> Maximo 10 digitos</small>
+                  </div>
+                  </ng-container>
+
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="exampleInputEmail3" class="col-sm-3 control-label">Asunto*</label>
-                <div class="col-sm-9">
-                    <div class="input-group">
-                        <div class="input-group-addon"><i class="ti-email"></i></div>
-                        <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Enter email">
+              </div>
+
+              <div class="form-group row">
+
+                <label for="asunto" class="control-label text-left col-md-3"
+                  >Asunto*</label
+                >
+                <div class="col-md-9">
+                    <input
+                      type="email"
+                      [(ngModel)]="solicitudAudiencia.asunto"
+                      name="asunto"
+                      #asuntoControl="ngModel"
+                      required
+                      maxlength="40"
+                      minlength="5"
+                      class="form-control"
+                      id="asunto"
+                    />
+                    <ng-container
+                      *ngIf="asuntoControl.invalid && asuntoControl.touched"
+                    >
+                      <div
+                        *ngIf="asuntoControl.errors.required"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Campo requerido </small>
+                      </div>
+                      <div
+                        *ngIf="asuntoControl.errors.minlength"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Minimo 5 caracteres</small>
+                      </div>
+                      <div
+                        *ngIf="asuntoControl.errors.maxlength"
+                        class="container-error-message"
+                      >
+                        <small class="text-danger"> Maximo 40 caracteres</small>
+                      </div>
+                    </ng-container>
+
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="control-label text-left col-md-3"
+                  >Tipo solicitante*</label
+                >
+                <div class="col-md-9">
+                  <select
+                    [(ngModel)]="solicitudAudiencia.tipoSolicitante"
+                    #tipoControl="ngModel"
+                    name="tipo"
+                    id="tipo"
+                    class="form-control custom-select"
+                    required
+                  >
+                  <option value="">Selecione Tipo Solicitante</option>
+                  <option
+                  *ngFor="let item of tipoSujetoProcesales"
+                  [value]="item.key"
+                >
+                  {{ item.nombre }}
+                </option>
+                  </select>
+                  <ng-container
+                    *ngIf="tipoControl.invalid && tipoControl.touched"
+                  >
+                    <div
+                      *ngIf="tipoControl.errors.required"
+                      class="container-error-message"
+                    >
+                      <small class="text-danger"> Campo requerido </small>
                     </div>
+                  </ng-container>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="web" class="col-sm-3 control-label">Descripción</label>
-                <div class="col-sm-9">
-                    <div class="input-group">
-                        <div class="input-group-addon"><i class="ti-world"></i></div>
-                        <input type="text" class="form-control" id="web" placeholder="Enter Website Name">
+              </div>
+
+              <div class="form-group row">
+                <label for="descripcion" class="control-label text-left col-md-3"
+                  >Descripción</label
+                >
+                <div class="col-md-9">
+                    <textarea
+                      class="form-control"
+                      id="descripcion"
+                      rows="5"
+                      [(ngModel)]="solicitudAudiencia.descripcion"
+                      name="descripcion"
+                    ></textarea>
+                  </div>
+                </div>
+
+              <div class="form-group row">
+                <label for="documento" class="control-label text-left col-md-3"
+                  >Selecionar archivo PDF</label
+                >
+                <div class="col-md-9">
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      [(ngModel)]="solicitudAudiencia.archivo"
+                      name="archivo"
+                      #archivoControl="ngModel"
+                      class="form-control"
+                      id="documento"
+                      (change)="isPDF($event)"
+                    />
+                  </div>
+                </div>
+            </form>
+          </ng-wizard-step>
+
+          <ng-wizard-step
+            [description]="'Radicado'"
+            [canEnter]="isValidFunctionReturnsObservable.bind(this)"
+            [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+          >
+            <br><br>
+            <div class="container">
+              <div class="row">
+                  <div class="col align-self-center">
+                    <div class="card">
+                      <div class="card-body text-center">
+
+                     <div class="row">
+                       <div class="col text-left ">
+                          <img src="../../assets/images/logo-Rama-Judicial.png" alt="">
+                       </div>
+                       <div class="col-9 text-left">
+                        <div class="alert alert-success" role="alert" *ngIf="exitosa" >
+                          <div class="row">
+                            <label >Solicitud realizada satisfactoriamente, puede consultar su estado en nuestra plataforma con el radicado : <strong  class="alert-link">{{soliitudSudienciaResponse.radicado}}</strong></label>
+
+                          </div>
+                          <div class="form-group row justify-content-center">
+                            <div class="col-sm-4">
+                              <button type="button" class="btn btn-outline-dark">Imprimmir</button>
+                            </div>
+                            <div class="col-sm-4">
+                              <button type="button" class="btn btn-outline-danger" routerLink="/login">Finalizar</button>
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div class="alert alert-danger" role="alert" *ngIf="!exitosa">
+                          <div class="row">
+                            <label > <strong  class="alert-link">Ocurrió un problema al solicitar una nueva audiencia, inténtelo nuevamente </strong></label>
+
+                          </div>
+                          <div class="form-group row justify-content-center">
+
+                            <div class="col-sm-4">
+                              <button type="button" class="btn btn-outline-danger" routerLink="/login">Finalizar</button>
+                            </div>
+
+                          </div>
+                        </div>
+
+                       </div>
+                     </div>
+
+                      </div>
                     </div>
+                  </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="inputPassword4" class="col-sm-3 control-label">Password*</label>
-                <div class="col-sm-9">
-                    <div class="input-group">
-                        <div class="input-group-addon"><i class="ti-lock"></i></div>
-                        <input type="password" class="form-control" id="exampleInputpwd4" placeholder="Enter pwd">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="inputPassword5" class="col-sm-3 control-label">Re Password*</label>
-                <div class="col-sm-9">
-                    <div class="input-group">
-                        <div class="input-group-addon"><i class="ti-lock"></i></div>
-                        <input type="password" class="form-control" id="exampleInputpwd5" placeholder="Re Enter pwd">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="offset-sm-3 col-sm-9">
-                    <div class="checkbox checkbox-success">
-                        <input id="checkbox33" type="checkbox">
-                        <label for="checkbox33">Check me out !</label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row m-b-0">
-                <div class="offset-sm-3 col-sm-9">
-                    <button type="submit" class="btn btn-success waves-effect waves-light">Sign in</button>
-                </div>
-            </div>
-        </form>
-    </div>
-      <div class="card-footer text-muted">
-        2 days ago
+              </div>
+
+
+          </ng-wizard-step>
+        </ng-wizard>
       </div>
+      <div class="card-footer text-muted">2 days ago</div>
     </div>
-
   </div>
-
 </div>
-
-

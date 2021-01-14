@@ -34,7 +34,6 @@ export class JuzgadoComponent implements OnInit {
 
 
   constructor(
-    private service: SnotifyService,
     private formBuilder: FormBuilder,
     private _ServiceGeneric: ServicieGeneric,
     private notificacion: NotificacionServiceService

@@ -21,7 +21,12 @@ import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
 import { SolitudAnonimaComponent } from './solitud-anonima/solitud-anonima.component';
 
 
+import { NgWizardModule, NgWizardConfig, THEME } from 'ng-wizard';
+import { SnotifyModule } from 'ng-snotify';
 
+const ngWizardConfig: NgWizardConfig = {
+  theme: THEME.dots
+};
 
 
 
@@ -31,12 +36,8 @@ import { SolitudAnonimaComponent } from './solitud-anonima/solitud-anonima.compo
     NotFoundComponent,
     LoginComponent,
     SolitudAnonimaComponent
-
-
-
   ],
   imports: [
-
     BrowserModule,
     PagesModule,
     AppRoutingModule,
@@ -45,7 +46,9 @@ import { SolitudAnonimaComponent } from './solitud-anonima/solitud-anonima.compo
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    RxReactiveFormsModule
+    RxReactiveFormsModule,
+    NgWizardModule.forRoot(ngWizardConfig),
+    SnotifyModule.forRoot(),
 
     // SharedModule
   ],
