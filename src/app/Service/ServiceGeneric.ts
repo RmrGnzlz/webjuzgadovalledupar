@@ -30,7 +30,7 @@ export class ServicieGeneric{
   }
 
   getRemove<returnType>(
-    id: number | null,
+    id: string | null,
     route: string,
     qp: QueryParams = {},
     method: 'get' | 'delete' = 'get'

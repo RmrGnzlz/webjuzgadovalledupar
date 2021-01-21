@@ -5,8 +5,9 @@ import { NgWizardConfig, NgWizardService, StepChangedArgs, StepValidationArgs, S
 import { of, Observable } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { NotificacionServiceService } from '../utils/notificacion-service.service';
-import { SolicitudAudiencia, SolicitudAudienciaRequest } from '../models/SolicitudAudiencia';
+import { SolicitudAudienciaResponse, SolicitudAudienciaRequest } from '../models/SolicitudAudiencia';
 import { ServicieGeneric } from '../Service/service.index';
+import { TipoDocumentos } from '../models/Enums/DocumentosValidosEnum';
 
 
 @Component({
@@ -16,15 +17,17 @@ import { ServicieGeneric } from '../Service/service.index';
 })
 export class SolitudAnonimaComponent implements OnInit {
 
-  @ViewChild('personaForm',{static:false})personaForm: NgForm;
-  @ViewChild('solicitudForm',{static:false})solicitudForm: NgForm;
+  @ViewChild('personaForm', { static: false }) personaForm: NgForm;
+  @ViewChild('solicitudForm', { static: false }) solicitudForm: NgForm;
 
   persona = new Persona();
   solicitudAudiencia= new SolicitudAudienciaRequest();
-  soliitudSudienciaResponse= new SolicitudAudiencia();
-  nombresYapellidos:string[]=["","","",""];
-  tipoSujetoProcesales:any[]=[];
-  exitosa=false;
+  soliitudSudienciaResponse = new SolicitudAudienciaResponse();
+  nombresYapellidos: string[] = ["", "", "", ""];
+  tipoSujetoProcesales: any[] = [];
+  tipoDocumentos:any[]=[];
+  exitosa = false;
+
 
   stepStates = {
     normal: STEP_STATE.normal,
@@ -37,11 +40,11 @@ export class SolitudAnonimaComponent implements OnInit {
   config: NgWizardConfig = {
     selected: 0,
     theme: THEME.dots,
-    toolbarSettings:{
-      showPreviousButton:false
+    toolbarSettings: {
+      showPreviousButton: false
     },
-    lang:{
-      next:"Siguiente"
+    lang: {
+      next: "Siguiente"
     }
   };
 
@@ -57,69 +60,114 @@ export class SolitudAnonimaComponent implements OnInit {
     this.loadEnums();
   }
 
-  SolicitarRespuesta(url:string, data:any){
-    let respuesta:boolean;
-    return new Promise(resolve=>{
-    this._ServiceGeneric.postPatch<any>(url,data)
-    .subscribe((res:any)=>{
-      resolve(res);
-      },err=>{resolve(false)});
+  SolicitarRespuesta(url: string, data: any): Promise<any> {
+    console.log(data);
+
+    return new Promise((resolve, reject) => {
+      this._ServiceGeneric.postPatch<any>(url, data)
+        .subscribe((res: any) => {
+          resolve(res);
+        }, err => { reject(false) });
     });
 
-
-
-    return respuesta;
   }
 
- async registrarPersona(){
-    let respuesta:boolean;
-    if (this.personaForm.invalid) {
-      this.notificacion.MensajeError('Formulario invalido','Información');
-      return false;
-    }
-
-    return await this.SolicitarRespuesta(`persona`,this.persona);
-
+  emularPersona(persona:Persona):Promise<any>{
+    const exitoso=false;
+    return new Promise((resolve,reject)=>{
+      if (exitoso) {
+        resolve(true);
+      }else{
+        resolve(false)
+      }
+    })
   }
 
-  async registrarSolicitud(){
+
+  async registrarSolicitudYPersona() {
     let respuesta: boolean;
-    if (this.solicitudForm.invalid) {
-      this.notificacion.MensajeError('Formulario invalido','Información');
-      return false;
+    if (this.solicitudForm.invalid || this.personaForm.invalid) {
+      this.notificacion.MensajeError('se detectaron errores en los formularios', 'Error');
+      this.exitosa=false;
+      return ;
     }
-    return await this.SolicitarRespuesta(`solicitud`,SolicitudAudienciaRequest);
 
+    //mando el true para que pueda pasar al final de paso
+    //await this.SolicitarRespuesta(`persona`, this.persona).then(res => respuesta = true, err => respuesta = false);
+     await this.emularPersona(this.persona).then(res => respuesta = true, err => respuesta = false);
+     console.log("hola ya pase");
+
+    if (!respuesta) {
+      this.exitosa=false;
+      return ;
+    }
+  this.solicitudAudiencia.solicitante=this.persona.numeroDocumento;
+
+    console.log(this.solicitudAudiencia);
+    console.log(this.solicitudAudiencia.proceso);
+
+
+    await this.SolicitarRespuesta(`solicitud`, this.crearFormData(this.solicitudAudiencia))
+      .then(res => {
+        respuesta = true;
+        this.soliitudSudienciaResponse = res.data;
+        this.exitosa = true;
+      },
+        err => { respuesta = true; });
+    return ;
   }
 
-  loadEnums(){
+  loadEnums() {
     for (const item in SujetosProcesales) {
       if (isNaN(Number(item))) {
         this.tipoSujetoProcesales.push({ nombre: item, key: SujetosProcesales[item] });
       }
     }
+
+    for (const item in TipoDocumentos) {
+      if (isNaN(Number(item))) {
+        this.tipoDocumentos.push({ nombre: item, key: TipoDocumentos[item] });
+      }
+    }
+
+
   }
 
-    isPDF(evento){
+  isPDF(evento) {
 
-      let archivo: File=evento.target.files[0];
-      console.log(archivo);
-      if (!archivo) {
-        return;
-      }
-      if (archivo.type.indexOf('pdf')<0) {
-
-        this.solicitudForm.controls['archivo'].setErrors({'incorrect': true});
-        evento.srcElement.value = null;
-        this.notificacion.MensajeInfo("Solo se aceptan PDF","Error");
-      }
+    let archivo: File = evento.target.files[0];
+    console.log(archivo);
+    if (!archivo) {
       return;
     }
+    if (archivo.type.indexOf('pdf') < 0) {
+
+      this.solicitudForm.controls['archivo'].setErrors({ 'incorrect': true });
+      evento.srcElement.value = null;
+      this.notificacion.MensajeInfo("Solo se aceptan PDF", "Error");
+    }
+    this.solicitudAudiencia.archivo=archivo;
+    return;
+  }
 
   onlyNumberKey(event) {
     return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57;
   }
 
+  crearFormData(solicitud:SolicitudAudienciaRequest):FormData{
+
+    console.log(solicitud);
+
+    const formdata = new FormData();
+    formdata.append('proceso',solicitud.proceso);
+    formdata.append('solicitante',solicitud.solicitante);
+    formdata.append('asunto',solicitud.asunto);
+    formdata.append('archivo',solicitud.archivo);
+    formdata.append('descripcion',solicitud.descripcion);
+    formdata.append('tipoSolicitante',  SujetosProcesales[solicitud.tipoSolicitante]);
+
+    return formdata;
+  }
 
   //METODOS PARA EL PASO A PASO ->
   showPreviousStep(event?: Event) {
@@ -155,24 +203,21 @@ export class SolitudAnonimaComponent implements OnInit {
 
   isValidFunctionReturnsBoolean(args: StepValidationArgs) {
 
-    console.log(args);
-    if (args.fromStep.index==0 ) {
-
+    if (args.fromStep.index == 0) {
       if (this.personaForm.invalid) {
-        this.notificacion.MensajeError("Formulario invalidos","Error");
+        this.notificacion.MensajeError("Formulario invalidos", "Error");
         return false;
-      }else{
-
-         return this.registrarPersona();
-      }
+      }else return true;
     }
-    if (args.fromStep.index==1 ) {
-        console.log(this.solicitudForm);
+
+    if (args.fromStep.index == 1) {
+      console.log(this.solicitudForm);
       if (this.solicitudForm.invalid) {
-        this.notificacion.MensajeError("Formulario invalidos","Error");
+        this.notificacion.MensajeError("Formulario invalidos", "Error");
         return false;
-      }else{
-        return this.registrarSolicitud();
+      } else {
+        this.registrarSolicitudYPersona();
+        return true;
       }
     }
 
@@ -184,31 +229,5 @@ export class SolitudAnonimaComponent implements OnInit {
     return of(true);
   }
 
-  emularPersona():Observable<any>{
-
-    let  p = new Persona();
-    p.NumeroDocumento="34343434";
-
-    let persona:any={
-      estado:true,
-      mensaje:"excelente",
-      data:p
-    }
-
-    return of(persona)
-  }
-
-  emularSolicitud():Observable<any>{
-    let s = new SolicitudAudiencia();
-    s.radicado="8873848347384734";
-    let solicitud:any={
-      estado:true,
-      mensaje:"excelente",
-      data:s
-    }
-
-    return of(solicitud);
-
-  }
 
 }

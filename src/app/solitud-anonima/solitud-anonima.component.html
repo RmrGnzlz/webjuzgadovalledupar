@@ -27,23 +27,29 @@
                 </span>
               </div>
             </div>
-            <form class="floating-labels m-t-40" #personaForm="ngForm">
+            <br><br>
+            <form  #personaForm="ngForm">
               <div class="row">
                 <div class="col">
                   <div class="form-group m-b-40">
+                    <label for="TipoDocumento" >Tipo de documento</label>
                     <select
-                      [(ngModel)]="persona.TipoDocumento"
-                      class="form-control p-0"
+                      [(ngModel)]="persona.tipoDocumento"
+                      class="form-control custom-select p-0"
                       id="TipoDocumento"
                       name="TipoDocumento"
                       required
                       #TipoDocumentoControl="ngModel"
                     >
-                      <option></option>
-                      <option>Cedula ciudadania</option>
-                      <option>Pasaporte</option></select
-                    ><span class="bar"></span>
-                    <label for="TipoDocumento">Tipo de documento</label>
+                    <option value="">Selecione Tipo Solicitante</option>
+                    <option
+                    *ngFor="let item of tipoDocumentos"
+                    [value]="item.key"
+                  >
+                    {{ item.key }}
+                  </option>
+                      </select
+                    >
                     <ng-container
                       *ngIf="
                         TipoDocumentoControl.invalid &&
@@ -61,8 +67,9 @@
                 </div>
                 <div class="col">
                   <div class="form-group m-b-40">
+                    <label for="NumeroDocumento">Numero documento</label>
                     <input
-                      [(ngModel)]="persona.NumeroDocumento"
+                      [(ngModel)]="persona.numeroDocumento"
                       name="NumeroDocumento"
                       type="text"
                       class="form-control"
@@ -73,8 +80,6 @@
                       (keypress)="onlyNumberKey($event)"
                       #NumeroDocumentoControl="ngModel"
                     />
-                    <span class="bar"></span>
-                    <label for="NumeroDocumento">Numero documento</label>
                     <ng-container
                       *ngIf="
                         NumeroDocumentoControl.invalid &&
@@ -104,9 +109,10 @@
                 </div>
                 <div class="col">
                   <div class="form-group m-b-40">
+                    <label for="ExpedicionDocumento">Fecha expedición</label>
                     <input
                       type="date"
-                      [(ngModel)]="persona.ExpedicionDocumento"
+                      [(ngModel)]="persona.expedicionDocumento"
                       name="ExpedicionDocumento"
                       class="form-control"
                       id="ExpedicionDocumento"
@@ -114,8 +120,6 @@
                       minlength="3"
                       #ExpedicionDocumentoControl="ngModel"
                     />
-                    <span class="bar"></span>
-                    <label for="ExpedicionDocumento">Fecha expedición</label>
                     <ng-container
                       *ngIf="
                         ExpedicionDocumentoControl.invalid &&
@@ -141,6 +145,7 @@
               <div class="row">
                 <div class="col-3">
                   <div class="form-group m-b-40">
+                    <label for="nombre1">Primer Nombre*</label>
                     <input
                       type="text"
                       [(ngModel)]="nombresYapellidos[0]"
@@ -154,8 +159,6 @@
                         nombresYapellidos[0] = nombresYapellidos[0].trim()
                       "
                     />
-                    <span class="bar"></span>
-                    <label for="nombre1">Primer Nombre*</label>
                     <ng-container
                       *ngIf="nombre1Control.invalid && nombre1Control.touched"
                     >
@@ -176,6 +179,7 @@
                 </div>
                 <div class="col-3">
                   <div class="form-group m-b-40">
+                    <label for="input2Nombre">Segundo Nombre</label>
                     <input
                       [(ngModel)]="nombresYapellidos[1]"
                       name="nombre2"
@@ -186,11 +190,11 @@
                         nombresYapellidos[1] = nombresYapellidos[1].trim()
                       "
                     />
-                    <label for="input2Nombre">Segundo Nombre</label>
                   </div>
                 </div>
                 <div class="col-3">
                   <div class="form-group m-b-40">
+                    <label for="input1Apellido">Primer Apellido</label>
                     <input
                       [(ngModel)]="nombresYapellidos[2]"
                       name="apellido1"
@@ -204,7 +208,6 @@
                         nombresYapellidos[2] = nombresYapellidos[2].trim()
                       "
                     />
-                    <label for="input1Apellido">Primer Apellido</label>
                     <ng-container
                       *ngIf="
                         apellido1Control.invalid && apellido1Control.touched
@@ -227,6 +230,7 @@
                 </div>
                 <div class="col-3">
                   <div class="form-group m-b-40">
+                    <label for="input2Apellido">Segundo Apellido</label>
                     <input
                       [(ngModel)]="nombresYapellidos[3]"
                       name="apellido2"
@@ -240,8 +244,6 @@
                         nombresYapellidos[3] = nombresYapellidos[3].trim()
                       "
                     />
-                    <span class="bar"></span>
-                    <label for="input2Apellido">Segundo Apellido</label>
                     <ng-container
                       *ngIf="
                         apellido2Control.invalid && apellido2Control.touched
@@ -266,9 +268,10 @@
               <div class="row">
                 <div class="col">
                   <div class="form-group m-b-40">
+                    <label for="inputNacionalidad">Nacionalidad</label>
                     <select
                       required
-                      [(ngModel)]="persona.Nacionalidad"
+                      [(ngModel)]="persona.nacionalidad"
                       class="form-control p-0"
                       id="inputNacionalidad"
                       name="Nacionalidad"
@@ -277,8 +280,7 @@
                       <option></option>
                       <option>Colombiano</option>
                       <option>Venezolano</option></select
-                    ><span class="bar"></span>
-                    <label for="inputNacionalidad">Nacionalidad</label>
+                    >
                     <ng-container
                       *ngIf="
                         nacionalidadControl.invalid &&
@@ -296,18 +298,17 @@
                 </div>
                 <div class="col">
                   <div class="form-group m-b-40">
+                    <label for="inputDireccion">Direccion Residencia</label>
                     <input
                       type="text"
                       class="form-control"
                       id="inputDireccion"
-                      [(ngModel)]="persona.Dirrecion"
+                      [(ngModel)]="persona.dirrecion"
                       name="Dirrecion"
                       #direccionControl="ngModel"
                       required
                       minlength="5"
                     />
-                    <span class="bar"></span>
-                    <label for="inputDireccion">Direccion Residencia</label>
                     <ng-container
                       *ngIf="
                         direccionControl.invalid && direccionControl.touched
@@ -330,8 +331,9 @@
                 </div>
                 <div class="col">
                   <div class="form-group m-b-40">
+                    <label for="inputTelefono">Telefono</label>
                     <input
-                      [(ngModel)]="persona.Telefono"
+                      [(ngModel)]="persona.telefono"
                       name="Telefono"
                       type="text"
                       class="form-control"
@@ -341,8 +343,6 @@
                       mask="(000) 000 00 00"
                       (keypress)="onlyNumberKey($event)"
                     />
-                    <span class="bar"></span>
-                    <label for="inputTelefono">Telefono</label>
                     <ng-container
                       *ngIf="telefonoControl.invalid && telefonoControl.touched"
                     >
@@ -365,18 +365,17 @@
                 </div>
                 <div class="col">
                   <div class="form-group m-b-40">
+                    <label for="inputCorreo">Correo</label>
                     <input
                       type="text"
                       class="form-control"
                       id="inputCorreo"
-                      [(ngModel)]="persona.Email"
+                      [(ngModel)]="persona.email"
                       name="Email"
                       #emailControl="ngModel"
                       required
                       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
                     />
-                    <span class="bar"></span>
-                    <label for="inputCorreo">Correo</label>
                     <ng-container
                       *ngIf="emailControl.invalid && emailControl.touched"
                     >

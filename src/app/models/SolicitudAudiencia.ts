@@ -5,7 +5,7 @@ import { NovedadSolicitud } from './NovedadSolicitud';
 import { Archivo } from './Archivo';
 import { EstadoSolicitud } from './Enums/EstadoSolicitudEnum';
 import { Proceso } from './Proceso';
-export class SolicitudAudiencia extends BaseModel{
+export class SolicitudAudienciaResponse extends BaseModel{
 
   public radicado:string;
   public asunto:string;
@@ -13,13 +13,13 @@ export class SolicitudAudiencia extends BaseModel{
   public creacion:string;
   public tipoSolicitante: SujetosProcesales;
   public procesoKey:number;
-  public proceso:Proceso | string;
+  public proceso:Proceso ;
   public solicitanteKey:number;
   public solicitante: Persona;
   public novedadSolicitud: NovedadSolicitud[];
-  public archivo: Archivo | File;
+  public archivo: Archivo ;
   public audienciaItems: any;
-  public estadoSolicitud:EstadoSolicitud;
+  public estado:EstadoSolicitud;
 
 }
 export class SolicitudAudienciaRequest {

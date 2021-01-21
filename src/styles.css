@@ -11,9 +11,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   border: solid 2px lightcoral;
 }
 
-.container-error-message{
 
-}
 
 .alert-danger{
   color: #721c24;
@@ -21,3 +19,5 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   border-color: #f5c6cb;
   margin-bottom: 5px;
 }
+
+
