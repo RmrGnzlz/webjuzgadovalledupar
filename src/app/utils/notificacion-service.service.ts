@@ -12,15 +12,15 @@ export class NotificacionServiceService {
   public MensajeSuccess(descripcion="Transacción exitosa",title="Exitoso!!"){
     console.log("hola");
 
-    this.service.success(descripcion, title, { position: SnotifyPosition.rightTop });
+    this.service.success(descripcion, title, { position: SnotifyPosition.rightTop, titleMaxLength:title.length,bodyMaxLength:descripcion.length });
   }
 
   public MensajeInfo(descripcion="",title="Información!!"){
-    this.service.info(descripcion, title, { position: SnotifyPosition.rightTop });
+    this.service.info(descripcion, title, { position: SnotifyPosition.rightTop,titleMaxLength:title.length,bodyMaxLength:descripcion.length });
   }
 
   public MensajeError(descripcion="Ocurrio un error",title="Error!!"){
-    this.service.error(descripcion, title, { position: SnotifyPosition.rightTop });
+    this.service.error(descripcion, title, { position: SnotifyPosition.rightTop,titleMaxLength:title.length,bodyMaxLength:descripcion.length });
   }
 
   public MensajeConfir(elemento:string){

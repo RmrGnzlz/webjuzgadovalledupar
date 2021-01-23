@@ -1,6 +1,7 @@
 export class ResponseHttp {
 	constructor(
-		public mensaje?: string,
-		public data?: Object
+		public message?: string,
+    public data?: Object,
+    public state?:boolean
 	) { }
 }

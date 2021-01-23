@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // RUTAS
 import { AppRoutingModule } from './app-routing.module';
@@ -25,6 +25,7 @@ import { NgWizardModule, NgWizardConfig, THEME } from 'ng-wizard';
 import { SnotifyModule } from 'ng-snotify';
 import { NgxMaskModule } from 'ngx-mask';
 import { ConsultarSolicitudComponent } from './consultar-solicitud/consultar-solicitud.component';
+import { InterceptorService } from './Service/Interceptors/interceptor.service';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.dots
@@ -60,7 +61,11 @@ const ngWizardConfig: NgWizardConfig = {
 
   ],
   providers: [
-
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptorService,
+      multi:true
+    }
   ],
   bootstrap: [AppComponent]
 })
