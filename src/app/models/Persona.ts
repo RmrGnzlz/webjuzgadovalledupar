@@ -5,7 +5,7 @@ export class Persona extends BaseModel{
   public numeroDocumento:string;
   public tipoDocumento: string;
   public nombre: string;
-  public dirrecion: string;
+  public direccion: string;
   public expedicionDocumento: string;
   public telefono: string;
   public email: string;

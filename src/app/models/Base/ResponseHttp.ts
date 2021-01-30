@@ -1,7 +1,7 @@
-export class ResponseHttp {
+export class ResponseHttp<T> {
 	constructor(
 		public message?: string,
-    public data?: Object,
+    public data?: T | Array<T>,
     public state?:boolean
 	) { }
 }

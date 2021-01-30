@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 
-import { UsuarioComponent } from './usuario/usuario.component';
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PruebaComponent } from './prueba/prueba.component';
@@ -16,21 +15,24 @@ import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 import { JuzgadoComponent } from './Tecnico/juzgado/juzgado.component';
 
 import { NgWizardModule, NgWizardConfig, THEME } from 'ng-wizard';
+import { RegistroEmpleadoComponent } from './Tecnico/empleado/registro-empleado/registro-empleado.component';
+import { ListadoEmpleadoComponent } from './Tecnico/empleado/listado-empleado/listado-empleado.component';
 
 const ngWizardConfig: NgWizardConfig = {
-  theme: THEME.dots
+  theme: THEME.circles
 };
 
 
 @NgModule({
   declarations: [
     PagesComponent,
-    UsuarioComponent,
     DashboardComponent,
     PruebaComponent,
     SalaComponent,
     DespachoComponent,
     JuzgadoComponent,
+    RegistroEmpleadoComponent,
+    ListadoEmpleadoComponent
   ],
   imports: [
     CommonModule,

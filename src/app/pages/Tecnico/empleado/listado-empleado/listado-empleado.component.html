@@ -1,0 +1,331 @@
+<ng-snotify></ng-snotify>
+
+<app-tabla [Data]="listaEmpleado" [Columns]="Columns">
+  <button
+    routerLink="/empleado"
+    type="button"
+    class="btn btn-outline-info text-right"
+  >
+    <i class="fa fa-plus-square"></i> Registrar Empleado
+  </button>
+</app-tabla>
+
+<ng-template #estadoTpl let-row let-rowIndex="rowIndex">
+  <label>
+    <div class="switch">
+      <label>
+        <input
+          type="checkbox"
+          [checked]="row.estado"
+          (click)="updateState(row)"
+        />
+        <span class="lever switch-col-cyan"></span>
+      </label>
+    </div>
+  </label>
+</ng-template>
+
+<ng-template #rolTpl let-row let-rowIndex="rowIndex">
+  <div class="row">
+    <div class="col">
+      <label>
+        <span class="lever switch-col-cyan">{{ RolEmpleado(row.rol) }}</span>
+      </label>
+    </div>
+    <div class="col" *ngIf="row.rol == 2">
+      <button
+        type="button"
+        data-toggle="modal"
+        data-target=".bd-example-modal-permiso"
+        class="btn btn-primary btn-circle"
+      >
+        <i class="fa fa-list"></i>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- BOTTONES DE OPCIONES -->
+<ng-template #actionTpl let-row let-rowIndex="rowIndex">
+  <div>
+    <button
+      data-toggle="modal"
+      data-target=".bd-example-modal-lg"
+      class="btn btn-outline-info"
+      (click)="showEmpleado(row)"
+    >
+      <i class="fa fa-eye"></i>
+    </button>
+
+    <button
+      class="btn waves-effect waves-light btn-outline-danger"
+      (click)="delete(row)"
+    >
+      <i class="fa fa-trash-o"></i>
+    </button>
+  </div>
+</ng-template>
+
+<!-- MODAL PERMISO -->
+<div
+  class="modal fade bd-example-modal-permiso"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myLargeModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <h1>Update Permisos</h1>
+    </div>
+  </div>
+</div>
+<!-- FIN MODAL PERMISO -->
+
+<!-- MODAL UPDATE OR VIEW -->
+<div
+  class="modal fade bd-example-modal-lg"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myLargeModalLabel"
+  aria-hidden="true"
+  data-keyboard="false"
+  data-backdrop="static"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-header bg-info">
+              <h4 class="m-b-0 text-white">Información Completa</h4>
+            </div>
+            <div class="card-body">
+              <form class="form-horizontal" [formGroup]="formEdit">
+                <div class="form-body">
+                  <h3 class="box-title">Datos personales</h3>
+                  <hr class="m-t-0 m-b-40" />
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-3"
+                          >Nombre:</label
+                        >
+                        <div class="">
+                          <p class="form-control-static">
+                            {{ empleado.persona.nombre }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-5"
+                          >Tipo Documento:</label
+                        >
+                        <div class="col-7">
+                          <p class="form-control-static">
+                            {{ empleado.persona?.tipoDocumento }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+                  <!--/row-->
+
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-4"
+                          >Documento:</label
+                        >
+                        <div>
+                          <p class="form-control-static">
+                            {{ empleado.persona?.numeroDocumento }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-5"
+                          >Fecha Expedicion:</label
+                        >
+                        <div class="col-7">
+                          <p class="form-control-static">
+                            {{ empleado.persona?.expedicionDocumento }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-md-3"
+                          >Telefono:</label
+                        >
+                        <div class="">
+                          <input
+                            class="form-control-static"
+                            type="text"
+                            name="telefono"
+                            minlength="10"
+                            maxlength="10"
+                            required
+                            formControlName="telefono"
+                            (keypress)="onlyNumberKey($event)"
+
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-md-3"
+                          >Direción:
+                        </label>
+                        <div class="">
+                          <input
+                            class="form-control-static"
+                            type="text"
+                            formControlName="direccion"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+                  <!--/row-->
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-md-3"
+                          >Correo:</label
+                        >
+                        <div class="col-md-9">
+                          <input
+                            class="form-control-static"
+                            type="email"
+                            formControlName="email"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-md-4"
+                          >Nacionalidad:</label
+                        >
+                        <div class="col-md-8">
+                          <p class="form-control-static">
+                            {{ empleado.persona?.nacionalidad }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+                  <!--/row-->
+                  <h3 class="box-title">Credenciales</h3>
+                  <hr class="m-t-0 m-b-40" />
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-md-3"
+                          >Usuario:</label
+                        >
+                        <div class="col-md-9">
+                          <p class="form-control-static">
+                            {{ empleado.usuario }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-md-3"
+                          >Estado:</label
+                        >
+                        <div class="col-md-9">
+                          <p class="form-control-static">
+                            {{ stateEmpleado(empleado.estado) }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-4"
+                          >Inicio Cargo:</label
+                        >
+                        <div class="col-md-7">
+                          <p class="form-control-static">
+                            {{ empleado.inicioCargo }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-4"
+                          >Finalización Cargo:</label
+                        >
+                        <div class="col-8">
+                          <input
+                            class="form-control-static"
+                            type="date"
+                            formControlName="fechaFinalizacion"
+
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="col-md-offset-3 col-md-9">
+                          <button type="submit" class="btn btn-danger"(click)="UpdatePersonaYEmpleado()" >
+                            <i class="fa fa-pencil"></i> Editar
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-inverse"
+                            data-dismiss="modal"
+                            #botonCerrar
+                          >
+                            Salir
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6"></div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -21,14 +21,18 @@ import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
 import { SolitudAnonimaComponent } from './solitud-anonima/solitud-anonima.component';
 
 
-import { NgWizardModule, NgWizardConfig, THEME } from 'ng-wizard';
+import { NgWizardModule, NgWizardConfig, THEME, TOOLBAR_POSITION } from 'ng-wizard';
 import { SnotifyModule } from 'ng-snotify';
 import { NgxMaskModule } from 'ngx-mask';
 import { ConsultarSolicitudComponent } from './consultar-solicitud/consultar-solicitud.component';
 import { InterceptorService } from './Service/Interceptors/interceptor.service';
 
 const ngWizardConfig: NgWizardConfig = {
-  theme: THEME.dots
+  theme: THEME.circles,
+  lang: {
+    next: "Siguiente",
+    previous:"Anterior"
+  },
 };
 
 
@@ -39,7 +43,7 @@ const ngWizardConfig: NgWizardConfig = {
     NotFoundComponent,
     LoginComponent,
     SolitudAnonimaComponent,
-    ConsultarSolicitudComponent
+    ConsultarSolicitudComponent,
   ],
   imports: [
     BrowserModule,

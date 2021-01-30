@@ -8,6 +8,7 @@ import { Edificio } from 'src/app/models/Edificio.Model';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { TipoSalaEnum,  SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
 import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';
+import { ResponseHttp } from '../../../models/Base/ResponseHttp';
 
 
 
@@ -46,14 +47,8 @@ export class SalaComponent implements OnInit {
 
   ngOnInit() {
 
-    this._ServiceGeneric.getRemove<Edificio[]>(null, 'edificio')
-    .subscribe({
-      next: (res: any) => {
-        this.ListaEdificios = res.data;
-      },
-      error: console.error
-
-    });
+    this._ServiceGeneric.getRemove<ResponseHttp<Edificio>>(null, 'edificio')
+    .subscribe(res=>this.ListaEdificios=res.data as Edificio[]);
 
     this.buildForm();
     this.setSalaTipoValidator();

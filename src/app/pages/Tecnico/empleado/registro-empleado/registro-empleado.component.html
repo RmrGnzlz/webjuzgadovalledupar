@@ -1,38 +1,89 @@
 <ng-snotify></ng-snotify>
 
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="card w-75 text-center">
-      <div class="card-header">
-        <div class="row justify-content-around">
-          <div class="col-6">NUEVA SOLICITUD DE AUDIENCIA</div>
-          <div class="col-4">{{ CurrentDate | date: "yyyy-MM-dd" }}</div>
-        </div>
-      </div>
-      <br />
+<div class="row">
+  <div class="col-12">
+    <div class="card">
       <div class="card-body">
-        <ng-wizard [config]="config" (stepChanged)="stepChanged($event)">
+        <ng-wizard (stepChanged)="stepChanged($event)">
           <ng-wizard-step
-            [description]="'Datos Basicos'"
+            [title]="'Paso 1'"
+            [description]="'Consultar Persona'"
             [canEnter]="isValidTypeBoolean"
             [canExit]="isValidFunctionReturnsBoolean.bind(this)"
           >
-            <span>Datos basicos del solicitante</span>
             <br />
             <div class="row">
               <div class="col-8">
                 <span
-                  ><strong>NOTA: </strong>El solicitante debe estar vinculado al
-                  proceso
+                  ><strong>NOTA: </strong>Consultar Persona en el sistema
                 </span>
               </div>
             </div>
-            <br><br>
-            <form  #personaForm="ngForm">
+            <br /><br />
+
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-sm-6">
+                  <form #documentoForm="ngForm">
+                  <div class="input-group">
+                    <div class="input-group-addon"><i class="ti-user"></i></div>
+                      <input
+                        [(ngModel)]="persona.numeroDocumento"
+                        name="documento"
+                        required
+                        minlength="7"
+                        maxlength="11"
+                        type="text"
+                        (keypress)="onlyNumberKey($event)"
+                        class="form-control"
+                        id="documento"
+                        #documentoControl="ngModel"
+                        placeholder="Digite documento identificación"
+                      />
+                    </div>
+                    <ng-container
+                    *ngIf="
+                      documentoControl.invalid &&
+                      documentoControl.touched
+                    "
+                  >
+                    <div
+                      *ngIf="documentoControl.errors.required"
+                      class="container-error-message"
+                    >
+                      <small class="text-danger"> Campo requerido </small>
+                    </div>
+                    <div
+                      *ngIf="documentoControl.errors.minlength"
+                      class="container-error-message"
+                    >
+                      <small class="text-danger"> Minimo 8 digitos</small>
+                    </div>
+                    <div
+                      *ngIf="documentoControl.errors.maxlength"
+                      class="container-error-message"
+                    >
+                      <small class="text-danger"> Maximo 11 digitos</small>
+                    </div>
+                  </ng-container>
+                  </form>
+                  </div>
+
+              </div>
+            </div>
+          </ng-wizard-step>
+
+          <ng-wizard-step
+            [title]="'Paso 2'"
+            [description]="'Datos Basicos'"
+            [canEnter]="isValidTypeBoolean"
+            [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+          >
+            <form #personaForm="ngForm">
               <div class="row">
                 <div class="col">
                   <div class="form-group m-b-40">
-                    <label for="TipoDocumento" >Tipo de documento</label>
+                    <label for="TipoDocumento">Tipo de documento</label>
                     <select
                       [(ngModel)]="persona.tipoDocumento"
                       class="form-control custom-select p-0"
@@ -41,15 +92,14 @@
                       required
                       #TipoDocumentoControl="ngModel"
                     >
-                    <option value="">Selecione Tipo Solicitante</option>
-                    <option
-                    *ngFor="let item of tipoDocumentos"
-                    [value]="item.key"
-                  >
-                    {{ item.key }}
-                  </option>
-                      </select
-                    >
+                      <option value="">Selecione Tipo Solicitante</option>
+                      <option
+                        *ngFor="let item of tipoDocumentos"
+                        [value]="item.key"
+                      >
+                        {{ item.key }}
+                      </option>
+                    </select>
                     <ng-container
                       *ngIf="
                         TipoDocumentoControl.invalid &&
@@ -116,29 +166,8 @@
                       name="ExpedicionDocumento"
                       class="form-control"
                       id="ExpedicionDocumento"
-                      required
-                      minlength="3"
                       #ExpedicionDocumentoControl="ngModel"
                     />
-                    <ng-container
-                      *ngIf="
-                        ExpedicionDocumentoControl.invalid &&
-                        ExpedicionDocumentoControl.touched
-                      "
-                    >
-                      <div
-                        *ngIf="ExpedicionDocumentoControl.errors.required"
-                        class="container-error-message"
-                      >
-                        <small class="text-danger"> Campo requerido </small>
-                      </div>
-                      <div
-                        *ngIf="ExpedicionDocumentoControl.errors.minlength"
-                        class="container-error-message"
-                      >
-                        <small class="text-danger"> Minimo 3 caracteres </small>
-                      </div>
-                    </ng-container>
                   </div>
                 </div>
               </div>
@@ -279,8 +308,8 @@
                     >
                       <option></option>
                       <option>Colombiano</option>
-                      <option>Venezolano</option></select
-                    >
+                      <option>Venezolano</option>
+                    </select>
                     <ng-container
                       *ngIf="
                         nacionalidadControl.invalid &&
@@ -340,7 +369,10 @@
                       id="inputTelefono"
                       #telefonoControl="ngModel"
                       required
-                      mask="(000) 000 00 00"
+                      maxlength="10"
+                      minlength="10"
+                      placeholder="321 000 00 00"
+                      mask="000-000-00-00"
                       (keypress)="onlyNumberKey($event)"
                     />
                     <ng-container
@@ -353,13 +385,13 @@
                         <small class="text-danger"> Campo requerido </small>
                       </div>
                       <!-- <div
-                        *ngIf="telefonoControl.errors.minlength"
-                        class="container-error-message"
-                      >
-                        <small class="text-danger">
-                          Requerido 10 digitos
-                        </small>
-                      </div> -->
+                      *ngIf="telefonoControl.errors.minlength"
+                      class="container-error-message"
+                    >
+                      <small class="text-danger">
+                        Requerido 10 digitos
+                      </small>
+                    </div> -->
                     </ng-container>
                   </div>
                 </div>
@@ -399,215 +431,107 @@
           </ng-wizard-step>
 
           <ng-wizard-step
-          [description]="'Solicitud'"
-          [canEnter]="isValidTypeBoolean"
-          [canExit]="isValidFunctionReturnsBoolean.bind(this)">
-            <span>Step 2 content</span>
-            <form class="form-horizontal p-t-20" #solicitudForm="ngForm" >
-              <div class="form-group row">
-                <label class="control-label text-left col-md-3">C.U.I*</label>
-                <div class="col-md-9">
-                  <input
-                    type="text"
-                    [(ngModel)]="solicitudAudiencia.proceso"
-                    name="cui"
-                    #cuiControl="ngModel"
-                    class="form-control"
-                    id="cui"
-                    placeholder="Código Único investigación"
-                    required
-
-                    mask="000 - 000 - 00 - 00000 - 0000 - 00000"
-                  />
-                  {{solicitudAudiencia | json}}
-                  <ng-container
-                    *ngIf="cuiControl.invalid && cuiControl.touched"
-                  >
-                    <div
-                      *ngIf="cuiControl.errors.required"
-                      class="container-error-message"
-                    >
-                      <small class="text-danger"> Campo requerido </small>
-                    </div>
-
-                  </ng-container>
-
-                </div>
-              </div>
-
-              <div class="form-group row">
-
-                <label for="asunto" class="control-label text-left col-md-3"
-                  >Asunto*</label
-                >
-                <div class="col-md-9">
-                    <input
-                      type="email"
-                      [(ngModel)]="solicitudAudiencia.asunto"
-                      name="asunto"
-                      #asuntoControl="ngModel"
-                      required
-                      maxlength="40"
-                      minlength="5"
-                      class="form-control"
-                      id="asunto"
-                    />
-                    <ng-container
-                      *ngIf="asuntoControl.invalid && asuntoControl.touched"
-                    >
-                      <div
-                        *ngIf="asuntoControl.errors.required"
-                        class="container-error-message"
-                      >
-                        <small class="text-danger"> Campo requerido </small>
-                      </div>
-                      <div
-                        *ngIf="asuntoControl.errors.minlength"
-                        class="container-error-message"
-                      >
-                        <small class="text-danger"> Minimo 5 caracteres</small>
-                      </div>
-                      <div
-                        *ngIf="asuntoControl.errors.maxlength"
-                        class="container-error-message"
-                      >
-                        <small class="text-danger"> Maximo 40 caracteres</small>
-                      </div>
-                    </ng-container>
-
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label class="control-label text-left col-md-3"
-                  >Tipo solicitante*</label
-                >
-                <div class="col-md-9">
-                  <select
-                    [(ngModel)]="solicitudAudiencia.tipoSolicitante"
-                    #tipoControl="ngModel"
-                    name="tipo"
-                    id="tipo"
-                    class="form-control custom-select"
-                    required
-                  >
-                  <option value="">Selecione Tipo Solicitante</option>
-                  <option
-                  *ngFor="let item of tipoSujetoProcesales"
-                  [value]="item.key"
-                >
-                  {{ item.nombre }}
-                </option>
-                  </select>
-                  <ng-container
-                    *ngIf="tipoControl.invalid && tipoControl.touched"
-                  >
-                    <div
-                      *ngIf="tipoControl.errors.required"
-                      class="container-error-message"
-                    >
-                      <small class="text-danger"> Campo requerido </small>
-                    </div>
-                  </ng-container>
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label for="descripcion" class="control-label text-left col-md-3"
-                  >Descripción</label
-                >
-                <div class="col-md-9">
-                    <textarea
-                      class="form-control"
-                      id="descripcion"
-                      rows="5"
-                      [(ngModel)]="solicitudAudiencia.descripcion"
-                      name="descripcion"
-                    ></textarea>
-                  </div>
-                </div>
-
-              <div class="form-group row">
-                <label for="documento" class="control-label text-left col-md-3"
-                  >Selecionar archivo PDF</label
-                >
-                <div class="col-md-9">
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      [(ngModel)]="solicitudAudiencia.archivo"
-                      name="archivo"
-                      #archivoControl="ngModel"
-                      class="form-control"
-                      id="documento"
-                      (change)="isPDF($event)"
-                    />
-                  </div>
-                </div>
-            </form>
-          </ng-wizard-step>
-
-          <ng-wizard-step
-            [description]="'Radicado'"
-            [canEnter]="isValidFunctionReturnsObservable.bind(this)"
+            [title]="'Paso 3'"
+            [description]="'Credenciales'"
+            [canEnter]="isValidTypeBoolean"
             [canExit]="isValidFunctionReturnsBoolean.bind(this)"
           >
-            <br><br>
-            <div class="container">
-              <div class="row">
-                  <div class="col align-self-center">
-                    <div class="card">
-                      <div class="card-body text-center">
+            <div class="row justify-content-center">
+              <div class="col-4">
+                <div class="">
+                  <div class="form-group">
+                    <label class="control-label">Usuario</label>
+                    <input
+                    [(ngModel)]="empleado.usuario"
+                    #usuarioControl="ngModel"
+                      name="usuario"
+                      type="text"
+                      id="firstName"
+                      class="form-control"
+                      placeholder="John doe"
+                      required
+                    />
+                    <small class="form-control-feedback">
+                      This is inline help
+                    </small>
+                  </div>
+                </div>
 
-                     <div class="row">
-                       <div class="col text-left ">
-                          <img src="../../assets/images/logo-Rama-Judicial.png" alt="">
-                       </div>
-                       <div class="col-9 text-left">
-                        <div class="alert alert-success" role="alert" *ngIf="exitosa" >
-                          <div class="row">
-                            <label >Solicitud realizada satisfactoriamente, puede consultar su estado en nuestra plataforma con el radicado : <strong  class="alert-link">{{soliitudSudienciaResponse.radicado}}</strong></label>
-
-                          </div>
-                          <div class="form-group row justify-content-center">
-                            <div class="col-sm-4">
-                              <button type="button" class="btn btn-outline-dark">Imprimmir</button>
-                            </div>
-                            <div class="col-sm-4">
-                              <button type="button" class="btn btn-outline-danger" routerLink="/login">Finalizar</button>
-                            </div>
-
-                          </div>
-                        </div>
-
-                        <div class="alert alert-danger" role="alert" *ngIf="!exitosa">
-                          <div class="row">
-                            <label > <strong  class="alert-link">Ocurrió un problema al solicitar una nueva audiencia, inténtelo nuevamente </strong></label>
-
-                          </div>
-                          <div class="form-group row justify-content-center">
-
-                            <div class="col-sm-4">
-                              <button type="button" class="btn btn-outline-danger" routerLink="/login">Finalizar</button>
-                            </div>
-
-                          </div>
-                        </div>
-
-                       </div>
-                     </div>
-
-                      </div>
-                    </div>
+                <div class="">
+                  <div class="form-group">
+                    <label class="control-label">Inicio Cargo</label>
+                    <input
+                    [(ngModel)]="empleado.inicioCargo"
+                    name="inicioCargo"
+                    #inicioCargoControl="ngModel"
+                    type="date"
+                    class="form-control"
+                    placeholder="dd/mm/yyyy"
+                  />
                   </div>
                 </div>
               </div>
+              <div class="col-4">
+                <div class="">
+                  <div class="form-group has-success">
+                    <label class="control-label">Rol</label>
+                    <select
+                      [(ngModel)]="empleado.rol"
+                      name="rol"
+                      #rolControl="ngModel"
+                    class="form-control custom-select">
+                      <option value="">Escribiente</option>
+                      <option value="">Coordinador</option>
+                      <option value="">Notificador</option>
+                    </select>
+                    <small class="form-control-feedback">
+                      Select your gender
+                    </small>
+                  </div>
+                </div>
+                <div class="">
+                  <div class="form-group">
+                    <label class="control-label">Finalización cargo</label>
+                    <input
+                    [(ngModel)]="empleado.finCargo"
+                    name="fincargo"
+                    #finCargoControl="ngModel"
+                      type="date"
+                      class="form-control"
+                      placeholder="dd/mm/yyyy"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
 
+            <div class="row">
+              <div class="col text-center">
+                <button type="submit" (click)="validarFormularioYRegistrar()" class="btn btn-success">
+                  <i class="fa fa-check"></i> Registrar
+                </button>
+                <button type="button" class="btn btn-inverse">Cancelar</button>
+              </div>
+              <!-- <div class="col-4">
 
+            </div> -->
+            </div>
           </ng-wizard-step>
         </ng-wizard>
       </div>
-      <div class="card-footer text-muted">2 days ago</div>
     </div>
   </div>
 </div>
+
+<!--
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="card w-100 text-center">
+      <div class="card-header">
+      </div>
+      <div class="card-body">
+
+      </div>
+    </div>
+  </div>
+</div> -->
