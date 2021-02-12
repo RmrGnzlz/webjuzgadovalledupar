@@ -107,7 +107,7 @@
                       >
                       <div class="col-md-9">
                         <p class="form-control-static">
-                          {{Solicitud.solicitante.nombre}}
+                          {{Solicitud.solicitante.nombres+ " "+Solicitud.solicitante.apellidos }}
                         </p>
                       </div>
                     </div>
@@ -144,7 +144,7 @@
                         >Proceso:</label
                       >
                       <div class="col-md-9">
-                        <p class="form-control-static">11-234-23432-23342</p>
+                        <p class="form-control-static">{{Solicitud.proceso.cui}}</p>
                       </div>
                     </div>
                   </div>
@@ -155,10 +155,10 @@
                   <div class="col-md-6">
                     <div class="form-group row">
                       <label class="control-label text-right col-md-3"
-                        >Creacion:</label
+                        >Fecha de solicitud:</label
                       >
                       <div class="col-md-9">
-                        <p class="form-control-static">{{Solicitud.creacion}}</p>
+                        <p class="form-control-static">{{Solicitud.creacion | date:'dd-MM-yyyy'}}</p>
                       </div>
                     </div>
                   </div>
@@ -181,7 +181,7 @@
                     <label class="control-label text-right">Asunto:</label>
                   </div>
                   <div class="col-7">
-                    <textarea name="" id="" cols="60" rows="2" [value]="Solicitud.asunto" disabled="true"></textarea>
+                    <textarea class="form-control mb-2" cols="60" rows="2" [value]="Solicitud.asunto" disabled="true"></textarea>
                   </div>
                 </div>
 
@@ -190,7 +190,7 @@
                     <label class="control-label text-right">Descripción:</label>
                   </div>
                   <div class="col-7">
-                    <textarea name="" id="" cols="60" rows="3"[value]="Solicitud.descripcion" disabled="true" ></textarea>
+                    <textarea  class="form-control" readonly cols="60" rows="3"[value]="Solicitud.descripcion" disabled="true" ></textarea>
                   </div>
                 </div>
 
@@ -219,7 +219,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let item of Solicitud.novedadSolicitud" >
+                        <tr *ngFor="let item of Solicitud.novedadesSolicitud" >
                           <td>{{item.fecha}}</td>
                           <td>{{EstadoNovedad(item.estado)}}</td>
                           <td>{{item.asunto}}</td>

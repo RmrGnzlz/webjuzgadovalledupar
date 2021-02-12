@@ -13,7 +13,13 @@ export class InterceptorService implements HttpInterceptor  {
 
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('Interceptor');
+    let token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlRFQ05JQ08iLCJ1bmlxdWVfbmFtZSI6Ikx1Y2FzX0Nhc2lsbGFzIiwianRpIjoiMTRkOTg1YzgtNzMzOS00MmM3LWIyZDktMmFkOGY0OGQ0NWFjIiwiZXhwIjoxNjEzMTkyNjQyLCJpc3MiOiJ5b3VyZG9tYWluLmNvbSIsImF1ZCI6InlvdXJkb21haW4uY29tIn0.m7kpiTSlYB8rBoH88vgIbz-c0ue0ZrPs9-V3BvY2g5k";
+    req = req.clone({
+      setHeaders: {
+        'Authorization':`Bearer ${token}`
+      }
+  } );
+
     return next.handle(req)
     .pipe(
       tap(event=>{

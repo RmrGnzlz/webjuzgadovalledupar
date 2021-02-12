@@ -1,7 +1,9 @@
+import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.prod';
+import { ResponseHttp } from 'src/app/models/Base/ResponseHttp';
 
 interface QueryParams {
   [key: string]: string | number;
@@ -30,7 +32,7 @@ export class ServicieGeneric{
   }
 
   getRemove<returnType>(
-    id: string | null,
+    id: string | null | number,
     route: string,
     qp: QueryParams = {},
     method: 'get' | 'delete' = 'get'
@@ -40,6 +42,23 @@ export class ServicieGeneric{
       `${this.END_POINT}${route}${id ? '/' + id : ''}${cfqu}`
     ) as Observable<returnType>;
   }
+
+  // myGetRemove<T>(
+  //   id:string | number | null,
+  //   route:string,
+  //   metodo:any
+  //   ):T | T[]{
+  //     console.log('mygetremove');
+
+  // this.getRemove<ResponseHttp<T>>(id,route,metodo)
+  // .pipe(map(data=>{
+  //   return data.data;
+  // })
+  // ).subscribe(res=>{
+  //   res.
+  // })
+  // return null;
+  // }
 
   postPatch<returnType>(
     route: string,
@@ -54,6 +73,23 @@ export class ServicieGeneric{
       data
     ) as Observable<returnType>;
   }
+
+  // myPostpatch<T>(
+  //   entidad:T,
+  //   route:string,
+  //   metodo:any
+  //   ):T
+  //   {
+  //     this.postPatch<ResponseHttp<T>>(route,entidad,null,metodo)
+  //     .pipe(map(data=>{
+  //       return data.data;
+  //     }),
+  //     )
+  //   return null;
+
+  // }
+
+
 
 
 }

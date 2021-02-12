@@ -10,13 +10,11 @@ export class SolicitudAudienciaResponse extends BaseModel{
   public radicado:string;
   public asunto:string;
   public descripcion:string;
-  public creacion:string;
+  public creacion:Date;
   public tipoSolicitante: SujetosProcesales;
-  public procesoKey:number;
   public proceso:Proceso ;
-  public solicitanteKey:number;
   public solicitante: Persona;
-  public novedadSolicitud: NovedadSolicitud[];
+  public novedadesSolicitud: NovedadSolicitud[];
   public archivo: Archivo ;
   public audienciaItems: any;
   public estado:EstadoSolicitud;

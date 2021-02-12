@@ -32,7 +32,7 @@
               <div class="row">
                 <div class="col">
                   <div class="form-group m-b-40">
-                    <label for="TipoDocumento" >Tipo de documento</label>
+                    <label for="TipoDocumento" >Tipo de documento*</label>
                     <select
                       [(ngModel)]="persona.tipoDocumento"
                       class="form-control custom-select p-0"
@@ -67,7 +67,7 @@
                 </div>
                 <div class="col">
                   <div class="form-group m-b-40">
-                    <label for="NumeroDocumento">Numero documento</label>
+                    <label for="NumeroDocumento">Numero documento*</label>
                     <input
                       [(ngModel)]="persona.numeroDocumento"
                       name="NumeroDocumento"
@@ -109,7 +109,7 @@
                 </div>
                 <div class="col">
                   <div class="form-group m-b-40">
-                    <label for="ExpedicionDocumento">Fecha expedición</label>
+                    <label for="ExpedicionDocumento">Fecha expedición*</label>
                     <input
                       type="date"
                       [(ngModel)]="persona.expedicionDocumento"
@@ -143,33 +143,33 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-3">
+                <div class="col-6">
                   <div class="form-group m-b-40">
-                    <label for="nombre1">Primer Nombre*</label>
+                    <label for="nombre1">Nombres*</label>
                     <input
                       type="text"
-                      [(ngModel)]="nombresYapellidos[0]"
-                      name="nombre1"
+                      [(ngModel)]="persona.nombres"
+                      name="nombres"
                       class="form-control"
-                      id="nombre1"
+                      id="nombres"
                       required
                       minlength="3"
-                      #nombre1Control="ngModel"
+                      #nombresControl="ngModel"
                       (blur)="
-                        nombresYapellidos[0] = nombresYapellidos[0].trim()
+                      persona.nombres.trim()
                       "
                     />
                     <ng-container
-                      *ngIf="nombre1Control.invalid && nombre1Control.touched"
+                      *ngIf="nombresControl.invalid && nombresControl.touched"
                     >
                       <div
-                        *ngIf="nombre1Control.errors.required"
+                        *ngIf="nombresControl.errors.required"
                         class="container-error-message"
                       >
                         <small class="text-danger"> Campo requerido </small>
                       </div>
                       <div
-                        *ngIf="nombre1Control.errors.minlength"
+                        *ngIf="nombresControl.errors.minlength"
                         class="container-error-message"
                       >
                         <small class="text-danger"> Minimo 3 caracteres </small>
@@ -177,50 +177,36 @@
                     </ng-container>
                   </div>
                 </div>
-                <div class="col-3">
+
+                <div class="col-6">
                   <div class="form-group m-b-40">
-                    <label for="input2Nombre">Segundo Nombre</label>
+                    <label for="input1Apellido">Apellidos*</label>
                     <input
-                      [(ngModel)]="nombresYapellidos[1]"
-                      name="nombre2"
+                      [(ngModel)]="persona.apellidos"
+                      name="apellidos"
                       type="text"
                       class="form-control"
-                      id="input2Nombre"
-                      (blur)="
-                        nombresYapellidos[1] = nombresYapellidos[1].trim()
-                      "
-                    />
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group m-b-40">
-                    <label for="input1Apellido">Primer Apellido</label>
-                    <input
-                      [(ngModel)]="nombresYapellidos[2]"
-                      name="apellido1"
-                      type="text"
-                      class="form-control"
-                      id="input1Apellido"
+                      id="apellidos"
                       required
                       minlength="3"
-                      #apellido1Control="ngModel"
+                      #apellidosControl="ngModel"
                       (blur)="
-                        nombresYapellidos[2] = nombresYapellidos[2].trim()
+                      persona.apellidos = persona.apellidos.trim()
                       "
                     />
                     <ng-container
                       *ngIf="
-                        apellido1Control.invalid && apellido1Control.touched
+                        apellidosControl.invalid && apellidosControl.touched
                       "
                     >
                       <div
-                        *ngIf="apellido1Control.errors.required"
+                        *ngIf="apellidosControl.errors.required"
                         class="container-error-message"
                       >
                         <small class="text-danger"> Campo requerido </small>
                       </div>
                       <div
-                        *ngIf="apellido1Control.errors.minlength"
+                        *ngIf="apellidosControl.errors.minlength"
                         class="container-error-message"
                       >
                         <small class="text-danger"> Minimo 3 caracteres </small>
@@ -228,58 +214,24 @@
                     </ng-container>
                   </div>
                 </div>
-                <div class="col-3">
-                  <div class="form-group m-b-40">
-                    <label for="input2Apellido">Segundo Apellido</label>
-                    <input
-                      [(ngModel)]="nombresYapellidos[3]"
-                      name="apellido2"
-                      type="text"
-                      class="form-control"
-                      id="input2Apellido"
-                      required
-                      minlength="3"
-                      #apellido2Control="ngModel"
-                      (blur)="
-                        nombresYapellidos[3] = nombresYapellidos[3].trim()
-                      "
-                    />
-                    <ng-container
-                      *ngIf="
-                        apellido2Control.invalid && apellido2Control.touched
-                      "
-                    >
-                      <div
-                        *ngIf="apellido2Control.errors.required"
-                        class="container-error-message"
-                      >
-                        <small class="text-danger"> Campo requerido </small>
-                      </div>
-                      <div
-                        *ngIf="apellido2Control.errors.minlength"
-                        class="container-error-message"
-                      >
-                        <small class="text-danger"> Minimo 3 caracteres </small>
-                      </div>
-                    </ng-container>
-                  </div>
-                </div>
+
+
               </div>
               <div class="row">
                 <div class="col">
                   <div class="form-group m-b-40">
-                    <label for="inputNacionalidad">Nacionalidad</label>
+                    <label for="inputNacionalidad">Nacionalidad*</label>
                     <select
                       required
-                      [(ngModel)]="persona.nacionalidad"
+                      [(ngModel)]="persona.paisKey"
                       class="form-control p-0"
                       id="inputNacionalidad"
                       name="Nacionalidad"
                       #nacionalidadControl="ngModel"
                     >
-                      <option></option>
-                      <option>Colombiano</option>
-                      <option>Venezolano</option></select
+                    <option value="">Seleccione Nacionalidad</option>
+                      <option *ngFor="let item of paises" [value]="item.key" >{{item.nombre}}</option>
+                      </select
                     >
                     <ng-container
                       *ngIf="
@@ -298,7 +250,7 @@
                 </div>
                 <div class="col">
                   <div class="form-group m-b-40">
-                    <label for="inputDireccion">Direccion Residencia</label>
+                    <label for="inputDireccion">Direccion Residencia*</label>
                     <input
                       type="text"
                       class="form-control"
@@ -331,7 +283,7 @@
                 </div>
                 <div class="col">
                   <div class="form-group m-b-40">
-                    <label for="inputTelefono">Telefono</label>
+                    <label for="inputTelefono">Telefono*</label>
                     <input
                       [(ngModel)]="persona.telefono"
                       name="Telefono"
@@ -352,14 +304,7 @@
                       >
                         <small class="text-danger"> Campo requerido </small>
                       </div>
-                      <!-- <div
-                        *ngIf="telefonoControl.errors.minlength"
-                        class="container-error-message"
-                      >
-                        <small class="text-danger">
-                          Requerido 10 digitos
-                        </small>
-                      </div> -->
+
                     </ng-container>
                   </div>
                 </div>

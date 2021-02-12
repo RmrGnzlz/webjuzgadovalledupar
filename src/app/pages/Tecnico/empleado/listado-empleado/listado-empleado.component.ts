@@ -46,39 +46,10 @@ export class ListadoEmpleadoComponent implements OnInit {
       { key: 'opciones', title: 'Opciones',cellTemplate: this.actionTpl,width:"10%"},
     ];
 
-    var per=new Persona();
-      per.nombre="Martha Rosa Diaz Martinez";
-      per.direccion="calle 16B # 27-05 villa corelca";
-      per.numeroDocumento="1065824874";
-      per.tipoDocumento=TipoDocumentos.CC;
-      per.nacionalidad="colombia";
-      per.telefono="3154335567";
-      per.email="elmer.fuentes@hotmail.com";
-      per.expedicionDocumento="2020-10-02";
-      var per2=new Persona();
-      per2.nombre="Helmer Segunfo Fuentes Alvarado";
-      per2.direccion="villa corelca";
-      per2.numeroDocumento="1065824874";
-      per2.tipoDocumento=TipoDocumentos.CC;
-      per2.nacionalidad="colombia";
-      per2.telefono="31450596908"
-      per2.email="elmer.fuentes@hotmail.com";
-      per2.expedicionDocumento="2020-10-02";
-
-
-    this.listaEmpleado=[
-      {estado:EstadoEmpleado.Activo,rol:RolEnums.Auditor,key:1,password:'',remmemberPassword:'',usuario:'helmerfa',
-      persona:per
-
-      },
-      {estado:EstadoEmpleado.Inactivo,rol:RolEnums.Coordinador,key:2,password:'',remmemberPassword:'',usuario:'',persona:per},
-      {estado:EstadoEmpleado.Activo,rol:RolEnums.Escribiente,key:3,password:'',remmemberPassword:'',usuario:'',persona:per2},
-      {estado:EstadoEmpleado.Inactivo,rol:RolEnums.Escribiente,key:4,password:'',remmemberPassword:'',usuario:'',persona:per},
-      {estado:EstadoEmpleado.Activo,rol:RolEnums.Auditor,key:5,password:'',remmemberPassword:'',usuario:'',persona:per}
-    ]
+    
 
     this.buildForm();
-
+    this.loadEmpleados();
 
   }
 
@@ -92,7 +63,7 @@ export class ListadoEmpleadoComponent implements OnInit {
   }
 
   loadEmpleados(){
-    this._ServiceGeneric.getRemove<ResponseHttp<Empleado>>(null,'èmpleado')
+    this._ServiceGeneric.getRemove<ResponseHttp<Empleado>>(null,'empleado')
     .subscribe(res=>this.listaEmpleado=res.data as Empleado[]);
   }
 
@@ -105,7 +76,7 @@ export class ListadoEmpleadoComponent implements OnInit {
   }
 
   delete(empleado:Empleado){
-    this._ServiceGeneric.getRemove<ResponseHttp<Empleado>>(empleado.usuario,`empleado`,null,'delete')
+    this._ServiceGeneric.getRemove<ResponseHttp<Empleado>>(empleado.key,`empleado`,null,'delete')
     .subscribe(res=>{
       this.notificacion.MensajeSuccess(res.message);
     });
@@ -116,10 +87,12 @@ export class ListadoEmpleadoComponent implements OnInit {
       telefono:this.telefono.value,
       email:this.email.value,
       direccion:this.direccion.value,
-      documento:this.empleado.persona.numeroDocumento
+      documento:this.empleado.persona.numeroDocumento,
+      key:this.empleado.persona.key
       }
 
     var requestEmpleadoUpdate:any={
+      key:this.empleado.persona.key,
       documento:this.empleado.persona.numeroDocumento,
       fechaFinalizacion:this.fechaFinalizacion.value
     }
@@ -143,7 +116,7 @@ export class ListadoEmpleadoComponent implements OnInit {
 
   updateState(empleado:Empleado){
     var requesStateEmpleado:any={
-      usuario:empleado.usuario,
+      usuario:empleado.key,
       estado:empleado.estado
     }
 

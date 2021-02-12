@@ -1,8 +1,8 @@
 import { NotFoundComponent } from './not-found/not-found.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SolitudAnonimaComponent } from './solitud-anonima/solitud-anonima.component';
-import { ConsultarSolicitudComponent } from './consultar-solicitud/consultar-solicitud.component';
+import { SolitudAnonimaComponent } from './solitud-anonima/Solicitar-solicitud/solitud-anonima.component';
+import { ConsultarSolicitudComponent } from './solitud-anonima/consultar-solicitud/consultar-solicitud.component';
 import { LoginComponent } from './login/login.component';
 
 const routes: Routes = [

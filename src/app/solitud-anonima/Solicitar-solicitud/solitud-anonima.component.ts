@@ -1,13 +1,16 @@
-import { SujetosProcesales } from './../models/Enums/TipoSujetosProcesalesEnum';
-import { Persona } from './../models/Persona';
+import { ResponseHttp } from '../../models/Base/ResponseHttp';
+import { SujetosProcesales } from '../../models/Enums/TipoSujetosProcesalesEnum';
+import { Persona } from '../../models/Persona';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgWizardConfig, NgWizardService, StepChangedArgs, StepValidationArgs, STEP_STATE, THEME } from 'ng-wizard';
 import { of, Observable } from 'rxjs';
 import { NgForm } from '@angular/forms';
-import { NotificacionServiceService } from '../utils/notificacion-service.service';
-import { SolicitudAudienciaResponse, SolicitudAudienciaRequest } from '../models/SolicitudAudiencia';
-import { ServicieGeneric } from '../Service/service.index';
-import { TipoDocumentos } from '../models/Enums/DocumentosValidosEnum';
+import { NotificacionServiceService } from '../../utils/notificacion-service.service';
+import { SolicitudAudienciaResponse, SolicitudAudienciaRequest } from '../../models/SolicitudAudiencia';
+import { ServicieGeneric } from '../../Service/service.index';
+import { TipoDocumentos } from '../../models/Enums/DocumentosValidosEnum';
+import { Rol } from '../../models/Rol';
+import { Pais } from '../../models/Pais';
 
 
 @Component({
@@ -23,10 +26,10 @@ export class SolitudAnonimaComponent implements OnInit {
   persona = new Persona();
   solicitudAudiencia= new SolicitudAudienciaRequest();
   soliitudSudienciaResponse = new SolicitudAudienciaResponse();
-  nombresYapellidos: string[] = ["", "", "", ""];
-  tipoSujetoProcesales: any[] = [];
+    tipoSujetoProcesales: any[] = [];
   tipoDocumentos:any[]=[];
   exitosa = false;
+  paises:Pais[]=[];
 
 
   stepStates = {
@@ -58,10 +61,13 @@ export class SolitudAnonimaComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadEnums();
+    this._ServiceGeneric.getRemove<ResponseHttp<Pais>>(null,'pais')
+    .subscribe(res=>{
+      this.paises=res.data as Pais[];
+    })
   }
 
   SolicitarRespuesta(url: string, data: any): Promise<any> {
-    console.log(data);
 
     return new Promise((resolve, reject) => {
       this._ServiceGeneric.postPatch<any>(url, data)
@@ -72,48 +78,27 @@ export class SolitudAnonimaComponent implements OnInit {
 
   }
 
-  emularPersona(persona:Persona):Promise<any>{
-    const exitoso=false;
-    return new Promise((resolve,reject)=>{
-      if (exitoso) {
-        resolve(true);
-      }else{
-        resolve(false)
-      }
-    })
-  }
+   registrarSolicitudYPersona() {
 
-
-  async registrarSolicitudYPersona() {
-    let respuesta: boolean;
     if (this.solicitudForm.invalid || this.personaForm.invalid) {
       this.notificacion.MensajeError('se detectaron errores en los formularios', 'Error');
       this.exitosa=false;
       return ;
     }
 
-    //mando el true para que pueda pasar al final de paso
-    //await this.SolicitarRespuesta(`persona`, this.persona).then(res => respuesta = true, err => respuesta = false);
-     await this.emularPersona(this.persona).then(res => respuesta = true, err => respuesta = false);
-     console.log("hola ya pase");
-
-    if (!respuesta) {
-      this.exitosa=false;
-      return ;
-    }
-  this.solicitudAudiencia.solicitante=this.persona.numeroDocumento;
-
-    console.log(this.solicitudAudiencia);
-    console.log(this.solicitudAudiencia.proceso);
 
 
-    await this.SolicitarRespuesta(`solicitud`, this.crearFormData(this.solicitudAudiencia))
-      .then(res => {
-        respuesta = true;
-        this.soliitudSudienciaResponse = res.data;
-        this.exitosa = true;
-      },
-        err => { respuesta = true; });
+
+    this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`,this.persona,null,'post')
+    .subscribe(res=>{
+      this._ServiceGeneric.postPatch<ResponseHttp<SolicitudAudienciaResponse>>(`solicitud`,this.crearFormData(this.solicitudAudiencia),null,'post')
+    .subscribe(res=>{
+      this.soliitudSudienciaResponse=res.data as SolicitudAudienciaResponse;
+      this.notificacion.MensajeSuccess(res.message)
+     this.exitosa=true;
+    })}
+    )
+
     return ;
   }
 
@@ -160,7 +145,7 @@ export class SolitudAnonimaComponent implements OnInit {
 
     const formdata = new FormData();
     formdata.append('proceso',solicitud.proceso);
-    formdata.append('solicitante',solicitud.solicitante);
+    formdata.append('solicitante',this.persona.numeroDocumento);
     formdata.append('asunto',solicitud.asunto);
     formdata.append('archivo',solicitud.archivo);
     formdata.append('descripcion',solicitud.descripcion);
@@ -207,7 +192,8 @@ export class SolitudAnonimaComponent implements OnInit {
       if (this.personaForm.invalid) {
         this.notificacion.MensajeError("Formulario invalidos", "Error");
         return false;
-      }else return true;
+      }else  return true;
+
     }
 
     if (args.fromStep.index == 1) {

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { StepChangedArgs, StepValidationArgs, STEP_STATE } from 'ng-wizard';
+import {  StepChangedArgs, StepValidationArgs, STEP_STATE } from 'ng-wizard';
 import { of } from 'rxjs';
 import { TipoDocumentos } from 'src/app/models/Enums/DocumentosValidosEnum';
 import { ServicieGeneric } from 'src/app/Service/service.index';
@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
 import { ResponseHttp } from 'src/app/models/Base/ResponseHttp';
 import { Empleado } from 'src/app/models/Enpleado';
 import { Persona } from 'src/app/models/Persona';
+import { Rol } from '../../../../models/Rol';
+import { Pais } from '../../../../models/Pais';
 
 @Component({
   selector: 'app-registro-empleado',
@@ -20,17 +22,29 @@ export class RegistroEmpleadoComponent implements OnInit {
   @ViewChild('personaForm', { static: false }) personaForm: NgForm;
   @ViewChild('empleadoForm', { static: false }) empleadoForm: NgForm;
   @ViewChild('documentoForm', { static: false }) documentoForm: NgForm;
+
   persona = new Persona();
   empleado = new Empleado();
-  nombresYapellidos: string[] = ["", "", "", ""];
   tipoDocumentos: any[] = [];
   existePersona = false;
+  roles:Rol[]=[];
+  paises:Pais[]=[];
+
 
   constructor(private notificacion: NotificacionServiceService,
     private _ServiceGeneric: ServicieGeneric,
     private router: Router,) { }
 
   ngOnInit(): void {
+    this._ServiceGeneric.getRemove<ResponseHttp<Rol>>(null,`rol`)
+    .subscribe(res=>this.roles=res.data as Rol[])
+
+    this._ServiceGeneric.getRemove<ResponseHttp<Pais>>(null,'Pais')
+      .subscribe(res=>this.paises=res.data as Pais[]);
+
+    // this._ServiceGeneric.myPostpatch<Rol>(null,'','post')
+
+    this.loadEnums();
   }
 
   loadEnums() {
@@ -39,9 +53,10 @@ export class RegistroEmpleadoComponent implements OnInit {
         this.tipoDocumentos.push({ nombre: item, key: TipoDocumentos[item] });
       }
     }
+
   }
 
-  validarFormularioYRegistrar() {
+  validarFormulario() {
     if (this.documentoForm.invalid || this.personaForm.invalid || (this.documentoForm.value['documento'] != this.persona.numeroDocumento)) {
       this.notificacion.MensajeError("Anomalia en el formulario", "Intente nuevamente")
       return;
@@ -51,28 +66,38 @@ export class RegistroEmpleadoComponent implements OnInit {
       this.notificacion.MensajeError("Formulario invalido", "Error");
       return;
     }
+
+ this.actualizarOAgregarPersona();
+
   }
 
   consultarPersona() {
     this._ServiceGeneric.getRemove<ResponseHttp<Persona>>(this.persona.numeroDocumento, `persona`)
       .subscribe(res => {
+        console.log(res.data);
         this.persona = res.data as Persona;
+        this.empleado.personaKey=this.persona.key;
         this.existePersona = true;
 
       });
   }
 
   actualizarOAgregarPersona() {
+    console.log(this.persona);
     var metodo: any = 'post'
-    if (this.existePersona) metodo = 'Put'
+    if (this.existePersona) metodo = 'put'
     this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`, this.persona, null, metodo)
-      .subscribe(res =>
-        this.notificacion.MensajeSuccess(res.message)
-      );
+      .subscribe(res =>{
+        this.persona=res.data as Persona;
+        this.registrarEmpleado();
+      });
   }
 
   registrarEmpleado() {
-    this._ServiceGeneric.postPatch<ResponseHttp<Empleado>>(`empleado`, this.empleado)
+    console.log('registrar empleado');
+
+    this.empleado.personaKey=this.persona.key;
+    this._ServiceGeneric.postPatch<ResponseHttp<Empleado>>(`empleado`, this.empleado,null,"post")
       .subscribe(res => {
         this.notificacion.MensajeSuccess(res.message);
         this.router.navigate(['/empleados']);
@@ -106,7 +131,9 @@ export class RegistroEmpleadoComponent implements OnInit {
       if (this.documentoForm.invalid) {
         this.notificacion.MensajeError("Ingrese documento", "Error");
         return false;
-      } else return true;
+      } else {
+        this.consultarPersona();
+        return true;}
     }
 
     if (args.fromStep.index == 1) {

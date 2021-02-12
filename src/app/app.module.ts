@@ -18,13 +18,13 @@ import { LoginComponent } from './login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
-import { SolitudAnonimaComponent } from './solitud-anonima/solitud-anonima.component';
+import { SolitudAnonimaComponent } from './solitud-anonima/Solicitar-solicitud/solitud-anonima.component';
 
 
 import { NgWizardModule, NgWizardConfig, THEME, TOOLBAR_POSITION } from 'ng-wizard';
 import { SnotifyModule } from 'ng-snotify';
 import { NgxMaskModule } from 'ngx-mask';
-import { ConsultarSolicitudComponent } from './consultar-solicitud/consultar-solicitud.component';
+import { ConsultarSolicitudComponent } from './solitud-anonima/consultar-solicitud/consultar-solicitud.component';
 import { InterceptorService } from './Service/Interceptors/interceptor.service';
 
 const ngWizardConfig: NgWizardConfig = {

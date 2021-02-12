@@ -1,6 +1,7 @@
 import { RolEnums } from './Enums/RolEnums';
 import { BaseModel } from './Base/Base.Model';
 import { Persona } from './Persona';
+import { Rol } from './Rol';
 export class Empleado extends BaseModel{
 
   public estado: EstadoEmpleado;
@@ -8,7 +9,9 @@ export class Empleado extends BaseModel{
   public password:string;
   public remmemberPassword:string;
   public persona:Persona;
-  public rol:RolEnums;
+  public personaKey:number;
+  public rolKey:number;
+  public rol:Rol;
   public inicioCargo?:Date;
   public finCargo?:Date;
 
