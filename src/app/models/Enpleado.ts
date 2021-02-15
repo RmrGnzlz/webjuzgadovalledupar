@@ -2,16 +2,9 @@ import { RolEnums } from './Enums/RolEnums';
 import { BaseModel } from './Base/Base.Model';
 import { Persona } from './Persona';
 import { Rol } from './Rol';
-export class Empleado extends BaseModel{
+import { Usuario } from './Usuario';
+export class Empleado extends Usuario{
 
-  public estado: EstadoEmpleado;
-  public usuario:string;
-  public password:string;
-  public remmemberPassword:string;
-  public persona:Persona;
-  public personaKey:number;
-  public rolKey:number;
-  public rol:Rol;
   public inicioCargo?:Date;
   public finCargo?:Date;
 

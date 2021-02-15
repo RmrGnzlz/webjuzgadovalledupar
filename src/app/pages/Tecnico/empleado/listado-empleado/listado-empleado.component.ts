@@ -46,7 +46,7 @@ export class ListadoEmpleadoComponent implements OnInit {
       { key: 'opciones', title: 'Opciones',cellTemplate: this.actionTpl,width:"10%"},
     ];
 
-    
+
 
     this.buildForm();
     this.loadEmpleados();
@@ -108,7 +108,7 @@ export class ListadoEmpleadoComponent implements OnInit {
       .subscribe(res=>{
         this.notificacion.MensajeSuccess("Actualización Exitosa");
         this.botonCerrar.nativeElement.click();
-        this.loadEmpleados();
+        this.loadEmpleados();  
       })
     })
 
@@ -117,7 +117,7 @@ export class ListadoEmpleadoComponent implements OnInit {
   updateState(empleado:Empleado){
     var requesStateEmpleado:any={
       usuario:empleado.key,
-      estado:empleado.estado
+      estado:empleado.UsuarioEstado
     }
 
   this._ServiceGeneric.postPatch(`empleado`,requesStateEmpleado,null,'put')

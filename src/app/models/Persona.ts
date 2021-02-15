@@ -11,9 +11,8 @@ export class Persona extends BaseModel{
   public expedicionDocumento: Date;
   public telefono: string;
   public email: string;
-  public pais:Pais;
-  public paisKey:number;
-  public nacionalidad: Pais;
+  public nacionalidad:Pais;
+  public nacionadKey:number;
   // public empleado: any[];
   constructor(){super();
   this.nacionalidad= new Pais();
