@@ -13,7 +13,8 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
 
   usuario= new Usuario();
-  constructor(private notificacion:NotificacionServiceService,
+  constructor(
+    private notificacion:NotificacionServiceService,
              private _serviceUsuario:UsuarioService,
              private route:Router) { }
 
@@ -25,6 +26,7 @@ export class LoginComponent implements OnInit {
         this.notificacion.MensajeError("Datos Incompleto");
         return;
       }
+      console.log('is valid');
 
       this._serviceUsuario.login(this.usuario)
       .subscribe(res=>{

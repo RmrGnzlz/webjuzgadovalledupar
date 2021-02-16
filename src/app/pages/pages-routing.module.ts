@@ -9,9 +9,9 @@ import { ListadoEmpleadoComponent } from './Tecnico/empleado/listado-empleado/li
 import { RegistroEmpleadoComponent } from './Tecnico/empleado/registro-empleado/registro-empleado.component';
 
 const pagesRoute: Routes = [
-{ path: '',
- component: PagesComponent,
-  children: [
+// { path: '',
+//  component: PagesComponent,
+//   children: [
     { path: 'dashboard', component: DashboardComponent },
     { path: 'sala', component: SalaComponent },
     { path: 'empleados', component: ListadoEmpleadoComponent  },
@@ -20,9 +20,9 @@ const pagesRoute: Routes = [
     { path: 'juzgado', component: JuzgadoComponent },
     { path: '', pathMatch: 'full', redirectTo: '/dashboard' }
   ]
-},
+// },
 
-];
+// ];
 
 
 

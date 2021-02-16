@@ -5,8 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 
 // MODULOS
-import { PagesModule } from './pages/pages.module';
-import { ServiceModule } from './Service/service.module';
+  import { ServiceModule } from './Service/service.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -22,10 +21,12 @@ import { SolitudAnonimaComponent } from './solitud-anonima/Solicitar-solicitud/s
 
 
 import { NgWizardModule, NgWizardConfig, THEME, TOOLBAR_POSITION } from 'ng-wizard';
-import { SnotifyModule } from 'ng-snotify';
 import { NgxMaskModule } from 'ngx-mask';
 import { ConsultarSolicitudComponent } from './solitud-anonima/consultar-solicitud/consultar-solicitud.component';
 import { InterceptorService } from './Service/Interceptors/interceptor.service';
+import { PagesComponent } from './pages/pages.component';
+import { SharedModule } from './shared/shared.module';
+import { PagesModule } from './pages/pages.module';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.circles,
@@ -44,12 +45,11 @@ const ngWizardConfig: NgWizardConfig = {
     LoginComponent,
     SolitudAnonimaComponent,
     ConsultarSolicitudComponent,
+    PagesComponent
   ],
   imports: [
     BrowserModule,
-    PagesModule,
     AppRoutingModule,
-    ServiceModule,
     NgxMaskModule.forRoot(),
     BrowserAnimationsModule,
     HttpClientModule,
@@ -57,9 +57,9 @@ const ngWizardConfig: NgWizardConfig = {
     FormsModule,
     RxReactiveFormsModule,
     NgWizardModule.forRoot(ngWizardConfig),
-    SnotifyModule.forRoot(),
-
-    // SharedModule
+    SharedModule,
+    ServiceModule,
+    PagesModule
   ],
   exports: [
 
@@ -70,6 +70,7 @@ const ngWizardConfig: NgWizardConfig = {
       useClass: InterceptorService,
       multi:true
     }
+
   ],
   bootstrap: [AppComponent]
 })

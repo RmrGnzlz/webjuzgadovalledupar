@@ -7,19 +7,28 @@ import {
 UsuarioService,
 SalaService,
 EdificioService,
-ServicieGeneric
+ServicieGeneric,
+NotificacionServiceService
 } from './service.index';
+import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+    SnotifyModule.forRoot(),
+  ],
+  exports:[
+    SnotifyModule,
   ],
   providers:[
   UsuarioService,
   SalaService,
   EdificioService,
-  ServicieGeneric
+  ServicieGeneric,
+  NotificacionServiceService,
+  { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
+  SnotifyService
   ]
 })
 export class ServiceModule { }
