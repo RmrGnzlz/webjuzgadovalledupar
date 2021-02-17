@@ -27,6 +27,7 @@ import { InterceptorService } from './Service/Interceptors/interceptor.service';
 import { PagesComponent } from './pages/pages.component';
 import { SharedModule } from './shared/shared.module';
 import { PagesModule } from './pages/pages.module';
+import { SnotifyModule, ToastDefaults, SnotifyService } from 'ng-snotify';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.circles,
@@ -55,11 +56,12 @@ const ngWizardConfig: NgWizardConfig = {
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    SnotifyModule.forRoot(),
     RxReactiveFormsModule,
     NgWizardModule.forRoot(ngWizardConfig),
     SharedModule,
     ServiceModule,
-    PagesModule
+    PagesModule,
   ],
   exports: [
 
@@ -69,7 +71,9 @@ const ngWizardConfig: NgWizardConfig = {
       provide: HTTP_INTERCEPTORS,
       useClass: InterceptorService,
       multi:true
-    }
+    },
+    { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
+    SnotifyService
 
   ],
   bootstrap: [AppComponent]

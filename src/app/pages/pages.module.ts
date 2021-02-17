@@ -36,11 +36,12 @@ const ngWizardConfig: NgWizardConfig = {
     PagesRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    NgWizardModule.forRoot(ngWizardConfig)
+    NgWizardModule.forRoot(ngWizardConfig),
+
+
 
   ],
   exports: [
-
   ],
   providers: [
 

@@ -9,9 +9,13 @@ export class Usuario extends BaseModel {
   public rememberPassword: string;
   public rol: Rol;
   public rolKey: number;
-  public UsuarioEstado: EstadoEmpleado;
+  public estado: EstadoEmpleado;
   public funcionalidades: Funcionalidades[] = [];
   public persona: Persona;
   public personaKey: number;
 
+  constructor(){
+    super();
+    this.rol= new Rol();
+  }
 }

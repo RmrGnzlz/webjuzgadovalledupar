@@ -22,6 +22,7 @@ export class UsuarioService {
       return this._ServiceGeneric.postPatch<ResponseHttp<any>>('usuario/auth/login',user)
       .pipe(
         map(res=>{
+          console.log(res);
           localStorage.setItem('token', res.data.token);
           localStorage.setItem('expiracion', res.data.expiracion);
           return this.cargarUsuario();

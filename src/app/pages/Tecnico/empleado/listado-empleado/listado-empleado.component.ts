@@ -18,6 +18,7 @@ export class ListadoEmpleadoComponent implements OnInit {
 
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
   @ViewChild('estadoTpl', { static: true }) estadoTpl: TemplateRef<any>;
+  @ViewChild('personaTpl', { static: true }) personaTpl: TemplateRef<any>;
   @ViewChild('rolTpl', { static: true }) rolTpl: TemplateRef<any>;
   @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
   formEdit: FormGroup;
@@ -38,15 +39,13 @@ export class ListadoEmpleadoComponent implements OnInit {
 
     this.Columns = [
       { key: 'key', title: '#',width:"3%"},
-      { key: 'persona.nombre', title: 'Nombre',width:"25%" },
+      { key: 'persona', title: 'Nombre',width:"25%",cellTemplate:this.personaTpl },
       { key: 'persona.telefono', title: 'Telefono',width:"10%" },
-      { key: 'rol', title: 'Rol', cellTemplate:this.rolTpl,width:"15%"},
-      { key: 'usuario', title: 'Usuario',width:"20%" },
+      { key: 'rol.nombre', title: 'Rol', cellTemplate:this.rolTpl,width:"15%"},
+      { key: 'username', title: 'Usuario',width:"20%" },
       { key: 'estado', title: 'Estado', cellTemplate:this.estadoTpl,width:"10%"},
       { key: 'opciones', title: 'Opciones',cellTemplate: this.actionTpl,width:"10%"},
     ];
-
-
 
     this.buildForm();
     this.loadEmpleados();
@@ -63,12 +62,16 @@ export class ListadoEmpleadoComponent implements OnInit {
   }
 
   loadEmpleados(){
-    this._ServiceGeneric.getRemove<ResponseHttp<Empleado>>(null,'empleado')
-    .subscribe(res=>this.listaEmpleado=res.data as Empleado[]);
+    this._ServiceGeneric.getRemove<ResponseHttp<any>>(null,'empleado/All')
+    .subscribe(res=>{this.listaEmpleado=res.data as Empleado[];
+
+    });
   }
 
   showEmpleado(empleado:Empleado){
   this.empleado=empleado
+  console.log(this.empleado.username);
+
   this.telefono.setValue(empleado.persona.telefono);
   this.direccion.setValue(empleado.persona.direccion);
   this.email.setValue(empleado.persona.email);
@@ -108,7 +111,7 @@ export class ListadoEmpleadoComponent implements OnInit {
       .subscribe(res=>{
         this.notificacion.MensajeSuccess("Actualización Exitosa");
         this.botonCerrar.nativeElement.click();
-        this.loadEmpleados();  
+        this.loadEmpleados();
       })
     })
 
@@ -117,7 +120,7 @@ export class ListadoEmpleadoComponent implements OnInit {
   updateState(empleado:Empleado){
     var requesStateEmpleado:any={
       usuario:empleado.key,
-      estado:empleado.UsuarioEstado
+      estado:empleado.estado
     }
 
   this._ServiceGeneric.postPatch(`empleado`,requesStateEmpleado,null,'put')
@@ -133,6 +136,7 @@ export class ListadoEmpleadoComponent implements OnInit {
   }
 
   stateEmpleado(valor:any):string{
+
     return EstadoEmpleado[valor]
   }
   onlyNumberKey(event) {
