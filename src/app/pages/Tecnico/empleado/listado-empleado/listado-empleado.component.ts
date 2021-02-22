@@ -8,6 +8,7 @@ import { Persona } from '../../../../models/Persona';
 import { ResponseHttp } from '../../../../models/Base/ResponseHttp';
 import { TipoDocumentos } from 'src/app/models/Enums/DocumentosValidosEnum';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { SnotifyService } from 'ng-snotify';
 
 @Component({
   selector: 'app-listado-empleado',
@@ -31,7 +32,7 @@ export class ListadoEmpleadoComponent implements OnInit {
   public empleado= new Empleado;
   constructor(private notificacion: NotificacionServiceService,
               private _ServiceGeneric: ServicieGeneric,
-              private formBuilder: FormBuilder
+              private formBuilder: FormBuilder,
 
               ) { }
 
@@ -56,7 +57,7 @@ export class ListadoEmpleadoComponent implements OnInit {
     this.formEdit = this.formBuilder.group({
       direccion:['', [Validators.required]],
       telefono: ['', [Validators.required,Validators.minLength(10),Validators.maxLength(10)]],
-      fechaFinalizacion: [''],
+      fechaFinalizacion: ['',[Validators.required]],
       email: ['', [Validators.required]]
     });
   }
@@ -78,52 +79,60 @@ export class ListadoEmpleadoComponent implements OnInit {
   this.fechaFinalizacion.setValue(empleado.finCargo);
   }
 
-  delete(empleado:Empleado){
-    this._ServiceGeneric.getRemove<ResponseHttp<Empleado>>(empleado.key,`empleado`,null,'delete')
-    .subscribe(res=>{
-      this.notificacion.MensajeSuccess(res.message);
-    });
+  async delete(empleado:Empleado){
+    var res=await this.notificacion.MensajeConfir(empleado.persona.nombres);
+    if (res) {
+      this._ServiceGeneric.getRemove<ResponseHttp<Empleado>>(empleado.key,`usuario`,null,'delete')
+      .subscribe(res=>{
+        this.notificacion.MensajeSuccess(res.message);
+      });
+    }
+
   }
 
   UpdatePersonaYEmpleado(){
+
+        if (this.formEdit.invalid) {
+            this.notificacion.MensajeInfo("formulario invalido");
+          return;
+        }
+
     var requestPersonaUpdate:any={
+      key:this.empleado.key,
+      nombres:this.empleado.persona.nombres,
+      apellidos:this.empleado.persona.apellidos,
+      tipoDocumento:this.empleado.persona.tipoDocumento,
+      numeroDocumento:this.empleado.persona.numeroDocumento,
+      expedicionDocumento:this.empleado.persona.expedicionDocumento,
+      direccion:this.direccion.value,
       telefono:this.telefono.value,
       email:this.email.value,
-      direccion:this.direccion.value,
       documento:this.empleado.persona.numeroDocumento,
-      key:this.empleado.persona.key
+      nacionalidadKey:this.empleado.persona.nacionalidad.key
       }
 
     var requestEmpleadoUpdate:any={
-      key:this.empleado.persona.key,
-      documento:this.empleado.persona.numeroDocumento,
-      fechaFinalizacion:this.fechaFinalizacion.value
-    }
-
-    if (this.formEdit.invalid) {
-      this.notificacion.MensajeError("Formulario Invalido");
-      return;
+      key:this.empleado.key,
+      finCargo: this.fechaFinalizacion.value
     }
 
     this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`,requestPersonaUpdate,null,'put')
     .subscribe(res=>{
+      console.log('actualice persona');
       this._ServiceGeneric.postPatch<ResponseHttp<Empleado>>(`empleado`,requestEmpleadoUpdate,null,'put')
-      .subscribe(res=>{
-        this.notificacion.MensajeSuccess("Actualización Exitosa");
+      .subscribe(resp=>{
+        console.log('actualice empleado');
         this.botonCerrar.nativeElement.click();
+        this.notificacion.MensajeSuccess('Usuario actualizado');
         this.loadEmpleados();
       })
     })
 
   }
 
-  updateState(empleado:Empleado){
-    var requesStateEmpleado:any={
-      usuario:empleado.key,
-      estado:empleado.estado
-    }
-
-  this._ServiceGeneric.postPatch(`empleado`,requesStateEmpleado,null,'put')
+  updateState(key:number,status:boolean){
+      var estado=status?1:0;
+  this._ServiceGeneric.postPatch(`usuario/estado`,{key,estado},null,'put')
   .subscribe(res=>{
     this.notificacion.MensajeSuccess("Estado Actualizado");
     this.loadEmpleados();

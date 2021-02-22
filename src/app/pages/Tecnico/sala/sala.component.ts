@@ -9,6 +9,7 @@ import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { TipoSalaEnum,  SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
 import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';
 import { ResponseHttp } from '../../../models/Base/ResponseHttp';
+import { ModalAuthService } from '../../../components/modal-auth/modal-auth.service';
 
 
 
@@ -39,7 +40,8 @@ export class SalaComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private _ServiceGeneric: ServicieGeneric,
-    private notificacion: NotificacionServiceService) {
+    private notificacion: NotificacionServiceService,
+    private modal:ModalAuthService) {
   }
 
 
@@ -47,6 +49,7 @@ export class SalaComponent implements OnInit {
 
   ngOnInit() {
 
+    this.modal.mostrarModal();
     this._ServiceGeneric.getRemove<ResponseHttp<Edificio>>(null, 'edificio')
     .subscribe(res=>this.ListaEdificios=res.data as Edificio[]);
 
@@ -54,12 +57,12 @@ export class SalaComponent implements OnInit {
     this.setSalaTipoValidator();
     this.LoadEnums();
     this.Columns = [
-      { key: 'key', title: '#',cellTemplate: this.numeroTpl },
-      { key: 'edificio.nombre', title: 'Edificio' },
-      { key: 'nombre', title: 'Sala' },
-      { key: 'tipo', title: 'Tipo', cellTemplate: this.tipoTpl },
-      { key: 'estado', title: 'Estado', cellTemplate: this.estadoTpl },
-      { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl },
+      { key: 'key', title: '#',cellTemplate: this.numeroTpl,width:'5' },
+      { key: 'edificio.nombre', title: 'Edificio',width:'40' },
+      { key: 'nombre', title: 'Sala',width:'40' },
+      { key: 'tipo', title: 'Tipo', cellTemplate: this.tipoTpl,width:'10' },
+      { key: 'estado', title: 'Estado', cellTemplate: this.estadoTpl,width:'10' },
+      { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl,width:'20' },
     ];
 
 
@@ -124,7 +127,9 @@ export class SalaComponent implements OnInit {
 
 
 
+
   ShowSala(element: any) {
+
     this.Actualizar = true;
     this.form.patchValue(element);
     this.edificio.setValidators(null);
@@ -146,6 +151,7 @@ export class SalaComponent implements OnInit {
     this.form.updateValueAndValidity();
   }
 
+
   loadSala() {
     this._ServiceGeneric.getRemove<Sala[]>(null, 'sala')
       .subscribe({
@@ -157,29 +163,31 @@ export class SalaComponent implements OnInit {
       });
   }
   Update() {
+    console.log('actualizarss');
+
     if (this.validateForm) {
       if (this.tipo.value == TipoSalaEnum.Fisica) {
         // tslint:disable-next-line: max-line-length
         const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
         salaFisica.key = this.key.value;
-        this.PeticionPostYPut(SalaFisica, 'fisica', 'put');
-        return;
+        this.PeticionPostYPut(salaFisica, 'fisica', 'put');
+
       } else {
         // tslint:disable-next-line: max-line-length
         const salaVirtual = new SalaVirtual(this.nombre.value, +this.estado.value, this.edificio.value, this.link.value, this.plataforma.value);
         salaVirtual.key = this.key.value;
         this.PeticionPostYPut(salaVirtual, 'virtual', 'put');
-        return;
+
       }
 
     }
   }
 
   PeticionPostYPut(sala: any, tipo: string, metodo: any) {
-    // tslint:disable-next-line: max-line-length
     this._ServiceGeneric.postPatch<any>(`sala/${tipo}`, sala, null, metodo)
       .subscribe(res => {
-        this.notificacion.MensajeSuccess;
+        console.log(res);
+        this.notificacion.MensajeSuccess();
         this.closeModal();
         this.loadSala();
       },

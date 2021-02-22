@@ -16,7 +16,7 @@
         <input
           type="checkbox"
           [checked]="row.estado"
-          (click)="updateState(row)"
+          (click)="updateState(row.key,!row.estado)"
         />
         <span class="lever switch-col-cyan"></span>
       </label>
@@ -174,7 +174,7 @@
                     <div class="col">
                       <div class="form-group row">
                         <label class="control-label text-right col-md-3"
-                          >Telefono:</label
+                          >Telefono*:</label
                         >
                         <div class="">
                           <input
@@ -195,7 +195,7 @@
                     <div class="col">
                       <div class="form-group row">
                         <label class="control-label text-right col-md-3"
-                          >Direción:
+                          >Direción*:
                         </label>
                         <div class="">
                           <input
@@ -290,7 +290,7 @@
                     <div class="col">
                       <div class="form-group row">
                         <label class="control-label text-right col-4"
-                          >Finalización Cargo:</label
+                          >Finalización Cargo*:</label
                         >
                         <div class="col-8">
                           <input
@@ -310,7 +310,8 @@
                     <div class="col-md-6">
                       <div class="row">
                         <div class="col-md-offset-3 col-md-9">
-                          <button type="submit" class="btn btn-danger"(click)="UpdatePersonaYEmpleado()" >
+                          <button type="submit" class="btn btn-danger"
+                          (click)="UpdatePersonaYEmpleado()" >
                             <i class="fa fa-pencil"></i> Editar
                           </button>
                           <button

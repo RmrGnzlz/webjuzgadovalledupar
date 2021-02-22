@@ -9,7 +9,7 @@ export class Empleado extends Usuario{
   public finCargo?:Date;
 
   constructor(){
-    super()
+    super();
     this.persona=new Persona();
   }
 

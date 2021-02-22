@@ -5,6 +5,8 @@ import { NotificacionServiceService } from '../utils/notificacion-service.servic
 import { UsuarioService } from '../Service/Usuario/usuario.service';
 import { Router } from '@angular/router';
 
+declare function INIT_PLUGIN();
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -19,6 +21,9 @@ export class LoginComponent implements OnInit {
              private route:Router) { }
 
   ngOnInit() {
+    INIT_PLUGIN();
+
+    // sessionStorage.setItem('token','dfdfscsdfssdfsfs.adsfsfsdsfsdfsfsfsfsfs.sfsfsfsfsf');
   }
 
   login(form:NgForm){
@@ -26,13 +31,13 @@ export class LoginComponent implements OnInit {
         this.notificacion.MensajeError("Datos Incompleto");
         return;
       }
-      console.log('is valid');
-
-      this._serviceUsuario.login(this.usuario)
+      this._serviceUsuario.login(this.usuario.username,this.usuario.password)
       .subscribe(res=>{
-        console.log(res);
-
-        this.route.navigate(['/'])
+        // console.log('me voy al dashboard');
+        window.location.href = '#/dashboard'
+        // this.route.navigate(['/dashboard'])
+      },
+      err=>{console.log('error loguin');
       })
 
   }

@@ -41,7 +41,7 @@
   <div>
     <button
       data-toggle="modal"
-      data-target=".bs-example-modal-lg"
+      data-target="#exampleModal"
       class="btn btn-outline-info"
       (click)="ShowSala(row)"
     >
@@ -147,7 +147,6 @@
               </div>
             </div>
           </div>
-          <!-- [ngClass]="{ 'form-submitted': formSubmitted }" -->
           <div class="row p-t-20">
             <div
               [ngClass]="{ 'col-md-6': !Actualizar, 'col-md-12': Actualizar }"
@@ -176,8 +175,6 @@
                 </div>
               </div>
             </div>
-            <!--/span-->
-            <!-- [ngClass]="{ 'form-submitted': formSubmitted }" -->
 
             <div class="col-md-6" *ngIf="!Actualizar">
               <div class="form-group">

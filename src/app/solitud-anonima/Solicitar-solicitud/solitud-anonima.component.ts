@@ -180,9 +180,8 @@ export class SolitudAnonimaComponent implements OnInit {
   }
 
   stepChanged(args: StepChangedArgs) {
-    // console.log('stepChanged');
-    args.previousStep.state = this.stepStates.disabled;
-    // console.log(args);
+    if(args.previousStep!=undefined)
+      args.previousStep.state=this.stepStates.disabled;
   }
 
 

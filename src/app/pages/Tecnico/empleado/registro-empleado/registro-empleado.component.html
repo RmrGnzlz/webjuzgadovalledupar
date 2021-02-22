@@ -225,7 +225,7 @@
                     <label for="inputNacionalidad">Nacionalidad*</label>
                     <select
                       required
-                      [(ngModel)]="persona.nacionalidad.key"
+                      [(ngModel)]="persona?.nacionalidad.key"
                       class="form-control p-0"
                       id="inputNacionalidad"
                       name="Nacionalidad"
@@ -389,18 +389,29 @@
               </div>
               <div class="col-4">
                 <div class="">
-                  <div class="form-group has-success">
+                  <div class="form-group ">
                     <label class="control-label">Rol</label>
                     <select
                       [(ngModel)]="empleado.rolKey"
                       name="rol"
                       #rolControl="ngModel"
                     class="form-control custom-select">
+                    <option  value="" selected>Seleccione</option>
                       <option *ngFor="let item of roles"  [value]="item.key">{{item.nombre}}</option>
                     </select>
-                    <small class="form-control-feedback">
-                      Select your gender
+                    <ng-container
+                    *ngIf="rolControl.invalid && rolControl.touched"
+                     >
+                     <div
+                     *ngIf="rolControl.errors.required"
+                     class="container-error-message"
+                   >
+                    <small class="form-control is-invalid">
+                      Campo requerido
                     </small>
+                   </div>
+                    </ng-container>
+
                   </div>
                 </div>
                 <div class="">
@@ -424,7 +435,7 @@
                 <button type="submit" (click)="validarFormulario()" class="btn btn-success">
                   <i class="fa fa-check"></i> Registrar
                 </button>
-                <button type="button" class="btn btn-inverse">Cancelar</button>
+                <button type="button" routerLink="/empleados" class="btn btn-inverse">Cancelar</button>
               </div>
               <!-- <div class="col-4">
 

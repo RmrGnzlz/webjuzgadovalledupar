@@ -23,7 +23,7 @@ export class RegistroEmpleadoComponent implements OnInit {
   @ViewChild('empleadoForm', { static: false }) empleadoForm: NgForm;
   @ViewChild('documentoForm', { static: false }) documentoForm: NgForm;
 
-  persona = new Persona();
+  persona:Persona;
   empleado = new Empleado();
   tipoDocumentos: any[] = [];
   existePersona = false;
@@ -36,6 +36,9 @@ export class RegistroEmpleadoComponent implements OnInit {
     private router: Router,) { }
 
   ngOnInit(): void {
+
+    this.persona=new Persona();
+
     this._ServiceGeneric.getRemove<ResponseHttp<Rol>>(null,`rol`)
     .subscribe(res=>this.roles=res.data as Rol[])
 
@@ -74,7 +77,6 @@ export class RegistroEmpleadoComponent implements OnInit {
   consultarPersona() {
     this._ServiceGeneric.getRemove<ResponseHttp<Persona>>(this.persona.numeroDocumento, `persona`)
       .subscribe(res => {
-        console.log(res.data);
         this.persona = res.data as Persona;
         this.empleado.personaKey=this.persona.key;
         this.existePersona = true;
@@ -83,9 +85,12 @@ export class RegistroEmpleadoComponent implements OnInit {
   }
 
   actualizarOAgregarPersona() {
-    console.log(this.persona);
     var metodo: any = 'post'
     if (this.existePersona) metodo = 'put'
+    this.persona.nacionalidadKey=this.persona.nacionalidad.key;
+
+
+
     this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`, this.persona, null, metodo)
       .subscribe(res =>{
         this.persona=res.data as Persona;
@@ -119,9 +124,10 @@ export class RegistroEmpleadoComponent implements OnInit {
   isValidTypeBoolean: boolean = true;
 
   stepChanged(args: StepChangedArgs) {
-    // console.log('stepChanged');
-    args.previousStep.state = this.stepStates.disabled;
-    // console.log(args);
+
+      if(args.previousStep!=undefined)
+      args.previousStep.state=this.stepStates.disabled;
+
   }
 
   isValidFunctionReturnsBoolean(args: StepValidationArgs) {

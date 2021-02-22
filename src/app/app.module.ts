@@ -28,6 +28,8 @@ import { PagesComponent } from './pages/pages.component';
 import { SharedModule } from './shared/shared.module';
 import { PagesModule } from './pages/pages.module';
 import { SnotifyModule, ToastDefaults, SnotifyService } from 'ng-snotify';
+import { ComponentsModule } from './components/components.module';
+import { ModalAuthComponent } from './components/modal-auth/modal-auth.component';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.circles,
@@ -46,7 +48,8 @@ const ngWizardConfig: NgWizardConfig = {
     LoginComponent,
     SolitudAnonimaComponent,
     ConsultarSolicitudComponent,
-    PagesComponent
+    PagesComponent,
+    ModalAuthComponent
   ],
   imports: [
     BrowserModule,
@@ -56,7 +59,7 @@ const ngWizardConfig: NgWizardConfig = {
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    SnotifyModule.forRoot(),
+    SnotifyModule,
     RxReactiveFormsModule,
     NgWizardModule.forRoot(ngWizardConfig),
     SharedModule,

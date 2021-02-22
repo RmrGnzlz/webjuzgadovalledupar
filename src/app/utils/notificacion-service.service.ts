@@ -10,8 +10,6 @@ export class NotificacionServiceService {
   constructor(private service: SnotifyService) { }
 
   public MensajeSuccess(descripcion="Transacción exitosa",title="Exitoso!!"){
-    console.log("hola");
-
     this.service.success(descripcion, title, { position: SnotifyPosition.rightTop, titleMaxLength:title.length,bodyMaxLength:descripcion.length });
   }
 
@@ -26,8 +24,12 @@ export class NotificacionServiceService {
   public MensajeConfir(elemento:string){
 
     return new Promise(resolve=>{
-      this.service.error( elemento,'Seguro desea borrar', {
+      this.service.error( elemento,'Seguro desea borrar',
+
+      {
         timeout: 50000,
+        titleMaxLength:20,
+        bodyMaxLength:elemento.length,
         position: SnotifyPosition.rightTop,
         showProgressBar: false,
         closeOnClick: true,

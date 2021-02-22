@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 
 
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { PruebaComponent } from './prueba/prueba.component';
 import { SalaComponent } from './Tecnico/sala/sala.component';
 import { ComponentsModule } from '../components/components.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -23,7 +22,6 @@ const ngWizardConfig: NgWizardConfig = {
 @NgModule({
   declarations: [
     DashboardComponent,
-    PruebaComponent,
     SalaComponent,
     DespachoComponent,
     JuzgadoComponent,

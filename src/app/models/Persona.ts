@@ -12,7 +12,7 @@ export class Persona extends BaseModel{
   public telefono: string;
   public email: string;
   public nacionalidad:Pais;
-  public nacionadKey:number;
+  public nacionalidadKey:number;
   // public empleado: any[];
   constructor(){super();
   this.nacionalidad= new Pais();

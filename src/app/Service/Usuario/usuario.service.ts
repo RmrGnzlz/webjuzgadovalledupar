@@ -17,14 +17,25 @@ export class UsuarioService {
     this.cargarStorage();
    }
 
-   login(user: Usuario) {
 
-      return this._ServiceGeneric.postPatch<ResponseHttp<any>>('usuario/auth/login',user)
+  renovarToken(username:string,password:string) {
+    localStorage.removeItem('token');
+    return this._ServiceGeneric.postPatch<ResponseHttp<any>>('usuario/auth/login',{username,password})
+    .pipe(
+      map(res=>{
+        localStorage.setItem('token', res.data.token);
+        return true;
+      },
+      err=>{return false})
+    );
+  }
+
+   login(username:string,password:string) {
+
+      return this._ServiceGeneric.postPatch<ResponseHttp<any>>('usuario/auth/login',{username,password})
       .pipe(
         map(res=>{
-          console.log(res);
-          localStorage.setItem('token', res.data.token);
-          localStorage.setItem('expiracion', res.data.expiracion);
+          sessionStorage.setItem('token', res.data.token);
           return this.cargarUsuario();
         },
         err=>{return false})
@@ -48,8 +59,8 @@ export class UsuarioService {
   }
 
   cargarStorage() {
-    if (localStorage.getItem('token')) {
-      this.token = localStorage.getItem('token');
+    if (sessionStorage.getItem('token')) {
+      this.token = sessionStorage.getItem('token');
       this.usuario = JSON.parse(localStorage.getItem('usuario'));
       this.menu = JSON.parse(localStorage.getItem('menu'));
     } else {
@@ -64,9 +75,11 @@ export class UsuarioService {
   }
 
   Logout() {
+    console.log('logout');
+
     this.usuario = null;
     this.token = '';
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     localStorage.removeItem('usuario');
     localStorage.removeItem('id');
     localStorage.removeItem('menu');

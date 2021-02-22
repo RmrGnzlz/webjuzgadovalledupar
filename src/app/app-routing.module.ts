@@ -15,7 +15,7 @@ const routes: Routes = [
     path:'',
     component:PagesComponent,
     loadChildren:'./pages/pages.module#PagesModule',
-    canActivate:[]
+    canActivate:[AuthGuard]
   },
   { path: '**', component: NotFoundComponent }
 ];
