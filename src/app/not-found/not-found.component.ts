@@ -15,48 +15,26 @@ declare function INIT_PLUGIN();
 export class NotFoundComponent implements OnInit {
 
   public columns: Columns[] = [
-    { key: 'nombre', title: 'NOMBRE' },
+    { key: 'nombre', title: 'NOMBREss' },
     { key: 'direccion', title: 'DIRECCION' },
     { key: 'key', title: 'KEY' },
   ];
 
-  public pagination = {
-    limit: 10,
-    offset: 0,
-    count: -1,
-  };
-  public data:DataListado<Edificio> ;
+  public ruta:'edificio';
 
-  constructor(  private readonly companyService: SalaService,
-    private readonly cdr: ChangeDetectorRef,
-    private _ServiceGeneric: ServicieGeneric) { }
-    private ngUnsubscribe: Subject<void> = new Subject<void>();
+
+  constructor( ) { }
+
 
   ngOnInit() {
     INIT_PLUGIN();
-    this.getData();
-  }
-
-  public verNuevoDato(event:any){
-    console.log(event);
 
   }
 
 
-  //pagina 1, numero 10 filas
-  public getData(params: string='/1/10'): void {
-
-    this._ServiceGeneric.getRemove<DataListado<Edificio>>(null,`edificio${params}`)
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(res=>{
-        this.data=res;
-        console.log(res.data);
-          this.pagination.count=res.totalEntities;
-          this.pagination = { ...this.pagination };
-    })
 
 
-  }
+
 
 
 }
