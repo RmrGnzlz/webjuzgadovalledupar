@@ -65,6 +65,7 @@ const ngWizardConfig: NgWizardConfig = {
     SharedModule,
     ServiceModule,
     PagesModule,
+    ComponentsModule
   ],
   exports: [
 

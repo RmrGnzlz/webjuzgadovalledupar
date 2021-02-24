@@ -29,9 +29,10 @@
 
       <ngx-table
         [configuration]="configuration"
-        [data]="Data"
+        [data]="Data?.data"
         [columns]="Columns"
-        (event)="onEvent($event)"
+        [pagination]="pagination"
+        (event)="eventEmitted($event)"
         #table
       >
 
