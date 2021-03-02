@@ -6,15 +6,17 @@ import { UsuarioService } from '../../Service/Usuario/usuario.service';
 })
 export class ModalAuthService {
 
-  public oculto: string = 'oculto';
+  public oculto: string = 'ocultarModal';
 
   public notificacion = new EventEmitter<Boolean>();
 
-  constructor(private usuarioService: UsuarioService) { }
+  constructor(private usuarioService: UsuarioService) {
+
+  }
 
 
   ocultarModalYLogout() {
-    this.oculto = 'oculto';
+    this.oculto = 'ocultarModal';
     this.usuarioService.Logout();
     // this.tipo = null;
     // this.id = null;

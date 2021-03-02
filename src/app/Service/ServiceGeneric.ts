@@ -1,3 +1,4 @@
+import { ResponseHttp } from './../models/Base/ResponseHttp';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -43,23 +44,6 @@ export class ServicieGeneric{
     ) as Observable<returnType>;
   }
 
-  // myGetRemove<T>(
-  //   id:string | number | null,
-  //   route:string,
-  //   metodo:any
-  //   ):T | T[]{
-  //     console.log('mygetremove');
-
-  // this.getRemove<ResponseHttp<T>>(id,route,metodo)
-  // .pipe(map(data=>{
-  //   return data.data;
-  // })
-  // ).subscribe(res=>{
-  //   res.
-  // })
-  // return null;
-  // }
-
   postPatch<returnType>(
     route: string,
     data: any,
@@ -74,20 +58,16 @@ export class ServicieGeneric{
     ) as Observable<returnType>;
   }
 
-  // myPostpatch<T>(
-  //   entidad:T,
-  //   route:string,
-  //   metodo:any
-  //   ):T
-  //   {
-  //     this.postPatch<ResponseHttp<T>>(route,entidad,null,metodo)
-  //     .pipe(map(data=>{
-  //       return data.data;
-  //     }),
-  //     )
-  //   return null;
 
-  // }
+  getDeleteObject<ResponseHttp>(
+    route: string,
+    data: any,
+    method: 'get' | 'delete' = 'get'
+  ): Observable<ResponseHttp> {
+    return this.http[method](
+      `${this.END_POINT}${route}`, data
+    ) as unknown  as Observable<ResponseHttp>;
+  }
 
 
 

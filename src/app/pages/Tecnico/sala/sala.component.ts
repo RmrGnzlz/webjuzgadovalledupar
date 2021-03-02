@@ -1,15 +1,13 @@
 import { ServicieGeneric } from './../../../Service/ServiceGeneric';
 import { Columns } from 'ngx-easy-table';
-import { EstadoSalaEnum, Sala } from './../../../models/Sala.Model';
+import {  Sala } from './../../../models/Sala.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { EdificioService } from '../../../Service/Edificio/edificio.service';
 import { Edificio } from 'src/app/models/Edificio.Model';
-import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { TipoSalaEnum,  SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
 import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';
 import { ResponseHttp } from '../../../models/Base/ResponseHttp';
-import { ModalAuthService } from '../../../components/modal-auth/modal-auth.service';
+import { EstadoGenerico } from '../../../models/Enums/EstadoGenerico';
 
 
 
@@ -41,7 +39,7 @@ export class SalaComponent implements OnInit {
     private formBuilder: FormBuilder,
     private _ServiceGeneric: ServicieGeneric,
     private notificacion: NotificacionServiceService,
-    private modal:ModalAuthService) {
+    ) {
   }
 
 
@@ -49,7 +47,7 @@ export class SalaComponent implements OnInit {
 
   ngOnInit() {
 
-    this.modal.mostrarModal();
+    // this.modal.mostrarModal();
     this._ServiceGeneric.getRemove<ResponseHttp<Edificio>>(null, 'edificio')
     .subscribe(res=>this.ListaEdificios=res.data as Edificio[]);
 
@@ -66,14 +64,14 @@ export class SalaComponent implements OnInit {
     ];
 
 
-    this.loadSala();
+    // this.loadSala();
 
   }
 
   LoadEnums() {
-    for (const item in EstadoSalaEnum) {
+    for (const item in EstadoGenerico) {
       if (isNaN(Number(item))) {
-        this.Estados.push({ text: item, value: EstadoSalaEnum[item] });
+        this.Estados.push({ text: item, value: EstadoGenerico[item] });
       }
     }
 
@@ -152,16 +150,16 @@ export class SalaComponent implements OnInit {
   }
 
 
-  loadSala() {
-    this._ServiceGeneric.getRemove<Sala[]>(null, 'sala')
-      .subscribe({
-        next: (res: any) => {
-          this.ListaSalas = res.data;
-        },
-        error: console.error
+  // loadSala() {
+  //   this._ServiceGeneric.getRemove<Sala[]>(null, 'sala')
+  //     .subscribe({
+  //       next: (res: any) => {
+  //         this.ListaSalas = res.data;
+  //       },
+  //       error: console.error
 
-      });
-  }
+  //     });
+  // }
   Update() {
     console.log('actualizarss');
 
@@ -189,7 +187,7 @@ export class SalaComponent implements OnInit {
         console.log(res);
         this.notificacion.MensajeSuccess();
         this.closeModal();
-        this.loadSala();
+        // this.loadSala();
       },
         err => this.notificacion.MensajeError);
   }
@@ -217,7 +215,7 @@ export class SalaComponent implements OnInit {
       .subscribe({
         next: (p: unknown) => {
           this.notificacion.MensajeSuccess("Registro eliminado","Exitoso")
-          this.loadSala();
+          // this.loadSala();
         },
         error: console.error
       })

@@ -44,7 +44,6 @@ export class TablaComponent implements OnInit {
   }
 
   eventEmitted($event: { event: string; value: any }): void {
-    console.log($event.value);
 
     if ($event.event !== 'onClick') {
       console.log($event.event);
@@ -65,12 +64,13 @@ export class TablaComponent implements OnInit {
     if(currenPage===0) return;
     console.log(currenPage);
 
+
+
     const params =`/${currenPage}/${pageSize}`;
-    this._ServiceGeneric.getRemove<DataListado<any>>(null,`${this.rutaApi}${params}`)
+    this._ServiceGeneric.getRemove<DataListado<any>>(null,`${this.rutaApi}`,{pageSize,currenPage})
     .pipe(takeUntil(this.ngUnsubscribe))
     .subscribe(res=>{
         this.data=res.data;
-        console.log(res.data);
           this.pagination.count=res.totalEntities;
           this.pagination = { ...this.pagination };
     })

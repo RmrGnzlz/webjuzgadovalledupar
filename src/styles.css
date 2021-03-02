@@ -21,7 +21,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .fondo_negro{
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.83);
   position: fixed;
   top: 0px;
   left: 0px;
@@ -29,7 +29,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   height: 100%;
   z-index: 999;
 }
-.oculto{
+.ocultarModal{
   display: none;
 }
 

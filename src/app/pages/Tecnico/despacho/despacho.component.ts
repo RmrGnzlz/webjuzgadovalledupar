@@ -1,12 +1,13 @@
 import { ServicieGeneric } from './../../../Service/ServiceGeneric';
 import { EdificioService } from './../../../Service/Edificio/edificio.service';
 import { DespachoService } from './../../../Service/despacho/despacho.service';
-import { Despacho, EstadoDespacho } from './../../../models/Despacho.Model';
+import { Despacho } from './../../../models/Despacho.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Edificio } from 'src/app/models/Edificio.Model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Columns } from 'ngx-easy-table';
 import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';
+import { EstadoGenerico } from '../../../models/Enums/EstadoGenerico';
 
 @Component({
   selector: 'app-despacho',
@@ -46,13 +47,13 @@ export class DespachoComponent implements OnInit {
     );
 
     // this.loadDespachos();
-    this.GetAllServiceGeneric();
+    // this.GetAllServiceGeneric();
     this.buildForm();
 
 
-    for (const item in EstadoDespacho) {
+    for (const item in EstadoGenerico) {
       if (isNaN(Number(item))) {
-        this.Estados.push({ text: item, value: EstadoDespacho[item] });
+        this.Estados.push({ text: item, value: EstadoGenerico[item] });
       }
     }
     this.Columns = [
@@ -67,18 +68,18 @@ export class DespachoComponent implements OnInit {
 
   // METODOS GENERICOS
 
-  GetAllServiceGeneric(){
-    this._ServiceGeneric.getRemove<Despacho[]>(null,'despacho')
-    .subscribe({
-      next:(res:any)=>{
-        console.log(res);
+  // GetAllServiceGeneric(){
+  //   this._ServiceGeneric.getRemove<Despacho[]>(null,'despacho')
+  //   .subscribe({
+  //     next:(res:any)=>{
+  //       console.log(res);
 
-        this.ListaDespachos=res.data;
-      },
-      error : console.error
+  //       this.ListaDespachos=res.data;
+  //     },
+  //     error : console.error
 
-    });
-  }
+  //   });
+  // }
   buildForm() {
     this.form = this.formBuilder.group({
       key: [''],
@@ -97,7 +98,7 @@ export class DespachoComponent implements OnInit {
       .subscribe({
         next:(p: unknown)=>{
           this.notificacion.MensajeSuccess
-            this.loadDespachos();
+            // this.loadDespachos();
         },
         error : console.error
       })
@@ -114,10 +115,10 @@ export class DespachoComponent implements OnInit {
   }
 
 
-  loadDespachos() {
-    this._servicioDespacho.GetAll().subscribe(res => this.ListaDespachos = res,
-      err => console.log(err));
-  }
+  // loadDespachos() {
+  //   this._servicioDespacho.GetAll().subscribe(res => this.ListaDespachos = res,
+  //     err => console.log(err));
+  // }
 
   add() {
 
@@ -127,7 +128,7 @@ export class DespachoComponent implements OnInit {
       .subscribe(res=>{
         this.notificacion.MensajeSuccess
         this.closeModal();
-        this.loadDespachos();
+        // this.loadDespachos();
       },
       err=>this.notificacion.MensajeError);
 
@@ -144,7 +145,7 @@ export class DespachoComponent implements OnInit {
         .subscribe(res=>{
           this.notificacion.MensajeSuccess
           this.closeModal();
-          this.loadDespachos();
+          // this.loadDespachos();
         },
         err=>
         this.notificacion.MensajeError

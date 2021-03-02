@@ -1,5 +1,6 @@
+import { EstadoGenerico } from './../../../../models/Enums/EstadoGenerico';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import {  StepChangedArgs, StepValidationArgs, STEP_STATE } from 'ng-wizard';
 import { of } from 'rxjs';
 import { TipoDocumentos } from 'src/app/models/Enums/DocumentosValidosEnum';
@@ -11,7 +12,10 @@ import { Empleado } from 'src/app/models/Enpleado';
 import { Persona } from 'src/app/models/Persona';
 import { Rol } from '../../../../models/Rol';
 import { Pais } from '../../../../models/Pais';
-
+import { AreaServicio } from '../../../../models/AreaServicio';
+import { TipoAreaServicio } from '../../../../models/Enums/TipoAreaServicio';
+import { INgxSelectOption } from 'ngx-select-ex';
+import { TipoAreaEnum } from '../../../../models/Juzgado.Model';
 @Component({
   selector: 'app-registro-empleado',
   templateUrl: './registro-empleado.component.html',
@@ -22,6 +26,10 @@ export class RegistroEmpleadoComponent implements OnInit {
   @ViewChild('personaForm', { static: false }) personaForm: NgForm;
   @ViewChild('empleadoForm', { static: false }) empleadoForm: NgForm;
   @ViewChild('documentoForm', { static: false }) documentoForm: NgForm;
+  form: FormGroup;
+  CurrentDate = new Date();
+
+
 
   persona:Persona;
   empleado = new Empleado();
@@ -29,15 +37,40 @@ export class RegistroEmpleadoComponent implements OnInit {
   existePersona = false;
   roles:Rol[]=[];
   paises:Pais[]=[];
+  areasDeServicios:AreaServicio[];
 
 
   constructor(private notificacion: NotificacionServiceService,
     private _ServiceGeneric: ServicieGeneric,
+    private formBuilder: FormBuilder,
     private router: Router,) { }
 
-  ngOnInit(): void {
 
-    this.persona=new Persona();
+    simularAreaServicio(){
+      var lista: any[] =[
+        { key: 1, estado: EstadoGenerico.Activo, tipo: TipoAreaServicio.Conocimiento } ,
+        { key: 2, estado: EstadoGenerico.Activo, tipo: TipoAreaServicio.Garantia } ,
+        { key: 3, estado: EstadoGenerico.Activo, tipo: TipoAreaServicio.Magistrado } ,
+      ];
+      return of(lista);
+    }
+
+
+
+    verComponente(){
+
+    }
+
+  ngOnInit(): void {
+    this.persona = new Persona();
+  this.verComponente
+  // this.simularAreaServicio()
+  // .subscribe(res=>{this.areasDeServicios=res} );
+
+      this._ServiceGeneric.getRemove<ResponseHttp<AreaServicio>>(null,'CentroServicio/All')
+      .subscribe(res=>{
+        this.areasDeServicios=res.data as AreaServicio[];
+      })
 
     this._ServiceGeneric.getRemove<ResponseHttp<Rol>>(null,`rol`)
     .subscribe(res=>this.roles=res.data as Rol[])
@@ -45,9 +78,22 @@ export class RegistroEmpleadoComponent implements OnInit {
     this._ServiceGeneric.getRemove<ResponseHttp<Pais>>(null,'Pais')
       .subscribe(res=>this.paises=res.data as Pais[]);
 
-    // this._ServiceGeneric.myPostpatch<Rol>(null,'','post')
-
     this.loadEnums();
+    this.buildForm();
+  }
+
+  selectionChanged(evento){
+
+  }
+  buildForm() {
+    this.form = this.formBuilder.group({
+      usuario: ['',[Validators.required,Validators.minLength(6),Validators.maxLength(20),Validators.pattern('^[a-zA-Z0-9._]+$')]],
+      areaServicio: ['', [Validators.required]],
+      rol: ['', [Validators.required]],
+      inicioCargo: ['', [Validators.required]],
+      finCargo: [''],
+      key: [this.persona.key],
+    });
   }
 
   loadEnums() {
@@ -56,7 +102,6 @@ export class RegistroEmpleadoComponent implements OnInit {
         this.tipoDocumentos.push({ nombre: item, key: TipoDocumentos[item] });
       }
     }
-
   }
 
   validarFormulario() {
@@ -65,7 +110,8 @@ export class RegistroEmpleadoComponent implements OnInit {
       return;
     }
 
-    if (this.empleadoForm.invalid) {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       this.notificacion.MensajeError("Formulario invalido", "Error");
       return;
     }
@@ -99,9 +145,11 @@ export class RegistroEmpleadoComponent implements OnInit {
   }
 
   registrarEmpleado() {
-    console.log('registrar empleado');
+    this.empleado=this.form.value;
 
-    this.empleado.personaKey=this.persona.key;
+  console.log(this.empleado);
+console.log(this.form.value);
+
     this._ServiceGeneric.postPatch<ResponseHttp<Empleado>>(`empleado`, this.empleado,null,"post")
       .subscribe(res => {
         this.notificacion.MensajeSuccess(res.message);
@@ -114,7 +162,6 @@ export class RegistroEmpleadoComponent implements OnInit {
     return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57;
   }
 
-
   stepStates = {
     normal: STEP_STATE.normal,
     disabled: STEP_STATE.disabled,
@@ -125,28 +172,28 @@ export class RegistroEmpleadoComponent implements OnInit {
 
   stepChanged(args: StepChangedArgs) {
 
-      if(args.previousStep!=undefined)
+    if(args.previousStep!=undefined)
       args.previousStep.state=this.stepStates.disabled;
 
-  }
-
-  isValidFunctionReturnsBoolean(args: StepValidationArgs) {
-    console.log(this.documentoForm.value['documento']);
-
-    if (args.fromStep.index == 0) {
-      if (this.documentoForm.invalid) {
-        this.notificacion.MensajeError("Ingrese documento", "Error");
-        return false;
-      } else {
-        this.consultarPersona();
-        return true;}
     }
 
-    if (args.fromStep.index == 1) {
-      if (this.personaForm.invalid) {
-        this.notificacion.MensajeError("Formulario invalidos", "Error");
-        return false;
-      } else return true;
+    isValidFunctionReturnsBoolean(args: StepValidationArgs) {
+      if (args.fromStep.index == 0) {
+        if (this.documentoForm.invalid) {
+          this.documentoForm.form.markAllAsTouched();
+          this.notificacion.MensajeError("Ingrese documento", "Error");
+          return false;
+        } else {
+          this.consultarPersona();
+          return true;}
+        }
+
+        if (args.fromStep.index == 1) {
+          if (this.personaForm.invalid) {
+            this.personaForm.form.markAllAsTouched();
+            this.notificacion.MensajeError("Formulario invalido", "Error");
+            return false;
+          } else return true;
     }
     return true;
   }
@@ -155,5 +202,14 @@ export class RegistroEmpleadoComponent implements OnInit {
     console.log('isValidFunctionReturnsObservable');
     return of(true);
   }
+
+  campoEsValido(campo:string){
+    return this.form.controls[campo].errors && this.form.controls[campo].touched;
+  }
+  get usuario() { return this.form.get('usuario'); }
+  get areaServicio() { return this.form.get('areaServicio'); }
+  get rol() { return this.form.get('rol'); }
+  get inicioCargo() { return this.form.get('inicioCargo'); }
+  get finCargo() { return this.form.get('finCargo'); }
 
 }

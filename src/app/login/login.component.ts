@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     INIT_PLUGIN();
 
-    // sessionStorage.setItem('token','dfdfscsdfssdfsfs.adsfsfsdsfsdfsfsfsfsfs.sfsfsfsfsf');
+    sessionStorage.setItem('token','dfdfscsdfssdfsfs.adsfsfsdsfsdfsfsfsfsfs.sfsfsfsfsf');
   }
 
   login(form:NgForm){
@@ -33,9 +33,7 @@ export class LoginComponent implements OnInit {
       }
       this._serviceUsuario.login(this.usuario.username,this.usuario.password)
       .subscribe(res=>{
-        // console.log('me voy al dashboard');
         window.location.href = '#/dashboard'
-        // this.route.navigate(['/dashboard'])
       },
       err=>{console.log('error loguin');
       })

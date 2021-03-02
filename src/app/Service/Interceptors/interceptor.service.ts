@@ -41,9 +41,12 @@ export class InterceptorService implements HttpInterceptor  {
         this.notificacion.MensajeError("Error interno Servidor","Intente mas tarde");
       }
       if (error.status==400) {
-        console.log(error.message);
-
         this.notificacion.MensajeError(error.error.message,"Error");
+      }
+      if (error.status==404) {
+        console.log(error.error.message);
+
+        this.notificacion.MensajeError(error.error.message)
       }
 
     return throwError('error personalizado')

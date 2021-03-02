@@ -1,14 +1,13 @@
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Columns } from 'ngx-easy-table';
-import { Empleado, EstadoEmpleado } from 'src/app/models/Enpleado';
+import { Empleado } from 'src/app/models/Enpleado';
 import { RolEnums } from 'src/app/models/Enums/RolEnums';
 import { ServicieGeneric } from 'src/app/Service/service.index';
 import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';
 import { Persona } from '../../../../models/Persona';
 import { ResponseHttp } from '../../../../models/Base/ResponseHttp';
-import { TipoDocumentos } from 'src/app/models/Enums/DocumentosValidosEnum';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { SnotifyService } from 'ng-snotify';
+import { EstadoGenerico } from '../../../../models/Enums/EstadoGenerico';
 
 @Component({
   selector: 'app-listado-empleado',
@@ -63,7 +62,7 @@ export class ListadoEmpleadoComponent implements OnInit {
   }
 
   loadEmpleados(){
-    this._ServiceGeneric.getRemove<ResponseHttp<any>>(null,'empleado/All')
+    this._ServiceGeneric.getDeleteObject<ResponseHttp<Empleado>>('empleado/All',{currentPage:0,pageSize:0})
     .subscribe(res=>{this.listaEmpleado=res.data as Empleado[];
 
     });
@@ -124,7 +123,7 @@ export class ListadoEmpleadoComponent implements OnInit {
         console.log('actualice empleado');
         this.botonCerrar.nativeElement.click();
         this.notificacion.MensajeSuccess('Usuario actualizado');
-        this.loadEmpleados();
+        // this.loadEmpleados();
       })
     })
 
@@ -135,7 +134,7 @@ export class ListadoEmpleadoComponent implements OnInit {
   this._ServiceGeneric.postPatch(`usuario/estado`,{key,estado},null,'put')
   .subscribe(res=>{
     this.notificacion.MensajeSuccess("Estado Actualizado");
-    this.loadEmpleados();
+    // this.loadEmpleados();
   })
 
   }
@@ -146,7 +145,7 @@ export class ListadoEmpleadoComponent implements OnInit {
 
   stateEmpleado(valor:any):string{
 
-    return EstadoEmpleado[valor]
+    return EstadoGenerico[valor]
   }
   onlyNumberKey(event) {
     return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57;

@@ -1,5 +1,6 @@
 
-<app-tabla [Data]="listaEmpleado" [Columns]="Columns">
+<app-tabla
+[rutaApi]="'empleado/All'" [Columns]="Columns">
   <button
     routerLink="/empleado"
     type="button"

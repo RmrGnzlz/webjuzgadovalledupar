@@ -48,8 +48,8 @@ const ngWizardConfig: NgWizardConfig = {
     LoginComponent,
     SolitudAnonimaComponent,
     ConsultarSolicitudComponent,
+    ModalAuthComponent,
     PagesComponent,
-    ModalAuthComponent
   ],
   imports: [
     BrowserModule,

@@ -11,7 +11,7 @@ import { ServicieGeneric } from '../../Service/service.index';
 import { TipoDocumentos } from '../../models/Enums/DocumentosValidosEnum';
 import { Rol } from '../../models/Rol';
 import { Pais } from '../../models/Pais';
-
+declare function INIT_PLUGIN();
 
 @Component({
   selector: 'app-solitud-anonima',
@@ -52,7 +52,7 @@ export class SolitudAnonimaComponent implements OnInit {
   };
 
   isValidTypeBoolean: boolean = true;
-  CurrentDate = new Date();
+  CurrentDate =  Date.now();
 
 
   constructor(private ngWizardService: NgWizardService,
@@ -60,6 +60,7 @@ export class SolitudAnonimaComponent implements OnInit {
     private _ServiceGeneric: ServicieGeneric) { }
 
   ngOnInit(): void {
+    INIT_PLUGIN();
     this.loadEnums();
     this._ServiceGeneric.getRemove<ResponseHttp<Pais>>(null,'pais')
     .subscribe(res=>{
@@ -67,28 +68,13 @@ export class SolitudAnonimaComponent implements OnInit {
     })
   }
 
-  SolicitarRespuesta(url: string, data: any): Promise<any> {
-
-    return new Promise((resolve, reject) => {
-      this._ServiceGeneric.postPatch<any>(url, data)
-        .subscribe((res: any) => {
-          resolve(res);
-        }, err => { reject(false) });
-    });
-
-  }
-
-   registrarSolicitudYPersona() {
+   registrarSolicitudYPersona():boolean {
 
     if (this.solicitudForm.invalid || this.personaForm.invalid) {
       this.notificacion.MensajeError('se detectaron errores en los formularios', 'Error');
       this.exitosa=false;
       return ;
     }
-
-
-
-
     this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`,this.persona,null,'post')
     .subscribe(res=>{
       this._ServiceGeneric.postPatch<ResponseHttp<SolicitudAudienciaResponse>>(`solicitud`,this.crearFormData(this.solicitudAudiencia),null,'post')
@@ -96,10 +82,11 @@ export class SolitudAnonimaComponent implements OnInit {
       this.soliitudSudienciaResponse=res.data as SolicitudAudienciaResponse;
       this.notificacion.MensajeSuccess(res.message)
      this.exitosa=true;
+     return true;
     })}
     )
 
-    return ;
+
   }
 
   loadEnums() {
@@ -157,7 +144,6 @@ export class SolitudAnonimaComponent implements OnInit {
   //METODOS PARA EL PASO A PASO ->
   showPreviousStep(event?: Event) {
     console.log(' showPreviousStep');
-
     this.ngWizardService.previous();
   }
 
@@ -186,22 +172,34 @@ export class SolitudAnonimaComponent implements OnInit {
 
 
   isValidFunctionReturnsBoolean(args: StepValidationArgs) {
+      console.log('isValidFunctionReturnsBoolean');
 
     if (args.fromStep.index == 0) {
-      if (this.personaForm.invalid) {
-        this.notificacion.MensajeError("Formulario invalidos", "Error");
-        return false;
-      }else  return true;
 
+      if (this.personaForm.invalid) {
+          this.personaForm.form.markAllAsTouched();
+          this.notificacion.MensajeError("Formulario invalidos", "Error");
+          return false;
+        }
+
+        if(Date.parse(this.persona.expedicionDocumento.toString()) > this.CurrentDate.valueOf()){
+          this.notificacion.MensajeError("Mayor al dia de hoy", "Fecha invalida");
+          return false;
+        }
+        return true;
     }
+
 
     if (args.fromStep.index == 1) {
       console.log(this.solicitudForm);
       if (this.solicitudForm.invalid) {
+        this.solicitudForm.form.markAllAsTouched();
         this.notificacion.MensajeError("Formulario invalidos", "Error");
         return false;
       } else {
-        this.registrarSolicitudYPersona();
+
+        var respuesta:boolean=this.registrarSolicitudYPersona();
+        console.log(respuesta);
         return true;
       }
     }

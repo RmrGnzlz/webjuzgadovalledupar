@@ -21,7 +21,8 @@ export class ModalAuthComponent implements OnInit {
             ) { }
 
   ngOnInit(): void {
-    this.usuario=this._serviceUsuario.usuario.username;
+    this.usuario="helmerfa";
+    // this._serviceUsuario.usuario.username;
   }
 
   public cerrarModalYLogout(){

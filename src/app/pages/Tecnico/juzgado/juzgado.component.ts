@@ -3,10 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Columns } from 'ngx-easy-table';
 import { Juzgado, TipoAreaEnum } from 'src/app/models/Juzgado.Model';
 import { Edificio } from 'src/app/models/Edificio.Model';
-import { EstadoJuzgado } from '../../../models/Juzgado.Model';
 import { ServicieGeneric } from 'src/app/Service/service.index';
-import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { NotificacionServiceService } from '../../../utils/notificacion-service.service';
+import { EstadoGenerico } from '../../../models/Enums/EstadoGenerico';
 
 @Component({
   selector: 'app-juzgados',
@@ -46,12 +45,11 @@ export class JuzgadoComponent implements OnInit {
       { key: 'email', title: 'Correo' },
       { key: 'tipo', title: 'Tipo', cellTemplate:this.tipoTpl},
       { key: 'estado', title: 'Estado' },
-      // { key: 'correo', title: 'Despacho' },
       { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl },
     ];
-    for (const item in EstadoJuzgado) {
+    for (const item in EstadoGenerico) {
       if (isNaN(Number(item))) {
-        this.Estados.push({ text: item, value: EstadoJuzgado[item] });
+        this.Estados.push({ text: item, value: EstadoGenerico[item] });
       }
     }
     for (const item in TipoAreaEnum) {
@@ -61,26 +59,16 @@ export class JuzgadoComponent implements OnInit {
     }
 
     this.listadoDespachoEdificio();
-    this.cargarJuzgado();
+
     this.buildForm();
 
   }
 
-  cargarJuzgado() {
-    this._ServiceGeneric.getRemove<Juzgado[]>(null, 'juzgado')
-      .subscribe({
-        next: (res: any) => {
-          this.listaJuzgado = res.data;
-        },
-        error: console.error
-
-      });
-  }
   buildForm() {
     this.form = this.formBuilder.group({
       key: [''],
       nombre: ['', [Validators.required, Validators.minLength(4)]],
-      estado: [EstadoJuzgado.Activo],
+      estado: [EstadoGenerico.Activo],
       tipo: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       despacho: ['', [Validators.required]]
@@ -93,7 +81,7 @@ export class JuzgadoComponent implements OnInit {
         .subscribe(res => {
          this.notificacion.MensajeSuccess();
          this.closeModal();
-         this.cargarJuzgado();
+        //  this.cargarJuzgado();
         },
           err => this.notificacion.MensajeError()
         );
@@ -118,7 +106,7 @@ export class JuzgadoComponent implements OnInit {
       .subscribe({
         next: (p: unknown) => {
          this.notificacion.MensajeSuccess;
-          this.cargarJuzgado();
+          // this.cargarJuzgado();
         },
         error:this.notificacion.MensajeError
       })
@@ -136,7 +124,7 @@ export class JuzgadoComponent implements OnInit {
         .subscribe(res => {
           this.notificacion.MensajeSuccess();
           this.closeModal();
-          this.cargarJuzgado();
+          // this.cargarJuzgado();
         },
           err => this.notificacion.MensajeError());
     } else {

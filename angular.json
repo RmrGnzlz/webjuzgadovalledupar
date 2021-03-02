@@ -30,6 +30,7 @@
               "node_modules/ng-wizard/themes/ng_wizard.min.css",
               "node_modules/ng-wizard/themes/ng_wizard_theme_dots.min.css",
               "node_modules/ng-wizard/themes/ng_wizard_theme_circles.min.css",
+
               "src/styles.css"
 
             ],

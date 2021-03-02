@@ -13,9 +13,8 @@
       <div class="card-body">
         <ng-wizard [config]="config" (stepChanged)="stepChanged($event)">
           <ng-wizard-step
-            [description]="'Datos Basicos'"
-            [canEnter]="isValidTypeBoolean"
-            [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+          [description]="'Datos Basicos'"
+          [canExit]="isValidFunctionReturnsBoolean.bind(this)"
           >
             <span>Datos basicos del solicitante</span>
             <br />
@@ -345,8 +344,7 @@
 
           <ng-wizard-step
           [description]="'Solicitud'"
-          [canEnter]="isValidTypeBoolean"
-          [canExit]="isValidFunctionReturnsBoolean.bind(this)">
+            [canExit]="isValidFunctionReturnsBoolean.bind(this)">
             <span>Step 2 content</span>
             <form class="form-horizontal p-t-20" #solicitudForm="ngForm" >
               <div class="form-group row">
@@ -362,7 +360,7 @@
                     placeholder="Código Único investigación"
                     required
 
-                    mask="000 - 000 - 00 - 00000 - 0000 - 00000"
+                    mask="00  - 000 - 00 - 00000 - 0000 - 00000"
                   />
                   {{solicitudAudiencia | json}}
                   <ng-container
@@ -441,7 +439,7 @@
                   *ngFor="let item of tipoSujetoProcesales"
                   [value]="item.key"
                 >
-                  {{ item.nombre }}
+                  {{ item.nombre  }}
                 </option>
                   </select>
                   <ng-container
@@ -493,9 +491,8 @@
           </ng-wizard-step>
 
           <ng-wizard-step
-            [description]="'Radicado'"
-            [canEnter]="isValidFunctionReturnsObservable.bind(this)"
-            [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+          [description]="'Radicado'"
+          [canExit]="isValidFunctionReturnsObservable.bind(this)"
           >
             <br><br>
             <div class="container">

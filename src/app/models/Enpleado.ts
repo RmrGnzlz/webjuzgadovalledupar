@@ -1,12 +1,14 @@
-import { RolEnums } from './Enums/RolEnums';
-import { BaseModel } from './Base/Base.Model';
+
 import { Persona } from './Persona';
-import { Rol } from './Rol';
 import { Usuario } from './Usuario';
+import { AreaServicio } from './AreaServicio';
 export class Empleado extends Usuario{
 
   public inicioCargo?:Date;
   public finCargo?:Date;
+  public areaServicio:AreaServicio[];
+  public areaServicioKey:number[];
+
 
   constructor(){
     super();
@@ -15,8 +17,3 @@ export class Empleado extends Usuario{
 
 }
 
-export enum EstadoEmpleado{
-  Inactivo = 0,
-  Activo = 1,
-  Eliminado = 2
-}
