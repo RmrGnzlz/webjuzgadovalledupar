@@ -6,6 +6,10 @@ import { Edificio } from 'src/app/models/Edificio.Model';
 import { ServicieGeneric } from 'src/app/Service/service.index';
 import { NotificacionServiceService } from '../../../utils/notificacion-service.service';
 import { EstadoGenerico } from '../../../models/Enums/EstadoGenerico';
+import { AreaServicio } from '../../../models/AreaServicio';
+import { ResponseHttp } from '../../../models/Base/ResponseHttp';
+import { forkJoin } from 'rxjs';
+import { TablaComponent } from '../../../components/tabla/tabla.component';
 
 @Component({
   selector: 'app-juzgados',
@@ -14,6 +18,7 @@ import { EstadoGenerico } from '../../../models/Enums/EstadoGenerico';
 })
 export class JuzgadoComponent implements OnInit {
 
+  @ViewChild(TablaComponent) tabla: TablaComponent;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
   @ViewChild('tipoTpl', { static: true }) tipoTpl: TemplateRef<any>;
 
@@ -23,14 +28,10 @@ export class JuzgadoComponent implements OnInit {
   public Columns: Columns[];
   listaJuzgado: Juzgado[] = [];
   ListaEdificios: Edificio[] = [];
-  ListadoDespacho: any[] = [];
-
+  ListaAreas: AreaServicio[] = [];
   Estados: any[] = [];
-  Areas: any[] = [];
-
   form: FormGroup;
   Actualizar = false;
-
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,26 +40,31 @@ export class JuzgadoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    let ObservableAreasServicio = this._ServiceGeneric.getRemove<ResponseHttp<AreaServicio>>(null, 'CentroServicio/All');
+    let ObservableEdificios = this._ServiceGeneric.getRemove<ResponseHttp<Edificio>>(null, 'edificio');
+
+    forkJoin([ObservableAreasServicio, ObservableEdificios])
+      .subscribe(result => {
+        this.ListaAreas = result[0].data as AreaServicio[];
+        console.log(this.ListaAreas);
+        this.ListaEdificios = result[1].data as Edificio[];
+      })
 
     this.Columns = [
-      { key: 'nombre', title: 'Juzgado' },
-      { key: 'email', title: 'Correo' },
-      { key: 'tipo', title: 'Tipo', cellTemplate:this.tipoTpl},
-      { key: 'estado', title: 'Estado' },
-      { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl },
+      { key: 'nombre', title: 'nombre',width:"20" },
+      // { key: 'email', title: 'juez asignado' },
+      { key: 'email', title: 'Correo',width:"10" },
+      { key: 'telefono', title: 'Teléfono',width:"5" },
+      { key: 'edificio.nombre', title: 'Edificio',width:"20" },
+      { key: 'tipo.tipo', title: 'Tipo ',width:"10" },
+      { key: 'estado', title: 'Estado',width:"10" },
+      { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl,width:"5" },
     ];
     for (const item in EstadoGenerico) {
       if (isNaN(Number(item))) {
         this.Estados.push({ text: item, value: EstadoGenerico[item] });
       }
     }
-    for (const item in TipoAreaEnum) {
-      if (isNaN(Number(item))) {
-        this.Areas.push({ text: item, value: TipoAreaEnum[item] });
-      }
-    }
-
-    this.listadoDespachoEdificio();
 
     this.buildForm();
 
@@ -71,76 +77,69 @@ export class JuzgadoComponent implements OnInit {
       estado: [EstadoGenerico.Activo],
       tipo: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      despacho: ['', [Validators.required]]
+      edificioKey: ['', [Validators.required]],
+      telefono: ['', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.minLength(7), Validators.maxLength(10)]]
     });
   }
+
   add() {
     if (this.form.valid) {
-      const juzgado = new Juzgado(this.nombre.value, this.email.value, +this.despacho.value, +this.tipo.value, +this.estado.value);
-      this._ServiceGeneric.postPatch<any>('juzgado', juzgado, null, 'post')
+      this._ServiceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado', this.form.value, null, 'post')
         .subscribe(res => {
-         this.notificacion.MensajeSuccess();
-         this.closeModal();
-        //  this.cargarJuzgado();
-        },
-          err => this.notificacion.MensajeError()
-        );
+          this.notificacion.MensajeSuccess(res.message);
+          this.closeModal();
+          this.tabla.getData('');
+        });
+
     } else {
-     this.notificacion.MensajeInfo("Datos incompletos");
+      this.form.markAllAsTouched();
+      this.notificacion.MensajeInfo("Datos incompletos");
     }
   }
   showJuzgado(juzgado: any) {
     this.Actualizar = true;
     this.form.patchValue(juzgado);
-    this.despacho.setValue('');
+    this.edificio.setValue('');
     this.key.setValidators(Validators.required);
     this.estado.setValidators(Validators.required);
     this.form.updateValueAndValidity();
   }
 
-  async delete(element: any) {
-  var res=await this.notificacion.MensajeConfir(element.nombre);
+  async delete(element: any,rowIndex:number) {
+    var res = await this.notificacion.MensajeConfir(element.nombre);
 
-    if(res){
-      this._ServiceGeneric.getRemove<any>(element.key, 'juzgado', null, 'delete')
-      .subscribe({
-        next: (p: unknown) => {
-         this.notificacion.MensajeSuccess;
-          // this.cargarJuzgado();
-        },
-        error:this.notificacion.MensajeError
-      })
+    if (res) {
+      this._ServiceGeneric.getRemove<ResponseHttp<Juzgado>>(element.key, 'juzgado', null, 'delete')
+        .subscribe({
+          next: (p: unknown) => {
+            this.notificacion.MensajeSuccess("juzgado eliminado");
+            this.tabla.data=[...this.tabla.data.filter((_v, k) => k !== rowIndex)];
+
+          }
+        })
     }
   }
 
   update() {
     if (this.form.valid) {
-      const juzgadoRequest = new Juzgado(this.nombre.value, this.email.value, this.despacho.value, +this.tipo.value, +this.estado.value);
-       juzgadoRequest.key=this.key.value;
-      console.log(juzgadoRequest);
+      // const juzgadoRequest = new Juzgado(this.nombre.value, this.email.value, this.despacho.value, +this.tipo.value, +this.estado.value);
+      //  juzgadoRequest.key=this.key.value;
+      // console.log(juzgadoRequest);
 
 
-      this._ServiceGeneric.postPatch<any>('juzgado', juzgadoRequest, null, 'put')
-        .subscribe(res => {
-          this.notificacion.MensajeSuccess();
-          this.closeModal();
-          // this.cargarJuzgado();
-        },
-          err => this.notificacion.MensajeError());
+      // this._ServiceGeneric.postPatch<any>('juzgado', juzgadoRequest, null, 'put')
+      //   .subscribe(res => {
+      //     this.notificacion.MensajeSuccess();
+      //     this.closeModal();
+      //     // this.cargarJuzgado();
+      //   },
+      //     err => this.notificacion.MensajeError());
     } else {
-    this.notificacion.MensajeInfo("formulario invalido!!");
+      this.notificacion.MensajeInfo("formulario invalido!!");
     }
   }
-  listadoDespachoEdificio() {
-    this._ServiceGeneric.getRemove<any>(null, 'despacho/PorEdificio')
-    .subscribe({
-      next: (res: any) => {
-        this.ListadoDespacho = res.data;
-        console.log(this.ListadoDespacho);
-      },
-      error: console.error
-    });
-  }
+
+
   closeModal() {
     this.botonCerrar.nativeElement.click();
     this.estado.setValidators(null);
@@ -153,5 +152,6 @@ export class JuzgadoComponent implements OnInit {
   get estado() { return this.form.get('estado'); }
   get tipo() { return this.form.get('tipo'); }
   get email() { return this.form.get('email'); }
-  get despacho() { return this.form.get('despacho'); }
+  get edificio() { return this.form.get('edificioKey'); }
+  get telefono() { return this.form.get('telefono'); }
 }

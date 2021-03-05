@@ -7,14 +7,14 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SalaComponent } from './Tecnico/sala/sala.component';
 import { ComponentsModule } from '../components/components.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DespachoComponent } from './tecnico/despacho/despacho.component';
-import { JuzgadoComponent } from './Tecnico/juzgado/juzgado.component';
 
 import { NgWizardModule, NgWizardConfig, THEME } from 'ng-wizard';
 import { RegistroEmpleadoComponent } from './Tecnico/empleado/registro-empleado/registro-empleado.component';
 import { ListadoEmpleadoComponent } from './Tecnico/empleado/listado-empleado/listado-empleado.component';
 import { StringEnumPipe } from '../pipe/string-enum.pipe';
 import { NgxSelectModule } from 'ngx-select-ex';
+import { EdificioComponent } from './Tecnico/edificio/edificio.component';
+import { JuzgadoComponent } from './Tecnico/juzgado/juzgado.component';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.circles
@@ -25,11 +25,11 @@ const ngWizardConfig: NgWizardConfig = {
   declarations: [
     DashboardComponent,
     SalaComponent,
-    DespachoComponent,
     JuzgadoComponent,
     RegistroEmpleadoComponent,
     ListadoEmpleadoComponent,
-    StringEnumPipe
+    StringEnumPipe,
+    EdificioComponent
   ],
   imports: [
     CommonModule,

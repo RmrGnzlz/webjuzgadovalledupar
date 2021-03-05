@@ -8,14 +8,15 @@ import { Persona } from '../../../../models/Persona';
 import { ResponseHttp } from '../../../../models/Base/ResponseHttp';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { EstadoGenerico } from '../../../../models/Enums/EstadoGenerico';
+import { TablaComponent } from 'src/app/components/tabla/tabla.component';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-listado-empleado',
-  templateUrl: './listado-empleado.component.html',
-  styleUrls: ['./listado-empleado.component.css']
+  templateUrl: './listado-empleado.component.html'
 })
 export class ListadoEmpleadoComponent implements OnInit {
-
+  @ViewChild(TablaComponent) tabla: TablaComponent;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
   @ViewChild('estadoTpl', { static: true }) estadoTpl: TemplateRef<any>;
   @ViewChild('personaTpl', { static: true }) personaTpl: TemplateRef<any>;
@@ -39,7 +40,7 @@ export class ListadoEmpleadoComponent implements OnInit {
 
     this.Columns = [
       { key: 'key', title: '#',width:"3%"},
-      { key: 'persona', title: 'Nombre',width:"25%",cellTemplate:this.personaTpl },
+      { key: 'persona', title: 'Nombre',width:"20%",cellTemplate:this.personaTpl },
       { key: 'persona.telefono', title: 'Telefono',width:"10%" },
       { key: 'rol.nombre', title: 'Rol', cellTemplate:this.rolTpl,width:"15%"},
       { key: 'username', title: 'Usuario',width:"20%" },
@@ -70,19 +71,20 @@ export class ListadoEmpleadoComponent implements OnInit {
 
   showEmpleado(empleado:Empleado){
   this.empleado=empleado
-  console.log(this.empleado.username);
-
+  console.log(this.empleado.finCargo);
   this.telefono.setValue(empleado.persona.telefono);
   this.direccion.setValue(empleado.persona.direccion);
   this.email.setValue(empleado.persona.email);
-  this.fechaFinalizacion.setValue(empleado.finCargo);
+  this.fechaFinalizacion.setValue(new Date(empleado.finCargo).toISOString().substring(0,10));
+
   }
 
-  async delete(empleado:Empleado){
+  async delete(empleado:Empleado,rowIndex:number){
     var res=await this.notificacion.MensajeConfir(empleado.persona.nombres);
     if (res) {
       this._ServiceGeneric.getRemove<ResponseHttp<Empleado>>(empleado.key,`usuario`,null,'delete')
       .subscribe(res=>{
+        this.tabla.data=[...this.tabla.data.filter((_v, k) => k !== rowIndex)];
         this.notificacion.MensajeSuccess(res.message);
       });
     }
@@ -92,12 +94,13 @@ export class ListadoEmpleadoComponent implements OnInit {
   UpdatePersonaYEmpleado(){
 
         if (this.formEdit.invalid) {
+          this.formEdit.markAllAsTouched();
             this.notificacion.MensajeInfo("formulario invalido");
           return;
         }
 
     var requestPersonaUpdate:any={
-      key:this.empleado.key,
+      key:this.empleado.persona.key,
       nombres:this.empleado.persona.nombres,
       apellidos:this.empleado.persona.apellidos,
       tipoDocumento:this.empleado.persona.tipoDocumento,
@@ -109,23 +112,20 @@ export class ListadoEmpleadoComponent implements OnInit {
       documento:this.empleado.persona.numeroDocumento,
       nacionalidadKey:this.empleado.persona.nacionalidad.key
       }
-
     var requestEmpleadoUpdate:any={
       key:this.empleado.key,
       finCargo: this.fechaFinalizacion.value
     }
 
-    this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`,requestPersonaUpdate,null,'put')
+    let ObservablePutPersona=this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`,requestPersonaUpdate,null,'put');
+    let ObservablePutEmpleado=this._ServiceGeneric.postPatch<ResponseHttp<Empleado>>(`empleado`,requestEmpleadoUpdate,null,'put');
+    forkJoin([ObservablePutEmpleado,ObservablePutPersona])
     .subscribe(res=>{
-      console.log('actualice persona');
-      this._ServiceGeneric.postPatch<ResponseHttp<Empleado>>(`empleado`,requestEmpleadoUpdate,null,'put')
-      .subscribe(resp=>{
-        console.log('actualice empleado');
-        this.botonCerrar.nativeElement.click();
-        this.notificacion.MensajeSuccess('Usuario actualizado');
-        // this.loadEmpleados();
-      })
+      this.botonCerrar.nativeElement.click();
+      this.notificacion.MensajeSuccess('Registro actualizado');
+      this.tabla.getData('');
     })
+
 
   }
 

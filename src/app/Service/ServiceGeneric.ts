@@ -1,10 +1,8 @@
-import { ResponseHttp } from './../models/Base/ResponseHttp';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.prod';
-import { ResponseHttp } from 'src/app/models/Base/ResponseHttp';
 
 interface QueryParams {
   [key: string]: string | number;

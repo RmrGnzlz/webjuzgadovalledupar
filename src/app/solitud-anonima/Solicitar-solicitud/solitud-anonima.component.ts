@@ -24,12 +24,12 @@ export class SolitudAnonimaComponent implements OnInit {
   @ViewChild('solicitudForm', { static: false }) solicitudForm: NgForm;
 
   persona = new Persona();
-  solicitudAudiencia= new SolicitudAudienciaRequest();
+  solicitudAudiencia = new SolicitudAudienciaRequest();
   soliitudSudienciaResponse = new SolicitudAudienciaResponse();
-    tipoSujetoProcesales: any[] = [];
-  tipoDocumentos:any[]=[];
+  tipoSujetoProcesales: any[] = [];
+  tipoDocumentos: any[] = [];
   exitosa = false;
-  paises:Pais[]=[];
+  paises: Pais[] = [];
 
 
   stepStates = {
@@ -52,7 +52,7 @@ export class SolitudAnonimaComponent implements OnInit {
   };
 
   isValidTypeBoolean: boolean = true;
-  CurrentDate =  Date.now();
+  CurrentDate = Date.now();
 
 
   constructor(private ngWizardService: NgWizardService,
@@ -62,29 +62,30 @@ export class SolitudAnonimaComponent implements OnInit {
   ngOnInit(): void {
     INIT_PLUGIN();
     this.loadEnums();
-    this._ServiceGeneric.getRemove<ResponseHttp<Pais>>(null,'pais')
-    .subscribe(res=>{
-      this.paises=res.data as Pais[];
-    })
+    this._ServiceGeneric.getRemove<ResponseHttp<Pais>>(null, 'pais')
+      .subscribe(res => {
+        this.paises = res.data as Pais[];
+      })
   }
 
-   registrarSolicitudYPersona():boolean {
+  registrarSolicitudYPersona(): boolean {
 
     if (this.solicitudForm.invalid || this.personaForm.invalid) {
       this.notificacion.MensajeError('se detectaron errores en los formularios', 'Error');
-      this.exitosa=false;
-      return ;
+      this.exitosa = false;
+      return;
     }
-    this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`,this.persona,null,'post')
-    .subscribe(res=>{
-      this._ServiceGeneric.postPatch<ResponseHttp<SolicitudAudienciaResponse>>(`solicitud`,this.crearFormData(this.solicitudAudiencia),null,'post')
-    .subscribe(res=>{
-      this.soliitudSudienciaResponse=res.data as SolicitudAudienciaResponse;
-      this.notificacion.MensajeSuccess(res.message)
-     this.exitosa=true;
-     return true;
-    })}
-    )
+    this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`, this.persona, null, 'post')
+      .subscribe(res => {
+        this._ServiceGeneric.postPatch<ResponseHttp<SolicitudAudienciaResponse>>(`solicitud`, this.crearFormData(this.solicitudAudiencia), null, 'post')
+          .subscribe(res => {
+            this.soliitudSudienciaResponse = res.data as SolicitudAudienciaResponse;
+            this.notificacion.MensajeSuccess(res.message)
+            this.exitosa = true;
+            return true;
+          })
+      }
+      )
 
 
   }
@@ -118,7 +119,7 @@ export class SolitudAnonimaComponent implements OnInit {
       evento.srcElement.value = null;
       this.notificacion.MensajeInfo("Solo se aceptan PDF", "Error");
     }
-    this.solicitudAudiencia.archivo=archivo;
+    this.solicitudAudiencia.archivo = archivo;
     return;
   }
 
@@ -126,17 +127,17 @@ export class SolitudAnonimaComponent implements OnInit {
     return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57;
   }
 
-  crearFormData(solicitud:SolicitudAudienciaRequest):FormData{
+  crearFormData(solicitud: SolicitudAudienciaRequest): FormData {
 
     console.log(solicitud);
 
     const formdata = new FormData();
-    formdata.append('proceso',solicitud.proceso);
-    formdata.append('solicitante',this.persona.numeroDocumento);
-    formdata.append('asunto',solicitud.asunto);
-    formdata.append('archivo',solicitud.archivo);
-    formdata.append('descripcion',solicitud.descripcion);
-    formdata.append('tipoSolicitante',  SujetosProcesales[solicitud.tipoSolicitante]);
+    formdata.append('proceso', solicitud.proceso);
+    formdata.append('solicitante', this.persona.numeroDocumento);
+    formdata.append('asunto', solicitud.asunto);
+    formdata.append('archivo', solicitud.archivo);
+    formdata.append('descripcion', solicitud.descripcion);
+    formdata.append('tipoSolicitante', SujetosProcesales[solicitud.tipoSolicitante]);
 
     return formdata;
   }
@@ -166,27 +167,27 @@ export class SolitudAnonimaComponent implements OnInit {
   }
 
   stepChanged(args: StepChangedArgs) {
-    if(args.previousStep!=undefined)
-      args.previousStep.state=this.stepStates.disabled;
+    if (args.previousStep != undefined)
+      args.previousStep.state = this.stepStates.disabled;
   }
 
 
   isValidFunctionReturnsBoolean(args: StepValidationArgs) {
-      console.log('isValidFunctionReturnsBoolean');
+    console.log('isValidFunctionReturnsBoolean');
 
     if (args.fromStep.index == 0) {
 
       if (this.personaForm.invalid) {
-          this.personaForm.form.markAllAsTouched();
-          this.notificacion.MensajeError("Formulario invalidos", "Error");
-          return false;
-        }
+        this.personaForm.form.markAllAsTouched();
+        this.notificacion.MensajeError("Formulario invalidos", "Error");
+        return false;
+      }
 
-        if(Date.parse(this.persona.expedicionDocumento.toString()) > this.CurrentDate.valueOf()){
-          this.notificacion.MensajeError("Mayor al dia de hoy", "Fecha invalida");
-          return false;
-        }
-        return true;
+      if (Date.parse(this.persona.expedicionDocumento.toString()) > this.CurrentDate.valueOf()) {
+        this.notificacion.MensajeError("Mayor al dia de hoy", "Fecha invalida");
+        return false;
+      }
+      return true;
     }
 
 
@@ -198,7 +199,7 @@ export class SolitudAnonimaComponent implements OnInit {
         return false;
       } else {
 
-        var respuesta:boolean=this.registrarSolicitudYPersona();
+        var respuesta: boolean = this.registrarSolicitudYPersona();
         console.log(respuesta);
         return true;
       }

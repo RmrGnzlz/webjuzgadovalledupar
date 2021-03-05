@@ -79,6 +79,8 @@
             [canEnter]="isValidTypeBoolean"
             [canExit]="isValidFunctionReturnsBoolean.bind(this)"
           >
+
+          {{personaForm.errors}}
             <form #personaForm="ngForm">
               <div class="row">
                 <div class="col">
@@ -226,7 +228,7 @@
                     <label for="inputNacionalidad">Nacionalidad*</label>
                     <select
                       required
-                      [(ngModel)]="persona?.nacionalidad.key"
+                      [(ngModel)]="persona.nacionalidad.key"
                       class="form-control p-0"
                       id="inputNacionalidad"
                       name="Nacionalidad"
@@ -324,7 +326,7 @@
                       name="Email"
                       #emailControl="ngModel"
                       required
-                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+                      pattern="^[A-Za-z0-9._+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                     />
                     <ng-container
                       *ngIf="emailControl.invalid && emailControl.touched"
@@ -354,6 +356,7 @@
           [canExit]="isValidFunctionReturnsBoolean.bind(this)"
         >
         <form [formGroup]="form">
+
           <div class="row justify-content-center">
             <div class="col-3">
 
@@ -371,6 +374,7 @@
                 />
                   <span class="form-text text-danger" *ngIf="campoEsValido('usuario')" >
                     <div *ngIf="usuario.errors.required" >Usuario requerido</div>
+                    <div *ngIf="usuario.errors.usuarioDisponible" >Usuario ya existe</div>
                     <div *ngIf="usuario.errors.minlength" >Minimo 6 caracteres</div>
                     <div *ngIf="usuario.errors.maxlength" >Maximo 20 caracteres</div>
                     <div *ngIf="usuario.errors.pattern" >solo se permite letra,numero,punto,guión bajo</div>
@@ -384,13 +388,13 @@
                 <label class="control-label">Area de Servicio*</label>
                 <ngx-select [multiple]="true"
                     [items]="areasDeServicios" optionValueField="key" optionTextField='tipo'
-                    formControlName="areaServicio"
+                    formControlName="areaServiciosKeys"
                     [autoClearSearch]="true"
                     placeholder="Seleccione Area"
                     >
              </ngx-select>
-             <span class="form-text text-danger" *ngIf="campoEsValido('areaServicio')" >
-              <div *ngIf="areaServicio.errors.required" >Debe vincularse minimo a una área</div>
+             <span class="form-text text-danger" *ngIf="campoEsValido('areaServiciosKeys')" >
+              <div *ngIf="areaServicio?.errors?.required" >Debe vincularse minimo a una área</div>
             </span>
               </div>
             </div>
@@ -398,13 +402,13 @@
               <div class="form-group ">
                 <label class="control-label">Rol*</label>
                 <select
-                  name="rol"
-                  formControlName="rol"
+                  name="rolKey"
+                  formControlName="rolKey"
                 class="form-control custom-select">
                 <option  value="" selected>Seleccione</option>
-                  <option *ngFor="let item of roles"  [value]="item.key">{{item.nombre}}</option>
+                  <option *ngFor="let item of roles"  [ngValue]="item.key">{{item.nombre}}</option>
                 </select>
-                <span class="form-text text-danger" *ngIf="campoEsValido('rol')" >
+                <span class="form-text text-danger" *ngIf="campoEsValido('rolKey')" >
                   <div *ngIf="rol.errors.required" >campo es requerido</div>
                 </span>
 
@@ -450,7 +454,7 @@
 
           <div class="row">
             <div class="col text-center">
-              <button type="submit" (click)="validarFormulario()" class="btn btn-success">
+              <button type="submit" (click)="validarFormulario()" [disabled]="form.pending || form.invalid" class="btn btn-success">
                 <i class="fa fa-check"></i> Registrar
               </button>
               <button type="button" routerLink="/empleados" class="btn btn-inverse">Cancelar</button>

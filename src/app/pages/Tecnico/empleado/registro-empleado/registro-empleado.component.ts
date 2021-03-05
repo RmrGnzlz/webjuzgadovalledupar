@@ -1,4 +1,3 @@
-import { EstadoGenerico } from './../../../../models/Enums/EstadoGenerico';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import {  StepChangedArgs, StepValidationArgs, STEP_STATE } from 'ng-wizard';
@@ -13,9 +12,8 @@ import { Persona } from 'src/app/models/Persona';
 import { Rol } from '../../../../models/Rol';
 import { Pais } from '../../../../models/Pais';
 import { AreaServicio } from '../../../../models/AreaServicio';
-import { TipoAreaServicio } from '../../../../models/Enums/TipoAreaServicio';
-import { INgxSelectOption } from 'ngx-select-ex';
-import { TipoAreaEnum } from '../../../../models/Juzgado.Model';
+import { UsuarioValidatorService } from '../../Services/usuario-validator.service';
+
 @Component({
   selector: 'app-registro-empleado',
   templateUrl: './registro-empleado.component.html',
@@ -29,10 +27,7 @@ export class RegistroEmpleadoComponent implements OnInit {
   form: FormGroup;
   CurrentDate = new Date();
 
-
-
-  persona:Persona;
-  empleado = new Empleado();
+  persona:Persona= new Persona();
   tipoDocumentos: any[] = [];
   existePersona = false;
   roles:Rol[]=[];
@@ -43,29 +38,11 @@ export class RegistroEmpleadoComponent implements OnInit {
   constructor(private notificacion: NotificacionServiceService,
     private _ServiceGeneric: ServicieGeneric,
     private formBuilder: FormBuilder,
-    private router: Router,) { }
-
-
-    simularAreaServicio(){
-      var lista: any[] =[
-        { key: 1, estado: EstadoGenerico.Activo, tipo: TipoAreaServicio.Conocimiento } ,
-        { key: 2, estado: EstadoGenerico.Activo, tipo: TipoAreaServicio.Garantia } ,
-        { key: 3, estado: EstadoGenerico.Activo, tipo: TipoAreaServicio.Magistrado } ,
-      ];
-      return of(lista);
-    }
-
-
-
-    verComponente(){
-
-    }
+    private router: Router,
+    private usuarioValidator:UsuarioValidatorService) { }
 
   ngOnInit(): void {
-    this.persona = new Persona();
-  this.verComponente
-  // this.simularAreaServicio()
-  // .subscribe(res=>{this.areasDeServicios=res} );
+
 
       this._ServiceGeneric.getRemove<ResponseHttp<AreaServicio>>(null,'CentroServicio/All')
       .subscribe(res=>{
@@ -85,14 +62,15 @@ export class RegistroEmpleadoComponent implements OnInit {
   selectionChanged(evento){
 
   }
+
   buildForm() {
     this.form = this.formBuilder.group({
-      usuario: ['',[Validators.required,Validators.minLength(6),Validators.maxLength(20),Validators.pattern('^[a-zA-Z0-9._]+$')]],
-      areaServicio: ['', [Validators.required]],
-      rol: ['', [Validators.required]],
+      usuario: ['',[Validators.required,Validators.minLength(6),Validators.maxLength(20),Validators.pattern('^[a-zA-Z0-9._]+$')],[this.usuarioValidator]],
+      areaServiciosKeys: ['', [Validators.required]],
+      rolKey: ['', [Validators.required]],
       inicioCargo: ['', [Validators.required]],
       finCargo: [''],
-      key: [this.persona.key],
+      personaKey: [],
     });
   }
 
@@ -124,7 +102,9 @@ export class RegistroEmpleadoComponent implements OnInit {
     this._ServiceGeneric.getRemove<ResponseHttp<Persona>>(this.persona.numeroDocumento, `persona`)
       .subscribe(res => {
         this.persona = res.data as Persona;
-        this.empleado.personaKey=this.persona.key;
+        console.log(this.persona.key);
+        this.key.setValue(this.persona.key);
+        this.form.updateValueAndValidity();
         this.existePersona = true;
 
       });
@@ -134,9 +114,6 @@ export class RegistroEmpleadoComponent implements OnInit {
     var metodo: any = 'post'
     if (this.existePersona) metodo = 'put'
     this.persona.nacionalidadKey=this.persona.nacionalidad.key;
-
-
-
     this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`, this.persona, null, metodo)
       .subscribe(res =>{
         this.persona=res.data as Persona;
@@ -145,12 +122,8 @@ export class RegistroEmpleadoComponent implements OnInit {
   }
 
   registrarEmpleado() {
-    this.empleado=this.form.value;
 
-  console.log(this.empleado);
-console.log(this.form.value);
-
-    this._ServiceGeneric.postPatch<ResponseHttp<Empleado>>(`empleado`, this.empleado,null,"post")
+    this._ServiceGeneric.postPatch<ResponseHttp<Empleado>>(`empleado`, this.form.value,null,"post")
       .subscribe(res => {
         this.notificacion.MensajeSuccess(res.message);
         this.router.navigate(['/empleados']);
@@ -190,6 +163,7 @@ console.log(this.form.value);
 
         if (args.fromStep.index == 1) {
           if (this.personaForm.invalid) {
+            console.log(this.personaForm.errors);
             this.personaForm.form.markAllAsTouched();
             this.notificacion.MensajeError("Formulario invalido", "Error");
             return false;
@@ -207,9 +181,10 @@ console.log(this.form.value);
     return this.form.controls[campo].errors && this.form.controls[campo].touched;
   }
   get usuario() { return this.form.get('usuario'); }
-  get areaServicio() { return this.form.get('areaServicio'); }
-  get rol() { return this.form.get('rol'); }
+  get areaServicio() { return this.form.get('areaServiciosKeys'); }
+  get rol() { return this.form.get('rolKey'); }
   get inicioCargo() { return this.form.get('inicioCargo'); }
   get finCargo() { return this.form.get('finCargo'); }
+  get key() { return this.form.get('personaKey'); }
 
 }

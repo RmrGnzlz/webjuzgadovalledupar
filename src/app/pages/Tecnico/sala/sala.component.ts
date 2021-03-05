@@ -8,6 +8,7 @@ import { TipoSalaEnum,  SalaFisica, SalaVirtual } from '../../../models/Sala.Mod
 import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';
 import { ResponseHttp } from '../../../models/Base/ResponseHttp';
 import { EstadoGenerico } from '../../../models/Enums/EstadoGenerico';
+import { TablaComponent } from 'src/app/components/tabla/tabla.component';
 
 
 
@@ -28,6 +29,7 @@ export class SalaComponent implements OnInit {
   form: FormGroup;
   formSubmitted = false;
   public Columns: Columns[];
+  @ViewChild(TablaComponent) tabla: TablaComponent;
 
   @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
   @ViewChild('tipoTpl', { static: true }) tipoTpl: TemplateRef<any>;
@@ -62,9 +64,6 @@ export class SalaComponent implements OnInit {
       { key: 'estado', title: 'Estado', cellTemplate: this.estadoTpl,width:'10' },
       { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl,width:'20' },
     ];
-
-
-    // this.loadSala();
 
   }
 
@@ -150,16 +149,6 @@ export class SalaComponent implements OnInit {
   }
 
 
-  // loadSala() {
-  //   this._ServiceGeneric.getRemove<Sala[]>(null, 'sala')
-  //     .subscribe({
-  //       next: (res: any) => {
-  //         this.ListaSalas = res.data;
-  //       },
-  //       error: console.error
-
-  //     });
-  // }
   Update() {
     console.log('actualizarss');
 
@@ -184,12 +173,10 @@ export class SalaComponent implements OnInit {
   PeticionPostYPut(sala: any, tipo: string, metodo: any) {
     this._ServiceGeneric.postPatch<any>(`sala/${tipo}`, sala, null, metodo)
       .subscribe(res => {
-        console.log(res);
         this.notificacion.MensajeSuccess();
         this.closeModal();
-        // this.loadSala();
-      },
-        err => this.notificacion.MensajeError);
+        this.tabla.getData('');
+      });
   }
 
   add() {
@@ -215,9 +202,8 @@ export class SalaComponent implements OnInit {
       .subscribe({
         next: (p: unknown) => {
           this.notificacion.MensajeSuccess("Registro eliminado","Exitoso")
-          // this.loadSala();
-        },
-        error: console.error
+          this.tabla.getData('');
+        }
       })
     }
 
@@ -225,7 +211,6 @@ export class SalaComponent implements OnInit {
 
   validateForm(): boolean {
     if (this.form.valid) {
-      // this.service.success('REGISTRO EXITOSO', 'Informacion', {position: SnotifyPosition.rightTop});
       return true;
     }
     this.notificacion.MensajeError('Datos inconsistentes...', 'Información');
