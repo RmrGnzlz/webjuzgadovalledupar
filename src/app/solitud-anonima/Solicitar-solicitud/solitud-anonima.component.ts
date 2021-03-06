@@ -171,7 +171,6 @@ export class SolitudAnonimaComponent implements OnInit {
       args.previousStep.state = this.stepStates.disabled;
   }
 
-
   isValidFunctionReturnsBoolean(args: StepValidationArgs) {
     console.log('isValidFunctionReturnsBoolean');
 

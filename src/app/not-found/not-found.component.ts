@@ -1,11 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {  Component, OnInit } from '@angular/core';
 import { Columns } from 'ngx-easy-table';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { SalaService } from '../Service/Sala/sala.service';
-import { ServicieGeneric } from '../Service/service.index';
-import { DataListado } from '../components/tabla/Interface/ListadoTablaInterface';
-import { Edificio } from '../models/Edificio.Model';
+
+import * as mapboxgl from 'mapbox-gl';
+import { environment } from 'src/environments/environment';
 declare function INIT_PLUGIN();
 @Component({
   selector: 'app-not-found',
@@ -20,6 +17,7 @@ export class NotFoundComponent implements OnInit {
     { key: 'key', title: 'KEY' },
   ];
 
+  mapa:mapboxgl.Map;
   public ruta:'edificio';
 
 
@@ -28,6 +26,7 @@ export class NotFoundComponent implements OnInit {
 
   ngOnInit() {
     INIT_PLUGIN();
+    
 
   }
 

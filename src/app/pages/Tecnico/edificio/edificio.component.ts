@@ -5,6 +5,11 @@ import { Columns } from 'ngx-easy-table';
 import { TablaComponent } from 'src/app/components/tabla/tabla.component';
 import { Edificio } from '../../../models/Edificio.Model';
 
+import * as mapboxgl from 'mapbox-gl';
+import { environment } from '../../../../environments/environment.prod';
+import { NotificacionServiceService } from '../../../utils/notificacion-service.service';
+import { ServicieGeneric } from '../../../Service/ServiceGeneric';
+import { ResponseHttp } from '../../../models/Base/ResponseHttp';
 @Component({
   selector: 'app-edificio',
   templateUrl: './edificio.component.html',
@@ -19,10 +24,24 @@ export class EdificioComponent implements OnInit {
   form: FormGroup;
   Actualizar = false;
   @ViewChild(TablaComponent) tabla: TablaComponent;
+  mapa:mapboxgl.Map;
 
-  constructor(private formBuilder: FormBuilder) { }
+  listaEdificios:Edificio[]=[];
+
+  constructor(private formBuilder: FormBuilder,
+              private readonly notificacion:NotificacionServiceService,
+              private _serviceGeneric:ServicieGeneric) { }
 
   ngOnInit(): void {
+    (mapboxgl as any).accessToken=environment.maxBoxKey;
+    this.mapa= new mapboxgl.Map({
+      container: 'map', // container id
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [-73.2517184,10.4736129], // starting position
+      zoom: 16 // starting zoom
+      });
+      this.crearMarcadorMarket(10.4736129,-73.2517184);
+
     this.Columns = [
       { key: 'key', title: '#',width:"3%"},
       { key: 'nombre', title: 'Edificio',width:"10%" },
@@ -37,15 +56,30 @@ export class EdificioComponent implements OnInit {
       key: [''],
       nombre: ['', [Validators.minLength(4),required]],
       direccion: ['', [Validators.minLength(4),required]],
-      // estado: ['', [Validators.required]],
-      // edificio: ['', [Validators.required]],
-      // tipo: ['', [Validators.required]],
-      // plataforma: ['Microsoft Teams', [Validators.required, Validators.minLength(5)]],
-      // link: ['', [Validators.required]],
-      // numero: [''],
-      // piso: ['', [Validators.required]]
+      latitud: [10.4736129, [Validators.required]],
+      longitud: [-73.2517184, [Validators.required]],
+
     });
   }
+
+  crearMarcadorMarket(lat: number, long:number){
+    var marker = new mapboxgl.Marker({
+      draggable: true
+      })
+      .setLngLat([long, lat])
+      .addTo(this.mapa);
+
+      marker.on('drag',()=>{
+        this.latitud.setValue(marker.getLngLat().lat)
+        this.longitud.setValue(marker.getLngLat().lng)
+      })
+  }
+
+  cargarEdificios(){
+    this._serviceGeneric.getRemove<ResponseHttp<Edificio>>(null,'edificio')
+    .subscribe(res=>this.listaEdificios=res.data as Edificio[]);
+  }
+
 
   ShowEdificio(edificio:Edificio){
 
@@ -55,14 +89,25 @@ export class EdificioComponent implements OnInit {
 
   }
 
-  agregar(){
 
+  guardar(){
+    if (this.form.invalid) {
+      this.notificacion.MensajeError("Formulario Invalido");
+      this.form.markAllAsTouched();
+      return;
+    }
+    this._serviceGeneric.postPatch<ResponseHttp<Edificio>>('edificio',this.form.value)
+    .subscribe(res=>this.notificacion.MensajeSuccess('Edificio Agregado'));
   }
 
   closeModal() {
     this.botonCerrar.nativeElement.click();
     this.Actualizar = false;
-    this.form.reset();
+    var valoresIniciales:any={
+      latitud: 10.4736129,
+      longitud: -73.2517184
+    }
+    this.form.reset(valoresIniciales);
   }
 
   get nombre() { return this.form.get('nombre'); }
