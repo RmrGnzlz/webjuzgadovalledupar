@@ -5,6 +5,7 @@ import { HeaderComponent } from './header/header.component';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { RouterModule } from '@angular/router';
 import { StringEnumPipe } from '../pipe/string-enum.pipe';
+import { ComponentsModule } from '../components/components.module';
 
 
 
@@ -16,7 +17,8 @@ import { StringEnumPipe } from '../pipe/string-enum.pipe';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    ComponentsModule
   ],
   exports: [
     SidebarComponent,

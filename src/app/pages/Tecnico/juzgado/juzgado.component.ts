@@ -20,7 +20,7 @@ export class JuzgadoComponent implements OnInit {
 
   @ViewChild(TablaComponent) tabla: TablaComponent;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
-  @ViewChild('tipoTpl', { static: true }) tipoTpl: TemplateRef<any>;
+  @ViewChild('estadoTpl', { static: true }) estadoTpl: TemplateRef<any>;
 
   @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
 
@@ -51,14 +51,14 @@ export class JuzgadoComponent implements OnInit {
       })
 
     this.Columns = [
-      { key: 'nombre', title: 'nombre',width:"20" },
+      { key: 'nombre', title: 'nombre', width: "20" },
       // { key: 'email', title: 'juez asignado' },
-      { key: 'email', title: 'Correo',width:"10" },
-      { key: 'telefono', title: 'Teléfono',width:"5" },
-      { key: 'edificio.nombre', title: 'Edificio',width:"20" },
-      { key: 'tipo.tipo', title: 'Tipo ',width:"10" },
-      { key: 'estado', title: 'Estado',width:"10" },
-      { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl,width:"5" },
+      { key: 'email', title: 'Correo', width: "10" },
+      { key: 'telefono', title: 'Teléfono', width: "5" },
+      { key: 'edificio.nombre', title: 'Edificio', width: "20" },
+      { key: 'tipo', title: 'Tipo ', width: "10" },
+      { key: 'estado', title: 'Estado', width: "10",cellTemplate:this.estadoTpl },
+      { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl, width: "5" },
     ];
     for (const item in EstadoGenerico) {
       if (isNaN(Number(item))) {
@@ -75,7 +75,7 @@ export class JuzgadoComponent implements OnInit {
       key: [''],
       nombre: ['', [Validators.required, Validators.minLength(4)]],
       estado: [EstadoGenerico.Activo],
-      tipo: ['', [Validators.required]],
+      areaKey: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       edificioKey: ['', [Validators.required]],
       telefono: ['', [Validators.required, Validators.pattern(/^-?(0|[1-9]\d*)?$/), Validators.minLength(7), Validators.maxLength(10)]]
@@ -84,6 +84,8 @@ export class JuzgadoComponent implements OnInit {
 
   add() {
     if (this.form.valid) {
+      console.log(this.form.value);
+
       this._ServiceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado', this.form.value, null, 'post')
         .subscribe(res => {
           this.notificacion.MensajeSuccess(res.message);
@@ -96,16 +98,27 @@ export class JuzgadoComponent implements OnInit {
       this.notificacion.MensajeInfo("Datos incompletos");
     }
   }
-  showJuzgado(juzgado: any) {
+  showJuzgado(juzgado: Juzgado) {
     this.Actualizar = true;
     this.form.patchValue(juzgado);
-    this.edificio.setValue('');
+    this.edificio.setValue(juzgado.edificio.key);
+    this.tipo.setValue(juzgado.tipo);
     this.key.setValidators(Validators.required);
     this.estado.setValidators(Validators.required);
     this.form.updateValueAndValidity();
   }
 
-  async delete(element: any,rowIndex:number) {
+  updateState(key: number, status: boolean) {
+    var estado = status ? 1 : 0;
+    this._ServiceGeneric.postPatch(`usuario/estado`, { key, estado }, null, 'put')
+      .subscribe(res => {
+        this.notificacion.MensajeSuccess("Estado Actualizado");
+        // this.loadEmpleados();
+      })
+
+  }
+
+  async delete(element: any, rowIndex: number) {
     var res = await this.notificacion.MensajeConfir(element.nombre);
 
     if (res) {
@@ -113,8 +126,7 @@ export class JuzgadoComponent implements OnInit {
         .subscribe({
           next: (p: unknown) => {
             this.notificacion.MensajeSuccess("juzgado eliminado");
-            this.tabla.data=[...this.tabla.data.filter((_v, k) => k !== rowIndex)];
-
+            this.tabla.data = [...this.tabla.data.filter((_v, k) => k !== rowIndex)];
           }
         })
     }
@@ -122,18 +134,13 @@ export class JuzgadoComponent implements OnInit {
 
   update() {
     if (this.form.valid) {
-      // const juzgadoRequest = new Juzgado(this.nombre.value, this.email.value, this.despacho.value, +this.tipo.value, +this.estado.value);
-      //  juzgadoRequest.key=this.key.value;
-      // console.log(juzgadoRequest);
-
-
-      // this._ServiceGeneric.postPatch<any>('juzgado', juzgadoRequest, null, 'put')
-      //   .subscribe(res => {
-      //     this.notificacion.MensajeSuccess();
-      //     this.closeModal();
-      //     // this.cargarJuzgado();
-      //   },
-      //     err => this.notificacion.MensajeError());
+      console.log(this.form.value);
+      this._ServiceGeneric.postPatch<any>('juzgado', this.form.value, null, 'put')
+        .subscribe(res => {
+          this.notificacion.MensajeSuccess();
+          this.closeModal();
+         this.tabla.getData('');
+        });
     } else {
       this.notificacion.MensajeInfo("formulario invalido!!");
     }
@@ -150,7 +157,7 @@ export class JuzgadoComponent implements OnInit {
   get nombre() { return this.form.get('nombre'); }
   get key() { return this.form.get('key'); }
   get estado() { return this.form.get('estado'); }
-  get tipo() { return this.form.get('tipo'); }
+  get tipo() { return this.form.get('areaKey'); }
   get email() { return this.form.get('email'); }
   get edificio() { return this.form.get('edificioKey'); }
   get telefono() { return this.form.get('telefono'); }

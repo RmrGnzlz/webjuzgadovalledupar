@@ -58,7 +58,6 @@ export class EdificioComponent implements OnInit {
       direccion: ['', [Validators.minLength(4),required]],
       latitud: [10.4736129, [Validators.required]],
       longitud: [-73.2517184, [Validators.required]],
-
     });
   }
 

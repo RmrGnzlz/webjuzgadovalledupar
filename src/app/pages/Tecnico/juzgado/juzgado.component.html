@@ -19,7 +19,20 @@
   </button>
 </app-tabla>
 
-
+<ng-template #estadoTpl let-row let-rowIndex="rowIndex">
+  <label>
+    <div class="switch">
+      <label>
+        <input
+          type="checkbox"
+          [checked]="row.estado"
+          (click)="updateState(row.key,!row.estado)"
+        />
+        <span class="lever switch-col-cyan"></span>
+      </label>
+    </div>
+  </label>
+</ng-template>
 
 
 
@@ -135,11 +148,11 @@
             <div class="col-md-6">
               <div class="form-group">
                 <select
-                  formControlName="tipo"
+                  formControlName="areaKey"
                   class="form-control"
                 >
                   <option value="">Seleccione Area</option>
-                  <option *ngFor="let item of ListaAreas" [ngValue]="item.tipo">
+                  <option *ngFor="let item of ListaAreas" [ngValue]="item.key">
                     {{ item.tipo }}
                   </option>
                 </select>
@@ -202,7 +215,7 @@
 
 
           <div class="row">
-            <div [ngClass]="Actualizar ? 'col-md-6' : 'col-md-12'">
+            <div class="col-md-12">
               <div class="form-group">
                 <input
                   type="text"
@@ -229,32 +242,6 @@
               </div>
             </div>
 
-            <div class="col-md-6" *ngIf="Actualizar">
-              <div class="form-group">
-                <label>Estado</label>
-                <select
-                  formControlName="estado"
-                  id="estado"
-                  name="estado"
-                  class="form-control"
-                  required
-                >
-                  <option value="">Seleccione</option>
-                  <option *ngFor="let item of Estados" [value]="item.value">
-                    {{ item.text }}
-                  </option>
-                </select>
-
-                <div *ngIf="estado.invalid && (estado.dirty || estado.touched)">
-                  <div
-                    class="container-error-message"
-                    *ngIf="estado.errors.required"
-                  >
-                    <small class="text-danger"> Estado requerido </small>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </form>
       </div>

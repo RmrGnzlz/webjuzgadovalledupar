@@ -9,13 +9,14 @@ import { AuthGuard } from './Service/guards/auth.guard';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: '', component: LoginComponent },
   { path: 'solicitudAnonima', component: SolitudAnonimaComponent },
   { path: 'ConsultaSolicitud', component: ConsultarSolicitudComponent },
   {
-    path:'',
+    path:'pages',
     component:PagesComponent,
-    loadChildren:'./pages/pages.module#PagesModule',
-    canActivate:[AuthGuard]
+    loadChildren:()=>import('./pages/pages.module').then(m=>m.PagesModule),
+    // canActivate:[AuthGuard]
   },
   { path: '**', component: NotFoundComponent }
 ];
