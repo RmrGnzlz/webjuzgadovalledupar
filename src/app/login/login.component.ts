@@ -33,7 +33,8 @@ export class LoginComponent implements OnInit {
       }
       this._serviceUsuario.login(this.usuario.username,this.usuario.password)
       .subscribe(res=>{
-        window.location.href = '#/dashboard'
+          res.then((res:string)=>this.route.navigate([`/pages/${res.toLowerCase()}`])
+          )
       },
       err=>{console.log('error loguin');
       })

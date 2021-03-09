@@ -25,7 +25,8 @@ const TecnicoRoute: Routes = [
     path: 'juzgado',
     children: [
       { path: 'listar', component: JuzgadoComponent },
-      { path: 'asignar', component: AsignacionJuzgadoComponent }
+      { path: 'asignar', component: AsignacionJuzgadoComponent },
+      { path: '**', redirectTo: 'listar' }
     ]
   },
   { path: 'edificio', component: EdificioComponent },

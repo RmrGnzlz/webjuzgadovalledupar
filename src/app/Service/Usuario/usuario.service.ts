@@ -4,14 +4,20 @@ import { Usuario } from 'src/app/models/Usuario';
 import { ServicieGeneric } from '../ServiceGeneric';
 import { ResponseHttp } from '../../models/Base/ResponseHttp';
 import { map } from 'rxjs/operators';
+import { Modulo } from 'src/app/models/Modulo';
+import { Persona } from '../../models/Persona';
+import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
-  usuario: Usuario;
   public token: string = '';
-  menu: any[] = [];
+  public modulos:Modulo[]=[];
+  public DatosBasicos:any={}
+
+
   constructor(private router: Router, private _ServiceGeneric: ServicieGeneric) {
 
     this.cargarStorage();
@@ -30,43 +36,47 @@ export class UsuarioService {
     );
   }
 
-   login(username:string,password:string) {
+    login(username:string,password:string) {
 
-      return this._ServiceGeneric.postPatch<ResponseHttp<any>>('usuario/auth/login',{username,password})
+       return  this._ServiceGeneric.postPatch<ResponseHttp<any>>('usuario/auth/login',{username,password})
       .pipe(
-        map(res=>{
+        map(async res=>{
           sessionStorage.setItem('token', res.data.token);
-          return this.cargarUsuario();
-        },
-        err=>{return false})
-      );
+          return await this.obtenerFuncionalidades().toPromise();
+        })
+      )
+
 
   }
 
-  cargarUsuario(){
-    this._ServiceGeneric.getRemove<ResponseHttp<Usuario>>(null,'usuario')
-      .pipe(
-        map(res=>{
-          this.usuario=res.data as Usuario;
-          console.log(this.usuario);
+  obtenerFuncionalidades(){
+    return  this._ServiceGeneric.getRemove<ResponseHttp<any>>(null,'usuario')
+    .pipe(
+      map(res=>{
+        this.modulos=res.data.modulos;
+        var persona: Persona=res.data.persona;
+        this.DatosBasicos.nombres=`${persona.nombres} ${persona.apellidos}`;
+          this.DatosBasicos.rol=res.data.tipoCargo;
+          this.DatosBasicos.usuario=res.data.username;
+        localStorage.setItem('menu', JSON.stringify(this.modulos));
+        localStorage.setItem('datosBasicos', JSON.stringify(this.DatosBasicos));
+        return res.data.tipoCargo;
+      })
+    )
 
-          localStorage.setItem('persona', JSON.stringify(this.usuario.persona));
-          localStorage.setItem('funcionalidades', JSON.stringify(this.usuario.funcionalidades));
-          return true;
-        },
-        err=>{return false})
-      );
+
   }
+
+
 
   cargarStorage() {
     if (sessionStorage.getItem('token')) {
       this.token = sessionStorage.getItem('token');
-      this.usuario = JSON.parse(localStorage.getItem('usuario'));
-      this.menu = JSON.parse(localStorage.getItem('menu'));
+      this.modulos = JSON.parse(localStorage.getItem('menu'));
+
     } else {
       this.token = '';
-      this.usuario = null;
-      this.menu = null;
+      this.modulos = null;
     }
   }
 
@@ -75,15 +85,11 @@ export class UsuarioService {
   }
 
   Logout() {
-    console.log('logout');
-
-    this.usuario = null;
     this.token = '';
     sessionStorage.removeItem('token');
-    localStorage.removeItem('usuario');
-    localStorage.removeItem('id');
+    localStorage.removeItem('datosBasicos');
     localStorage.removeItem('menu');
-    this.menu = [];
+    this.modulos = [];
     this.router.navigate(['/login']);
   }
 }

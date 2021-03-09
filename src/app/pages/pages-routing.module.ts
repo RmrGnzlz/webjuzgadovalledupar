@@ -26,6 +26,10 @@ const pagesRoute: Routes = [
   {
     path:'coordinador',
     loadChildren:()=>import('./Coordinador/coordinador.module').then(m=>m.CoordinadorModule)
+  },
+  {
+    path:'auditor',
+    loadChildren:()=>import('./Auditor/auditor.module').then(m=>m.AuditorModule)
   }
 
   ]

@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Columns } from 'ngx-easy-table';
-import { Juzgado, TipoAreaEnum } from 'src/app/models/Juzgado.Model';
+import { Juzgado } from 'src/app/models/Juzgado.Model';
 import { Edificio } from 'src/app/models/Edificio.Model';
 import { ServicieGeneric } from 'src/app/Service/service.index';
 import { NotificacionServiceService } from '../../../utils/notificacion-service.service';
