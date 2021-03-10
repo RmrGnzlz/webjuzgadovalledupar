@@ -24,10 +24,8 @@ export class InterceptorService implements HttpInterceptor  {
     return next.handle(req)
     .pipe(
       tap(event=>{
-        if (event instanceof HttpResponse) console.log('solicitud exitosa');
       }),
       catchError(err=>{
-
         this.MensajeError(err);
         return of(err);
 

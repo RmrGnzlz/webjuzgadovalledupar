@@ -13,6 +13,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgWizardConfig, NgWizardModule, THEME } from 'ng-wizard';
 import { ComponentsModule } from '../../components/components.module';
 import { NgxSelectModule } from 'ngx-select-ex';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.circles
@@ -36,7 +37,8 @@ const ngWizardConfig: NgWizardConfig = {
     ReactiveFormsModule,
     ComponentsModule,
     NgWizardModule.forRoot(ngWizardConfig),
-    NgxSelectModule
+    NgxSelectModule,
+    NgxPermissionsModule.forChild()
   ]
 })
 export class TecnicoModule { }

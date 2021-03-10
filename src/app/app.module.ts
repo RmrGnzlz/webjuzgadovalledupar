@@ -30,6 +30,7 @@ import { PagesModule } from './pages/pages.module';
 import { SnotifyModule, ToastDefaults, SnotifyService } from 'ng-snotify';
 import { ComponentsModule } from './components/components.module';
 import { ModalAuthComponent } from './components/modal-auth/modal-auth.component';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.circles,
@@ -65,7 +66,9 @@ const ngWizardConfig: NgWizardConfig = {
     SharedModule,
     ServiceModule,
     PagesModule,
-    ComponentsModule
+    ComponentsModule,
+    NgxPermissionsModule.forRoot(),
+
   ],
   exports: [
 

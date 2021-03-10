@@ -1,5 +1,3 @@
-import { BaseModel } from './Base/Base.Model';
-import { EstadoGenerico } from './Enums/EstadoGenerico';
-export class Funcionalidades extends BaseModel{
+export class Funcionalidades {
   public codigo:string;
 }

@@ -1,18 +1,24 @@
 <!-- <mat-card> -->
 
-<app-tabla
-[Columns]="Columns"
-[rutaApi]="'sala'"
->
-  <button
-    data-toggle="modal"
-    data-target="#exampleModal"
-    type="button"
-    class="btn btn-outline-info text-right"
+<div  *ngxPermissionsOnly="'SALA-01'">
+hola mundo
+</div>
+
+  <app-tabla
+  [Columns]="Columns"
+  [rutaApi]="'sala'"
   >
-    <i class="fa fa-plus-square"></i> Crear Sala
-  </button>
+  <button
+  data-toggle="modal"
+  data-target="#exampleModal"
+  type="button"
+  class="btn btn-outline-info text-right"
+  >
+  <i class="fa fa-plus-square"></i> Crear Sala
+</button>
 </app-tabla>
+
+
 
 
 <ng-template #numeroTpl let-row let-rowIndex="rowIndex" let-column="column">

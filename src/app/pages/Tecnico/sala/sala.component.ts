@@ -49,6 +49,7 @@ export class SalaComponent implements OnInit {
 
   ngOnInit() {
 
+    
     // this.modal.mostrarModal();
     this._ServiceGeneric.getRemove<ResponseHttp<Edificio>>(null, 'edificio')
     .subscribe(res=>this.ListaEdificios=res.data as Edificio[]);

@@ -1,3 +1,4 @@
+import { NgxPermissionsModule } from 'ngx-permissions';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -18,7 +19,8 @@ import { ComponentsModule } from '../components/components.module';
   imports: [
     CommonModule,
     RouterModule,
-    ComponentsModule
+    ComponentsModule,
+    NgxPermissionsModule.forChild()
   ],
   exports: [
     SidebarComponent,

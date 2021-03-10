@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgWizardModule, NgWizardConfig, THEME } from 'ng-wizard';
 
 import { NgxSelectModule } from 'ngx-select-ex';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 
 const ngWizardConfig: NgWizardConfig = {
@@ -26,7 +27,8 @@ const ngWizardConfig: NgWizardConfig = {
     ReactiveFormsModule,
     FormsModule,
     NgWizardModule.forRoot(ngWizardConfig),
-    NgxSelectModule
+    NgxSelectModule,
+    NgxPermissionsModule.forChild()
   ],
   exports:[ReactiveFormsModule]
 })
