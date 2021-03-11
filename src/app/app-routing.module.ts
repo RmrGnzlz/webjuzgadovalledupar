@@ -6,17 +6,21 @@ import { ConsultarSolicitudComponent } from './solitud-anonima/consultar-solicit
 import { LoginComponent } from './login/login.component';
 import { PagesComponent } from './pages/pages.component';
 import { AuthGuard } from './Service/guards/auth.guard';
+import { NgxPermissionsGuard } from 'ngx-permissions';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  // { path: '', component: LoginComponent },
+  {
+    path: 'login',
+    component: LoginComponent,
+  },
+  { path: '', component: LoginComponent },
   { path: 'solicitudAnonima', component: SolitudAnonimaComponent },
   { path: 'ConsultaSolicitud', component: ConsultarSolicitudComponent },
   {
     path:'',
     component:PagesComponent,
     loadChildren:()=>import('./pages/pages.module').then(m=>m.PagesModule),
-    canActivate:[AuthGuard]
+    canActivate:[AuthGuard],
 
   },
   { path: '**', component: NotFoundComponent }

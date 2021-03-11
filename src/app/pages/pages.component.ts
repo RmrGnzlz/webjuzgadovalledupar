@@ -20,6 +20,7 @@ export class PagesComponent implements OnInit {
 
     if(this.router.url ==='/'){
       var rol=this.usuarioService.DatosBasicos.rol;
+      console.log('rol es '+rol);
       this.router.navigate([`/${rol}`]);
     }
   }

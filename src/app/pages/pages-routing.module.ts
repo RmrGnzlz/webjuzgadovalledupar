@@ -7,67 +7,91 @@ const pagesRoute: Routes = [
   {
     path:'tecnico',
     loadChildren:()=>import('./Tecnico/tecnico.module').then(m=>m.TecnicoModule),
-    // canActivate:[NgxPermissionsGuard],
-    // data:{
-    //   Permissions:{
-    //     only: 'ADMIN'
-    //   }
-    // }
+    canActivateChild:[NgxPermissionsGuard],
+    data:{
+      permissions: {
+        only: 'tecnico',
+        redirectTo: '/Not-Found'
+
+      }
+    }
+
   },
   {
     path:'escribiente',
     loadChildren:()=>import('./Escribiente/escribiente.module').then(m=>m.EscribienteModule),
-    // data:{
-    //   Permissions:{
-    //     only: 'ADMIN'
-    //   }
-    // }
+    canActivateChild:[NgxPermissionsGuard],
+    data:{
+      permissions: {
+        only: 'escribiente',
+        redirectTo: '/NotFound'
+
+      }
+    }
+
   },
   {
     path:'fiscal',
     loadChildren:()=>import('./Fiscal/fiscal.module').then(m=>m.FiscalModule),
-    // data:{
-    //   Permissions:{
-    //     only: 'ADMIN'
-    //   }
-    // }
+    canActivateChild:[NgxPermissionsGuard],
+    data:{
+      permissions: {
+        only: 'fiscal',
+        redirectTo: '/NotFound'
+
+      }
+    }
 
   },
   {
     path:'notificador',
     loadChildren:()=>import('./Notificador/notificador.module').then(m=>m.NotificadorModule),
-    // data:{
-    //   Permissions:{
-    //     only: 'ADMIN'
-    //   }
-    // }
+    canActivateChild:[NgxPermissionsGuard],
+    data:{
+      permissions: {
+        only: 'notificador',
+        redirectTo: '/NotFound'
+
+      }
+    }
+
   },
   {
     path:'juez',
     loadChildren:()=>import('./Juez/juez.module').then(m=>m.JuezModule),
-    // data:{
-    //   Permissions:{
-    //     only: 'ADMIN'
-    //   }
-    // }
+    canActivateChild:[NgxPermissionsGuard],
+    data:{
+      permissions: {
+        only: 'juez',
+        redirectTo: '/NotFound'
+
+      }
+    }
+
   },
   {
     path:'coordinador',
     loadChildren:()=>import('./Coordinador/coordinador.module').then(m=>m.CoordinadorModule),
-    // data:{
-    //   Permissions:{
-    //     only: 'ADMIN'
-    //   }
-    // }
+    canActivateChild:[NgxPermissionsGuard],
+    data:{
+      permissions: {
+        only: 'coordinador',
+        redirectTo: '/NotFound'
+
+      }
+    }
   },
   {
     path:'auditor',
     loadChildren:()=>import('./Auditor/auditor.module').then(m=>m.AuditorModule),
-    // data:{
-    //   Permissions:{
-    //     only: 'ADMIN'
-    //   }
-    // }
+    canActivateChild:[NgxPermissionsGuard],
+    data:{
+      permissions: {
+        only: ['auditor'],
+        redirectTo: '/NotFound'
+
+      }
+    }
   }
 
   ]

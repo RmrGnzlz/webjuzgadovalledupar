@@ -6,7 +6,7 @@ import { ResponseHttp } from '../../models/Base/ResponseHttp';
 import { map } from 'rxjs/operators';
 import { Modulo } from 'src/app/models/Modulo';
 import { Persona } from '../../models/Persona';
-import { NgxPermissionsService} from 'ngx-permissions';
+import { NgxPermissionsService, NgxRolesService} from 'ngx-permissions';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,8 @@ export class UsuarioService {
 
 
   constructor(private router: Router, private _ServiceGeneric: ServicieGeneric,
-    private permissionsService: NgxPermissionsService) {
+    private permissionsService: NgxPermissionsService,
+    private rolesService: NgxRolesService) {
 
     this.cargarStorage();
   }
@@ -43,6 +44,7 @@ export class UsuarioService {
         map(async res => {
           sessionStorage.setItem('token', res.data.token);
           this.token=res.data.token;
+          // console.log(this.jwtHelperService.decodeToken(this.token));
           return await this.obtenerFuncionalidades().toPromise();
         })
       )
@@ -62,8 +64,8 @@ export class UsuarioService {
           var permisos = this.ObtenerPermisos(res.data.modulos);
           localStorage.setItem('datosBasicos', JSON.stringify(this.DatosBasicos));
           localStorage.setItem('menu', JSON.stringify(permisos));
-          this.permissionsService.loadPermissions(permisos);
-          return res.data.rol.nombre;
+          this.rolesService.addRoleWithPermissions(this.DatosBasicos.rol, permisos);
+          return this.DatosBasicos.rol;
         })
       )
   }
@@ -90,8 +92,11 @@ export class UsuarioService {
   cargarStorage() {
     if (sessionStorage.getItem('token')) {
       this.token = sessionStorage.getItem('token');
-      this.permissionsService.loadPermissions(JSON.parse(localStorage.getItem('menu')));
+      var permisos=JSON.parse(localStorage.getItem('menu'));
       this.DatosBasicos=JSON.parse(localStorage.getItem('datosBasicos'));
+      console.log(this.DatosBasicos.rol);
+
+      this.rolesService.addRoleWithPermissions('auditor', permisos);
 
     } else {
       this.token = '';

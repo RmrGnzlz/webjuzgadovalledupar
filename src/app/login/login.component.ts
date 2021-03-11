@@ -23,6 +23,12 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     INIT_PLUGIN();
+    if(this._serviceUsuario.Logueado()) {
+      this._serviceUsuario.cargarStorage();
+
+      this.route.navigate([`/${this._serviceUsuario.DatosBasicos.rol}`]);
+    }
+    // sessionStorage.setItem('token','sdsdsdsdsd;sdsdsdsdsd;Sdsdsd');
   }
 
   login(form: NgForm) {
@@ -33,13 +39,16 @@ export class LoginComponent implements OnInit {
     this._serviceUsuario.login(this.usuario.username, this.usuario.password)
       .subscribe(res => {
         res.then((res: string) => {
-          this.route.navigate([`/${res.toLowerCase()}`]);
+          var rol=res.toLowerCase();
+      console.log(rol);
+
+          this.route.navigate([`/${rol}`]);
 
         }
         )
       },
         err => {
-          console.log('error loguin');
+          console.log(err);
         })
 
   }
