@@ -7,29 +7,94 @@ import { JuzgadoComponent } from './juzgado/juzgado.component';
 import { SalaComponent } from './sala/sala.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AsignacionJuzgadoComponent } from './asignacion-juzgado/asignacion-juzgado.component';
+import { NgxPermissionsGuard } from 'ngx-permissions';
 
 
 const TecnicoRoute: Routes = [
   { path: '', component: DashboardComponent },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'sala', component: SalaComponent },
+
+  {
+    path: 'sala',
+    children: [
+      {
+        path: '', component: SalaComponent,
+        canActivateChild: [NgxPermissionsGuard],
+        data: {
+          permissions: {
+            only: '',
+            redirectTo: '/Not-Found'
+          }
+        }
+      }
+    ]
+  },
   {
     path: 'empleado',
     children: [
-      { path: 'regitrar', component: RegistroEmpleadoComponent },
-      { path: 'listar', component: ListadoEmpleadoComponent },
-      { path: '**', redirectTo: 'listar' }
+      {
+        path: '', component: ListadoEmpleadoComponent,
+        canActivateChild: [NgxPermissionsGuard],
+        data: {
+          permissions: {
+            only: '',
+            redirectTo: '/Not-Found'
+          }
+        }
+      },
+      {
+        path: 'registrar', component: RegistroEmpleadoComponent,
+        canActivateChild: [NgxPermissionsGuard],
+        data: {
+          permissions: {
+            only: '',
+            redirectTo: '/tecnico'
+
+          }
+        }
+      },
+      { path: '**', redirectTo: 'empleado' }
     ]
   },
+
   {
     path: 'juzgado',
     children: [
-      { path: 'listar', component: JuzgadoComponent },
-      { path: 'asignar', component: AsignacionJuzgadoComponent },
-      { path: '**', redirectTo: 'listar' }
+      {
+        path: '', component: JuzgadoComponent,
+        canActivateChild: [NgxPermissionsGuard],
+        data: {
+          permissions: {
+            only: '',
+            redirectTo: '/Not-Found'
+          }
+        }
+      },
+      {
+        path: 'asignar', component: AsignacionJuzgadoComponent,
+        canActivateChild: [NgxPermissionsGuard],
+        data: {
+          permissions: {
+            only: '',
+            redirectTo: '/Not-Found'
+
+          }
+        }
+      },
+      { path: '**', redirectTo: 'juzgado' }
     ]
   },
-  { path: 'edificio', component: EdificioComponent },
+  {
+    path: 'edificio', component: EdificioComponent,
+    canActivateChild: [NgxPermissionsGuard],
+    data: {
+      permissions: {
+        only: '',
+        redirectTo: '/Not-Found'
+
+      }
+    }
+  },
 
 
 

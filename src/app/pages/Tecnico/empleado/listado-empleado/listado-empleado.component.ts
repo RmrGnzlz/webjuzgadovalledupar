@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Columns } from 'ngx-easy-table';
-import { Empleado } from 'src/app/models/Enpleado';
+import { Empleado } from 'src/app/models/Empleado';
 import { RolEnums } from 'src/app/models/Enums/RolEnums';
 import { ServicieGeneric } from 'src/app/Service/service.index';
 import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';

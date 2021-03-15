@@ -7,7 +7,7 @@ import { ServicieGeneric } from 'src/app/Service/service.index';
 import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';
 import { Router } from '@angular/router';
 import { ResponseHttp } from 'src/app/models/Base/ResponseHttp';
-import { Empleado } from 'src/app/models/Enpleado';
+import { Empleado } from 'src/app/models/Empleado';
 import { Persona } from 'src/app/models/Persona';
 import { Rol } from '../../../../models/Rol';
 import { Pais } from '../../../../models/Pais';

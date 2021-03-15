@@ -59,7 +59,7 @@ export class UsuarioService {
           this.modulos = res.data.modulos;
           var persona: Persona = res.data.persona;
           this.DatosBasicos.nombres = `${persona.nombres} ${persona.apellidos}`;
-          this.DatosBasicos.rol = (res.data.tipoCargo as string).toLowerCase();
+          this.DatosBasicos.rol = (res.data.rol.nombre as string).toLowerCase();
           this.DatosBasicos.usuario = res.data.username;
           var permisos = this.ObtenerPermisos(res.data.modulos);
           localStorage.setItem('datosBasicos', JSON.stringify(this.DatosBasicos));
@@ -95,8 +95,7 @@ export class UsuarioService {
       var permisos=JSON.parse(localStorage.getItem('menu'));
       this.DatosBasicos=JSON.parse(localStorage.getItem('datosBasicos'));
       console.log(this.DatosBasicos.rol);
-
-      this.rolesService.addRoleWithPermissions('auditor', permisos);
+      this.rolesService.addRoleWithPermissions(this.DatosBasicos.rol, permisos);
 
     } else {
       this.token = '';

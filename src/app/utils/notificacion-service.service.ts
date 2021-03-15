@@ -21,10 +21,10 @@ export class NotificacionServiceService {
     this.service.error(descripcion, title, { position: SnotifyPosition.rightTop,titleMaxLength:title.length,bodyMaxLength:descripcion.length });
   }
 
-  public MensajeConfir(elemento:string){
+  public MensajeConfir(elemento:string,title='Seguro desea borrar'){
 
     return new Promise(resolve=>{
-      this.service.error( elemento,'Seguro desea borrar',
+      this.service.error( elemento,title,
 
       {
         timeout: 50000,

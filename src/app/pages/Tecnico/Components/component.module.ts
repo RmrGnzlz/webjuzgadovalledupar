@@ -9,7 +9,10 @@ import { CardjuzgadoComponent } from './cardjuzgado/cardjuzgado.component';
     CardjuzgadoComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+  ],
+  exports:[
+    CardjuzgadoComponent
   ]
 })
 export class ComponentModule { }

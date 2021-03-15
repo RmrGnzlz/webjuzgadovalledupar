@@ -14,6 +14,7 @@ import { NgWizardConfig, NgWizardModule, THEME } from 'ng-wizard';
 import { ComponentsModule } from '../../components/components.module';
 import { NgxSelectModule } from 'ngx-select-ex';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { ComponentModule } from './Components/component.module';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.circles
@@ -38,7 +39,11 @@ const ngWizardConfig: NgWizardConfig = {
     ComponentsModule,
     NgWizardModule.forRoot(ngWizardConfig),
     NgxSelectModule,
-    NgxPermissionsModule.forChild()
+    NgxPermissionsModule.forChild(),
+    ComponentModule
+  ],
+  exports:[
+    ComponentModule
   ]
 })
 export class TecnicoModule { }

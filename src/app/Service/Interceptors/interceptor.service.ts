@@ -46,6 +46,9 @@ export class InterceptorService implements HttpInterceptor  {
 
         this.notificacion.MensajeError(error.error.message)
       }
+      if (error.status==401) {
+        this.notificacion.MensajeError('No tiene permiso para esta petición')
+      }
 
     return throwError('error personalizado')
   }

@@ -17,10 +17,10 @@ export class SidebarComponent implements OnInit {
     this.rol=this._usuarioService.DatosBasicos.rol;
     this.menu = [
       { titulo: 'Dashboard', icono: 'mdi mdi-gauge', permiso: '', url: `${this.rol}` },
-      { titulo: 'Gestión Salas', icono: 'fa fa-group', permiso: 'GESTIONAR SALAS', url: 'tecnico/sala' },
-      { titulo: 'Gestión Juzgados', icono: 'fa fa-gavel', permiso: 'GESTIONAR JUZGADOS', url: 'tecnico/juzgado' },
-      { titulo: 'Gestión Edificio', icono: 'fa fa-building-o', permiso: 'EDI-01', url: 'tecnico/edificio' },
-      { titulo: 'Gestión Empleado', icono: 'fa fa-user-circle-o', permiso: 'GESTIONAR USUARIOS', url: 'tecnico/empleado' },
+      { titulo: 'Gestión Salas', icono: 'fa fa-group', permiso: 'GESTIONAR SALAS', url: `${this.rol}/sala` },
+      { titulo: 'Gestión Juzgados', icono: 'fa fa-gavel', permiso: 'GESTIONAR JUZGADOS', url: `${this.rol}/juzgado` },
+      { titulo: 'Gestión Edificio', icono: 'fa fa-building-o', permiso: 'EDI-01', url: `${this.rol}/edificio` },
+      { titulo: 'Gestión Empleado', icono: 'fa fa-user-circle-o', permiso: 'GESTIONAR USUARIOS', url: `${this.rol}/empleado` },
       // { titulo: 'Gestión ', icono: '', permiso: 'GESTIONAR USUARIOS', url: 'tecnico/empleado' }
 
 

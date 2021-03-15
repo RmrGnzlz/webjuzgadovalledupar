@@ -1,1 +1,95 @@
-<p>cardjuzgado works!</p>
+<div class="row">
+  <div class="col">
+    <div class="card card-outline-danger">
+      <div class="card-header">
+        <h4 class="m-b-0 ">
+          <div class="row">
+            <div class="col-md-7">
+              <h4 class="card-title"><span class="lstick"></span>{{juzgado?.nombre}}</h4>
+            </div>
+            <div class="col-md-2 offset-md-2" *ngIf="puedeAsignarJuez()"  >
+              <button (click)="showAgregar()" type="button" class="btn waves-effect waves-light btn-outline-primary"
+                tabindex="0" ng-reflect-router-link="asignar"><i class="fa fa-retweet"></i> Agregar Juez </button>
+            </div>
+          </div>
+          <div class="d-flex">
+            <h6 class="card-title"><span class="lstick"></span> {{juzgado?.tipo}}</h6>
+          </div>
+        </h4>
+      </div>
+
+      <div class="card-body">
+          <ng-container *ngIf="agregar" >
+            <div class="form">
+              <div class="row ">
+              <div class="col-5">
+                <div class="form-group">
+                  <select  class="form-control mx-auto" name="juez" id="juez">
+                    <option>Seleccione Juez</option>
+                    <option>Ramiro Gonzales</option>
+                    <option>Martha Rosa</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="form-check mx-auto">
+                  <input type="checkbox" class="form-check-input text-left" id="exampleCheck1">
+                  <label class="form-check-label" for="exampleCheck1">Principal</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="btn-toolbar">
+                  <button type="button" (click)="agregarJuez()"  class="btn btn-info btn-xs"><i class="fa fa-check"></i> </button>
+                  <button type="button" class="btn btn-danger btn-xs" (click)="agregar=false"><i class="fa fa-times"></i> </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <div *ngIf="juzgado?.jueces.length===0 || juzgado?.jueces===null;else elseJueces">
+          <td></td>
+          <td class="text-center">No hay juez asignados</td>
+          <td></td>
+      </div>
+
+          <ng-template class="table-responsive m-t-20" #elseJueces>
+          <table class="table vm no-th-brd pro-of-month">
+            <thead>
+              <tr>
+                <th colspan="2">Juez</th>
+                <th></th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr *ngFor="let item of juzgado?.jueces" >
+                <div >
+                  <td>
+                    <h6>{{item.persona.nombres+' '+ item.persona.apellidos}}</h6>
+                  </td>
+                  <td class="text-center">
+                    <span class="label label-success "> <h6>PRINCIPAL</h6> </span>
+                  </td>
+                  <td>
+                    <button class="btn waves-effect waves-light btn-outline-danger" >
+                      <i class="fa fa-trash-o"></i>
+                      Eliminar
+                      <!-- <span class="label label-danger label-rounded">Eliminar</span> -->
+                    </button>
+                  </td>
+                </div>
+
+              </tr>
+
+
+
+
+            </tbody>
+          </table>
+        </ng-template>
+      </div>
+    </div>
+  </div>

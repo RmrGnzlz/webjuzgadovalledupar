@@ -96,7 +96,7 @@ export class EdificioComponent implements OnInit {
       return;
     }
     this._serviceGeneric.postPatch<ResponseHttp<Edificio>>('edificio',this.form.value)
-    .subscribe(res=>this.notificacion.MensajeSuccess('Edificio Agregado'));
+    .subscribe(res=>{this.notificacion.MensajeSuccess('Edificio Agregado');this.closeModal()});
   }
 
   closeModal() {
