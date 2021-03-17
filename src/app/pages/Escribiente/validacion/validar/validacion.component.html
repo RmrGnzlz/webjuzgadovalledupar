@@ -1,0 +1,437 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header bg-info">
+        <h4 class="m-b-0 text-white">Validación Solicitud</h4>
+      </div>
+      <div class="card-body">
+        <ng-wizard >
+
+          <ng-wizard-step
+            [title]="'Paso 1'"
+            [description]="'Solicitante'"
+            [canEnter]="isValidTypeBoolean"
+            [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+          >
+            <form action="#">
+              <div class="form-body">
+                <h3 class="card-title">Datos solicitante</h3>
+                <hr />
+                <div class="row p-t-20">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label class="control-label">Tipo Documento</label>
+                      <input
+                        type="text"
+                        readonly
+                        class="form-control"
+                        value="Cedula ciudadania"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="control-label">Numero Documento</label>
+                    <input
+                      type="text"
+                      readonly
+                      class="form-control"
+                      value="1065824874"
+                    />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="control-label">Fecha Expedición</label>
+                    <input
+                      type="text"
+                      readonly
+                      class="form-control"
+                      value="02/02/1992"
+                    />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="control-label">Nacionalidad</label>
+                    <input
+                      type="text"
+                      readonly
+                      class="form-control"
+                      value="Colombia"
+                    />
+                  </div>
+                </div>
+                <!--/row-->
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label">Nombres y Apellidos</label>
+                    <input
+                      type="text"
+                      readonly
+                      class="form-control"
+                      value="Helmer Segundo Fuentes Alvarado"
+                    />
+                  </div>
+
+                  <div class="col-md-3">
+                    <label class="control-label">Dirección</label>
+                    <input
+                      type="text"
+                      readonly
+                      class="form-control"
+                      value="Calle 16B # 27-05 villa corelca"
+                    />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="control-label">Correo</label>
+                    <input
+                      type="text"
+                      readonly
+                      class="form-control"
+                      value="elmer.fuentes@hotmail.com"
+                    />
+                  </div>
+
+                  <div class="col-md-2">
+                    <label class="control-label">Telefono</label>
+                    <input
+                      type="text"
+                      readonly
+                      class="form-control"
+                      value="3145096908"
+                    />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </ng-wizard-step>
+
+          <ng-wizard-step
+            [title]="'Paso 2'"
+            [description]="'Solicitud'"
+            [canEnter]="isValidTypeBoolean"
+            [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+          >
+            <form action="#">
+              <div class="form-body">
+                <h3 class="card-title">Datos solicitud</h3>
+                <hr />
+                <div class="row p-t-20">
+                  <div class="col-md-4">
+                    <label class="control-label"
+                      >Codigo Unico Identificación (C.U.I)</label
+                    >
+                    <input
+                      type="text"
+                      readonly
+                      class="form-control"
+                      [value]="
+                        '111111111111111111111'
+                          | mask: '00  - 000 - 00 - 00000 - 0000 - 00000'
+                      "
+                    />
+                  </div>
+                  <!--/span-->
+                  <div class="col">
+                    <div class="form-group">
+                      <label class="control-label">Asunto</label>
+                      <input
+                        type="text"
+                        id="asunto"
+                        readonly
+                        class="form-control"
+                        placeholder="12n"
+                      />
+                    </div>
+                  </div>
+                  <!--/span-->
+                </div>
+                <!--/row-->
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group">
+                      <label class="control-label">Descripción</label>
+                      <textarea
+                        type="text"
+                        id="descripcion"
+                        readonly
+                        class="form-control"
+                        placeholder="12n"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+                <!--/row-->
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="control-label">Tipo Solicitante</label>
+                      <input
+                        type="text"
+                        id="tipo"
+                        readonly
+                        class="form-control"
+                        placeholder="12n"
+                      />
+                    </div>
+                  </div>
+                  <!--/span-->
+                  <div class="col-md-6">
+                    <div class="row">
+                      <label class="control-label">Anexo</label>
+                    </div>
+                    <div class="row">
+                      <a
+                        href="javascript:void(0)"
+                        (click)="verAnexo()"
+                        role="button"
+                        >Recursos de apelacion para jovenes</a
+                      >
+                    </div>
+                  </div>
+                  <!--/span-->
+                </div>
+                <!--/row-->
+                <h3 class="box-title m-t-40">Datos del Proceso</h3>
+                <hr />
+                <div class="row">
+                  <div class="col-8">
+                    <div class="row">
+                      <label class="control-label text-right col-md-2">
+                        <h6>Proceso:</h6></label
+                      >
+                      <div class="col-md-9">
+                        <h5 class="form-control-static">
+                          {{
+                            "111111111111111111111"
+                              | mask: "00  - 000 - 00 - 00000 - 0000 - 00000"
+                          }}
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="row">
+                      <label class="control-label text-right col-md-2">
+                        <h6>Area:</h6></label
+                      >
+                      <div class="col-md-9">
+                        <h5 class="form-control-static">{{ "Garantia" }}</h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="col-12">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="table-responsive m-t-20">
+                            <table class="table vm no-th-brd pro-of-month">
+                              <thead>
+                                <tr>
+                                  <th class="text-left">
+                                    Nombres Sujetos Procesales
+                                  </th>
+                                  <th class="text-left">Tipo</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td class="text-left">
+                                    <h6>Helmer Segundo Fuentes Alvarado</h6>
+                                  </td>
+                                  <td class="text-left">
+                                    <h6>Juez</h6>
+                                  </td>
+                                </tr>
+                                <!-- <tr *ngFor="let item of juzgado?.jueces" >
+                                    <div >
+                                      <td>
+                                        <h6>{{item?.persona?.nombres+' '+ item?.persona?.apellidos}}</h6>
+                                      </td>
+                                      <td class="text-center">
+                                        <span class="label label-success "> <h6>PRINCIPAL</h6> </span>
+                                      </td>
+                                      <td>
+                                        <button class="btn waves-effect waves-light btn-outline-danger" >
+                                          <i class="fa fa-trash-o"></i>
+                                          Eliminar
+                                        </button>
+                                      </td>
+                                    </div>
+                                  </tr> -->
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/span-->
+                  <div class="col-6">
+                    <div class="col-12">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="table-responsive m-t-20">
+                            <table class="table vm no-th-brd pro-of-month">
+                              <thead>
+                                <tr>
+                                  <th class="text-left">Audiencias</th>
+                                  <th class="text-left">Estado</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td class="text-left">
+                                    <h6>Devolución de vehiculos</h6>
+                                  </td>
+                                  <td class="text-left">
+                                    <h6>Pendiente</h6>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/span-->
+                </div>
+              </div>
+            </form>
+          </ng-wizard-step>
+          <ng-wizard-step
+          [title]="'Paso 3'"
+          [description]="'Respuesta'"
+          [canEnter]="isValidTypeBoolean"
+          [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+        >
+          <div class="card">
+            <div class="card-body">
+              <form  class="form-horizontal" [formGroup]="form" (ngSubmit)="submit()">
+                <div class="form-body">
+                  <h3 class="box-title">Respuesta</h3>
+                  <hr class="m-t-0 m-b-40" />
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-md-3"
+                          >Asunto*</label
+                        >
+                        <div class="col-md-9">
+                          <input
+                          formControlName="asunto"
+                            type="text"
+                            class="form-control"
+                            placeholder="John doe"
+                          />
+                          <div
+                          *ngIf="
+                           asunto.invalid && (asunto.dirty || asunto.touched)
+                          "
+                        >
+                          <div *ngIf="asunto.errors.required">
+                            <small class="text-danger">Asunto es requerido. </small>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/row-->
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-md-3"
+                          >Descripción*</label
+                        >
+                        <div class="col-md-9">
+                          <input
+                          formControlName="descripcion"
+                            type="text"
+                            class="form-control"
+                            placeholder="John doe"
+                          />
+                          <div
+                          *ngIf="
+                           descripcion.invalid && (descripcion.dirty || descripcion.touched)
+                          "
+                        >
+                          <div *ngIf="descripcion.errors.required">
+                            <small class="text-danger">Descripcion es requerida. </small>
+                          </div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--/row-->
+                <div class="row">
+                  <!--/span-->
+                  <div class="col-md-8">
+                    <div class="form-group row">
+                      <label class="control-label text-right col-md-3"
+                        >Respuesta*</label
+                      >
+                      <div class="col-md-9">
+                        <div class="radio-list">
+                          <label class="custom-control custom-radio">
+                            <input
+                              id="radio3"
+                              name="estado"
+                              type="radio"
+                              checked="true"
+                              formControlName="estado"
+                              class="custom-control-input"
+                              value="1"
+                            />
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description"
+                              >Aceptar</span
+                            >
+                          </label>
+                          <label class="custom-control custom-radio">
+                            <input
+                            formControlName="estado"
+                              id="radio4"
+                              name="estado"
+                              type="radio"
+                              value="2"
+                              class="custom-control-input"
+                            />
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description"
+                              >Rechazar</span
+                            >
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/span-->
+                </div>
+                <br />
+                <div class="form-actions text-center">
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="row">
+                        <div class="col-md-offset-3 col-md-9">
+                          <button type="submit" class="btn btn-success">
+                            Registrar
+                          </button>
+                          <button type="button" class="btn btn-inverse">
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </ng-wizard-step>
+        </ng-wizard>
+      </div>
+    </div>
+  </div>
+</div>

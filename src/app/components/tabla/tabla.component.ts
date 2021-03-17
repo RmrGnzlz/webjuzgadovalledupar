@@ -27,6 +27,7 @@ export class TablaComponent implements OnInit {
   private ngUnsubscribe: Subject<void> = new Subject<void>();
   selected;
   @Input() Columns = [];
+  @Input() Data = [];
   @Input() rutaApi:string;
   @Input() pagination={
     limit: 10,
@@ -56,9 +57,11 @@ export class TablaComponent implements OnInit {
     this.configuration.persistState = true;
     this.configuration.serverPagination = true;
     this.configuration.threeWaySort = true;
+
+    if (this.rutaApi==='') {
+      this.data=this.Data;
+    }
     this.getData('');
-
-
   }
   onEvent(event: { event: string; value: any }): void {
     this.selected = JSON.stringify(event.value.row, null, 2);

@@ -18,7 +18,6 @@ ruta=environment.URL_SERVICIO;
     return this._serviceGeneric.getRemove<ResponseHttp<any>>(null,'usuario/validate',{username:usuario})
     .pipe(
       map(res=>{
-
         return (res.state===false)
         ?{usuarioDisponible:true}
         :null

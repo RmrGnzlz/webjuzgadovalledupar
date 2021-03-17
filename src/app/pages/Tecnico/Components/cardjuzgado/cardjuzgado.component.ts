@@ -29,16 +29,20 @@ export class CardjuzgadoComponent implements OnInit {
   }
   buildForm() {
     this.form = this.formBuilder.group({
-      keyJuez: ['',[Validators.required]],
-      keyJuzgado: [''],
+      juezKey: ['',[Validators.required]],
+      juzgadoKey: [''],
       principal: [false],
     });
   }
 
   showAgregar(){
     this.agregar=true;
-    this._serviceGeneric.getRemove<ResponseHttp<Empleado>>(null,'juzgado')
-    .subscribe(res=>this.listadoJueces=res.data as Empleado[]);
+    this._serviceGeneric.getRemove<ResponseHttp<Empleado>>(null,'juez')
+    .subscribe(res=>{
+      this.listadoJueces=res.data as Empleado[];
+        console.log(this.listadoJueces);
+
+    });
   }
 
   puedeAsignarJuez=()=>this.juzgado?.tipo as TipoAreaEnum != TipoAreaEnum.Magistrado &&this.juzgado?.jueces.length==0;
@@ -82,8 +86,8 @@ export class CardjuzgadoComponent implements OnInit {
   }
 
 
-  get juez() { return this.form.get('keyJuez'); }
-  get juzgad() { return this.form.get('keyJuzgado'); }
+  get juez() { return this.form.get('juezKey'); }
+  get juzgad() { return this.form.get('juzgadoKey'); }
   get principal() { return this.form.get('principal'); }
 
 }

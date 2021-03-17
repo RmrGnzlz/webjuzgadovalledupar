@@ -21,15 +21,13 @@ const ngWizardConfig: NgWizardConfig = {
 
   ],
   imports: [
-    CommonModule,
+    // CommonModule,
     ComponentsModule,
     PagesRoutingModule,
-    ReactiveFormsModule,
-    FormsModule,
     NgWizardModule.forRoot(ngWizardConfig),
     NgxSelectModule,
     NgxPermissionsModule.forChild()
   ],
-  exports:[ReactiveFormsModule]
+  exports:[]
 })
 export class PagesModule { }

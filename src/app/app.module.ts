@@ -66,7 +66,7 @@ const ngWizardConfig: NgWizardConfig = {
     SharedModule,
     ServiceModule,
     PagesModule,
-    ComponentsModule,
+    // ComponentsModule,
     NgxPermissionsModule.forRoot(),
 
   ],

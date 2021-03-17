@@ -7,7 +7,7 @@ declare function INIT_PLUGIN();
 @Component({
   selector: 'app-pages',
   templateUrl: './pages.component.html',
-  styles: []
+  styleUrls: ['./pages.componente.css' ]
 })
 export class PagesComponent implements OnInit {
 

@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardjuzgadoComponent } from './cardjuzgado/cardjuzgado.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ComponentsModule } from '../../../components/components.module';
 
 
 
@@ -9,10 +11,12 @@ import { CardjuzgadoComponent } from './cardjuzgado/cardjuzgado.component';
     CardjuzgadoComponent
   ],
   imports: [
-    CommonModule,
+    ComponentsModule,
   ],
   exports:[
-    CardjuzgadoComponent
+    CardjuzgadoComponent,
+    ComponentsModule
+
   ]
 })
 export class ComponentModule { }

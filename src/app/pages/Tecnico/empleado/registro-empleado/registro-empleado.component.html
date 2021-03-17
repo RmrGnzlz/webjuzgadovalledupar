@@ -1,8 +1,4 @@
 
-<div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-body">
         <ng-wizard (stepChanged)="stepChanged($event)">
 
           <ng-wizard-step
@@ -79,8 +75,8 @@
             [canEnter]="isValidTypeBoolean"
             [canExit]="isValidFunctionReturnsBoolean.bind(this)"
           >
+          {{persona | json}}
 
-          {{personaForm.errors}}
             <form #personaForm="ngForm">
               <div class="row">
                 <div class="col">
@@ -93,7 +89,6 @@
                       name="TipoDocumento"
                       required
                       #TipoDocumentoControl="ngModel"
-
                     >
                     <!-- <option value="" *ngFor="let item of Object.keys(documentos)" [ngValue]="documentos" ></option> -->
                       <option
@@ -228,7 +223,7 @@
                     <label for="inputNacionalidad">Nacionalidad*</label>
                     <select
                       required
-                      [(ngModel)]="persona.nacionalidad.key"
+                      [(ngModel)]="persona?.nacionalidad.key"
                       class="form-control p-0"
                       id="inputNacionalidad"
                       name="Nacionalidad"
@@ -296,10 +291,9 @@
                       id="inputTelefono"
                       #telefonoControl="ngModel"
                       required
-                      maxlength="10"
-                      minlength="10"
+
                       placeholder="321 000 00 00"
-                      mask="000-000-00-00"
+                      mask="000 000 00 00"
                       (keypress)="onlyNumberKey($event)"
                     />
                     <ng-container
@@ -355,6 +349,7 @@
           [canEnter]="isValidTypeBoolean"
           [canExit]="isValidFunctionReturnsBoolean.bind(this)"
         >
+        {{persona | json}}
         <form [formGroup]="form">
 
           <div class="row justify-content-center">
@@ -363,16 +358,16 @@
               <div class="form-group">
                 <label class="control-label">Usuario*</label>
                 <input
-                  name="usuario"
+                  name="username"
                   type="text"
-                  id="usuario"
+                  id="username"
                   class="form-control"
                   placeholder="John doe"
                   maxlength="20"
                   minlength="6"
-                  formControlName="usuario"
+                  formControlName="username"
                 />
-                  <span class="form-text text-danger" *ngIf="campoEsValido('usuario')" >
+                  <span class="form-text text-danger" *ngIf="campoEsValido('username')" >
                     <div *ngIf="usuario.errors.required" >Usuario requerido</div>
                     <div *ngIf="usuario.errors.usuarioDisponible" >Usuario ya existe</div>
                     <div *ngIf="usuario.errors.minlength" >Minimo 6 caracteres</div>
@@ -466,11 +461,9 @@
         </form>
         </ng-wizard-step>
 
+
         </ng-wizard>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <!--
 <div class="container">

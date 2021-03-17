@@ -32,11 +32,7 @@ const ngWizardConfig: NgWizardConfig = {
     AsignacionJuzgadoComponent
   ],
   imports: [
-    CommonModule,
-    FormsModule,
     TecnicoRoutingModule,
-    ReactiveFormsModule,
-    ComponentsModule,
     NgWizardModule.forRoot(ngWizardConfig),
     NgxSelectModule,
     NgxPermissionsModule.forChild(),
