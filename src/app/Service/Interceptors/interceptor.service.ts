@@ -35,6 +35,9 @@ export class InterceptorService implements HttpInterceptor  {
 
 
   MensajeError(error: HttpErrorResponse){
+      if (error.status==0) {
+        this.notificacion.MensajeError("Error al conectar con el servidor","Intente mas tarde");
+      }
       if (error.status==500) {
         this.notificacion.MensajeError("Error interno Servidor","Intente mas tarde");
       }

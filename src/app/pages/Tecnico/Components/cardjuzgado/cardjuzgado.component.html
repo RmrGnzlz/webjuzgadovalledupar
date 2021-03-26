@@ -4,10 +4,10 @@
       <div class="card-header">
         <h4 class="m-b-0 ">
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-8">
               <h4 class="card-title"><span class="lstick"></span>{{juzgado?.nombre}}</h4>
             </div>
-            <div class="col-md-2 offset-md-1" *ngIf="puedeAsignarJuez()"  >
+            <div class="col-2 " *ngIf="puedeAsignarJuez()"  >
               <button (click)="showAgregar()" type="button" class="btn waves-effect waves-light btn-outline-primary"
                 tabindex="0" ng-reflect-router-link="asignar"><i class="fa fa-retweet"></i> Agregar Juez </button>
             </div>
@@ -31,12 +31,21 @@
                     <option value="">Seleccione Juez</option>
                     <option *ngFor="let item of listadoJueces" [ngValue]="item.key" >{{item?.persona?.nombres +' '+ item?.persona?.apellidos }}</option>
                   </select>
+                  <div
+                  *ngIf="
+                    juez.invalid && (juez.dirty || juez.touched)
+                  "
+                >
+                  <div *ngIf="juez.errors.required">
+                    <small class="text-danger">Seleccione Juez </small>
+                  </div>
+                </div>
                 </div>
               </div>
 
-              <div class="col-4">
+              <div class="col-4" *ngIf="puedeAsignarPrincipal()" >
                 <div class="form-check mx-auto">
-                  <input type="checkbox" class="form-check-input text-left" id="exampleCheck1">
+                  <input type="checkbox" formControlName="principal" class="form-check-input text-left" id="exampleCheck1">
                   <label class="form-check-label" for="exampleCheck1">Principal</label>
                 </div>
               </div>
@@ -77,7 +86,9 @@
                     <span class="label label-success "> <h6>PRINCIPAL</h6> </span>
                   </td>
                   <td>
-                    <button class="btn waves-effect waves-light btn-outline-danger" >
+                    <button class="btn waves-effect waves-light btn-outline-danger"
+                    (click)="revocarJuez(item)"
+                    >
                       <i class="fa fa-trash-o"></i>
                       Eliminar
                       <!-- <span class="label label-danger label-rounded">Eliminar</span> -->

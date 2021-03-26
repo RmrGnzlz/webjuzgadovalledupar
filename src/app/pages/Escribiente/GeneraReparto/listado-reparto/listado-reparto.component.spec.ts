@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SolitudAnonimaComponent } from './solitud-anonima.component';
+import { ListadoRepartoComponent } from './listado-reparto.component';
 
-describe('SolitudAnonimaComponent', () => {
-  let component: SolitudAnonimaComponent;
-  let fixture: ComponentFixture<SolitudAnonimaComponent>;
+describe('ListadoRepartoComponent', () => {
+  let component: ListadoRepartoComponent;
+  let fixture: ComponentFixture<ListadoRepartoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SolitudAnonimaComponent ]
+      declarations: [ ListadoRepartoComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SolitudAnonimaComponent);
+    fixture = TestBed.createComponent(ListadoRepartoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

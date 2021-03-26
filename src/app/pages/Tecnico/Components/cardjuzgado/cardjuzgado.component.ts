@@ -5,6 +5,7 @@ import { NotificacionServiceService } from 'src/app/utils/notificacion-service.s
 import { Juzgado, TipoAreaEnum } from '../../../../models/Juzgado.Model';
 import { ResponseHttp } from '../../../../models/Base/ResponseHttp';
 import { Empleado } from '../../../../models/Empleado';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-cardjuzgado',
@@ -25,7 +26,9 @@ export class CardjuzgadoComponent implements OnInit {
     private _serviceGeneric:ServicieGeneric) { }
 
   ngOnInit(): void {
+    console.log(this.juzgado);
   this.buildForm();
+  if(!this.puedeAsignarPrincipal)this.principal.setValue(true);
   }
   buildForm() {
     this.form = this.formBuilder.group({
@@ -37,33 +40,47 @@ export class CardjuzgadoComponent implements OnInit {
 
   showAgregar(){
     this.agregar=true;
-    this._serviceGeneric.getRemove<ResponseHttp<Empleado>>(null,'juez')
+    console.log(this.juzgado);
+
+    return this._serviceGeneric.getRemove<ResponseHttp<any>>(null,'juez')
+    .pipe(
+      map(res=>{return res.data})
+    )
     .subscribe(res=>{
-      this.listadoJueces=res.data as Empleado[];
-        console.log(this.listadoJueces);
+      console.log(res);
+      // console.log(res[0].area);
+      this.listadoJueces=res.filter(dato=>dato.area===this.juzgado.tipo);
 
     });
   }
 
-  puedeAsignarJuez=()=>this.juzgado?.tipo as TipoAreaEnum != TipoAreaEnum.Magistrado &&this.juzgado?.jueces.length==0;
+  puedeAsignarJuez=()=>(this.juzgado?.tipo as unknown as string === 'Magistrado'?true : this.juzgado?.jueces.length==0);
+  puedeAsignarPrincipal=()=>this.juzgado?.tipo as unknown as string === 'Magistrado';
+  isConocimientoOgarantia=()=> this.juzgado?.tipo as TipoAreaEnum != TipoAreaEnum.Conocimiento;
 
+  revocarJuez(juez:Empleado){
 
-  eliminarJuezDeJuzgado(juez:any,juzgadokey:number){
+    console.log(juez);
+
   var request:any={
     juezKey:juez.key,
-    juzgadokey:juzgadokey
+    juzgadokey:this.juzgado.key
     }
-    var res=this.notificacion.MensajeConfir('Seguro desea eliminar juez '+juez.nombre,"Información");
+    var res=this.notificacion.MensajeConfir('Seguro desea quitar el juez '+juez.persona.nombres,"Información");
     res.then(res=>{
-      this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado',request)
+      this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado/revocar',request)
       .subscribe(res=>this.notificacion.MensajeSuccess(res.message))
     })
   }
 
-  cambiarJuezPrincipal(keyJuez:number,keyJuzgado:number){
+  cambiarJuezPrincipal(juez:Empleado){
+    var request:any={
+      juezKey:juez.key,
+      juzgadokey:this.juzgado.key
+      }
     var res=this.notificacion.MensajeConfir("Esta seguro, de cambiar el juez principal","Información");
     res.then(res=>{
-      this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado',{keyJuez,keyJuzgado})
+      this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado',request)
       .subscribe(res=>{
         this.notificacion.MensajeSuccess(res.message);
       })
@@ -76,12 +93,15 @@ export class CardjuzgadoComponent implements OnInit {
     this.form.markAllAsTouched();
     return;
   }
-    this.juzgad.setValue(this.juzgado.key);
-    this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado',this.form.value)
-    .subscribe(res=>{
-      this.juzgado=res.data as Juzgado;
-      this.notificacion.MensajeSuccess(res.message);
-    });
+
+  console.log(this.form.value);
+
+    // this.juzgad.setValue(this.juzgado.key);
+    // this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado/AsignarJuez',this.form.value)
+    // .subscribe(res=>{
+    //   this.juzgado=res.data as Juzgado;
+    //   this.notificacion.MensajeSuccess(res.message);
+    // });
 
   }
 

@@ -3,7 +3,7 @@ import { SujetosProcesales } from '../../models/Enums/TipoSujetosProcesalesEnum'
 import { Persona } from '../../models/Persona';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgWizardConfig, NgWizardService, StepChangedArgs, StepValidationArgs, STEP_STATE, THEME } from 'ng-wizard';
-import { of, Observable } from 'rxjs';
+import { of, Observable, forkJoin } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { NotificacionServiceService } from '../../utils/notificacion-service.service';
 import { SolicitudAudienciaResponse, SolicitudAudienciaRequest } from '../../models/SolicitudAudiencia';
@@ -75,17 +75,30 @@ export class SolitudAnonimaComponent implements OnInit {
       this.exitosa = false;
       return;
     }
-    this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`, this.persona, null, 'post')
-      .subscribe(res => {
-        this._ServiceGeneric.postPatch<ResponseHttp<SolicitudAudienciaResponse>>(`solicitud`, this.crearFormData(this.solicitudAudiencia), null, 'post')
-          .subscribe(res => {
-            this.soliitudSudienciaResponse = res.data as SolicitudAudienciaResponse;
-            this.notificacion.MensajeSuccess(res.message)
-            this.exitosa = true;
-            return true;
-          })
-      }
-      )
+
+    forkJoin([
+      this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`, this.persona, null, 'post'),
+      this._ServiceGeneric.postPatch<ResponseHttp<SolicitudAudienciaResponse>>(`solicitud`, this.crearFormData(this.solicitudAudiencia), null, 'post')
+    ])
+    .subscribe(res => {
+      this.soliitudSudienciaResponse = res[1].data as SolicitudAudienciaResponse;
+      this.notificacion.MensajeSuccess(res[1].message)
+      this.exitosa = true;
+      return true;
+    })
+
+
+    // this._ServiceGeneric.postPatch<ResponseHttp<Persona>>(`persona`, this.persona, null, 'post')
+    //   .subscribe(res => {
+    //     this._ServiceGeneric.postPatch<ResponseHttp<SolicitudAudienciaResponse>>(`solicitud`, this.crearFormData(this.solicitudAudiencia), null, 'post')
+    //       .subscribe(res => {
+    //         this.soliitudSudienciaResponse = res.data as SolicitudAudienciaResponse;
+    //         this.notificacion.MensajeSuccess(res.message)
+    //         this.exitosa = true;
+    //         return true;
+    //       })
+    //   }
+    //   )
 
 
   }
@@ -191,24 +204,24 @@ export class SolitudAnonimaComponent implements OnInit {
 
 
     if (args.fromStep.index == 1) {
-      console.log(this.solicitudForm);
-      if (this.solicitudForm.invalid) {
-        this.solicitudForm.form.markAllAsTouched();
-        this.notificacion.MensajeError("Formulario invalidos", "Error");
-        return false;
-      } else {
-
-        var respuesta: boolean = this.registrarSolicitudYPersona();
-        console.log(respuesta);
-        return true;
-      }
+      // console.log(this.solicitudForm);
+      // if (this.solicitudForm.invalid) {
+      //   this.solicitudForm.form.markAllAsTouched();
+      //   this.notificacion.MensajeError("Formulario invalidos", "Error");
+      //   return false;
+      // } else {
+      //   var respuesta: boolean = this.registrarSolicitudYPersona();
+      //   console.log(respuesta);
+      //   return true;
+      // }
     }
 
   }
 
   isValidFunctionReturnsObservable(args: StepValidationArgs) {
     console.log('isValidFunctionReturnsObservable');
-
+    console.log(args);
+    // let res= of(true).delay();
     return of(true);
   }
 
