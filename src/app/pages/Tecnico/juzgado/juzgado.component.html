@@ -1,5 +1,6 @@
-<ng-snotify></ng-snotify>
-<app-tabla [Data]="listaJuzgado" [Columns]="Columns">
+<app-tabla
+#tabla
+ [rutaApi]="'juzgado'" [Columns]="Columns">
   <button
     data-toggle="modal"
     data-target="#exampleModal"
@@ -8,19 +9,30 @@
   >
     <i class="fa fa-plus-square"></i> Crear Juzgado
   </button>
+    <button
+    routerLink="asignar"
+    type="button"
+    class="btn waves-effect waves-light btn-outline-primary"
+  >
+    <i class="fa fa-retweet"></i> Asignación Juzgado
+  </button>
 </app-tabla>
 
-
-<ng-template #tipoTpl let-row let-rowIndex="rowIndex" let-column="column">
-  <div>
-    <span class="label label-info label-rounded" *ngIf="row.tipo == 0"
-      >Programada</span>
-    <span class="label label-primary label-rounded" *ngIf="row.tipo == 1"
-      >Conocimiento</span>
-      <span class="label label-primary label-rounded" *ngIf="row.tipo == 2"
-      >Magistrados</span>
-  </div>
+<ng-template #estadoTpl let-row let-rowIndex="rowIndex">
+  <label>
+    <div class="switch">
+      <label>
+        <input
+          type="checkbox"
+          [checked]="row.estado"
+          (click)="updateState(row.key,!row.estado)"
+        />
+        <span class="lever switch-col-cyan"></span>
+      </label>
+    </div>
+  </label>
 </ng-template>
+
 
 
 <ng-template #actionTpl let-row let-rowIndex="rowIndex">
@@ -35,7 +47,7 @@
     </button>
     <button
       class="btn waves-effect waves-light btn-outline-danger"
-      (click)="delete(row)"
+      (click)="delete(row,rowIndex)"
     >
       <i class="fa fa-trash-o"></i>
     </button>
@@ -106,33 +118,28 @@
               <div class="form-group">
                 <select
                   class="select2 form-control custom-select"
-                  formControlName="despacho"
-                  id="despacho"
-                  name="despacho"
+                  formControlName="edificioKey"
+                  id="edificioKey"
+                  name="edificioKey"
                 >
-                  <option value="">Selecione Despacho</option>
-                  <optgroup
-                    *ngFor="let item of ListadoDespacho"
-                    [label]="item.nombre"
-                  >
+                  <option value="">Selecione Edificio</option>
                     <option
-                      *ngFor="let item2 of item.despachos"
-                      [value]="item2.key"
+                      *ngFor="let item of ListaEdificios"
+                      [ngValue]="item.key"
                     >
-                      {{ item2.nombre }}
+                      {{ item.nombre }}
                     </option>
-                  </optgroup>
                 </select>
                 <div
                   *ngIf="
-                    despacho.invalid && (despacho.dirty || despacho.touched)
+                    edificio.invalid && (edificio.dirty || edificio.touched)
                   "
                 >
                   <div
                     class="container-error-message"
-                    *ngIf="despacho.errors.required"
+                    *ngIf="edificio.errors.required"
                   >
-                    <small class="text-danger"> Despacho requerido </small>
+                    <small class="text-danger"> Edificio requerido </small>
                   </div>
                 </div>
               </div>
@@ -140,12 +147,12 @@
             <div class="col-md-6">
               <div class="form-group">
                 <select
-                  formControlName="tipo"
+                  formControlName="areaKey"
                   class="form-control"
                 >
                   <option value="">Seleccione Area</option>
-                  <option *ngFor="let item of Areas" [value]="item.value">
-                    {{ item.text }}
+                  <option *ngFor="let item of ListaAreas" [ngValue]="item.key">
+                    {{ item.tipo }}
                   </option>
                 </select>
                 <div *ngIf="tipo.invalid && (tipo.dirty || tipo.touched)">
@@ -159,10 +166,56 @@
               </div>
             </div>
           </div>
+
+          <div class="form-group">
+            <input
+              name="telefono"
+              id="telefono"
+              type="text"
+              class="form-control"
+              placeholder="Digite Teléfono"
+              required
+              formControlName="telefono"
+            />
+            <div *ngIf="telefono.invalid && (telefono.dirty || telefono.touched)">
+              <div
+                class="container-error-message"
+                *ngIf="telefono.errors.required"
+              >
+                <small class="text-danger"> Campo requerido </small>
+              </div>
+              <div
+                class="container-error-message"
+                *ngIf="telefono.errors.minlength"
+              >
+                <small class="text-danger">
+                  Debe contener minimo 5 digitos
+                </small>
+              </div>
+              <div
+              class="container-error-message"
+              *ngIf="telefono.errors.maxlength"
+            >
+              <small class="text-danger">
+                 Debe contener maximo 10 digitos
+              </small>
+            </div>
+            <div
+            class="container-error-message"
+            *ngIf="telefono.errors.pattern"
+          >
+            <small class="text-danger">
+              Solo se permiten numeros
+            </small>
+          </div>
+            </div>
+          </div>
+
+
+
           <div class="row">
-            <div [ngClass]="Actualizar ? 'col-md-6' : 'col-md-12'">
+            <div class="col-md-12">
               <div class="form-group">
-                <label for="link">Correo</label>
                 <input
                   type="text"
                   formControlName="email"
@@ -188,32 +241,6 @@
               </div>
             </div>
 
-            <div class="col-md-6" *ngIf="Actualizar">
-              <div class="form-group">
-                <label>Estado</label>
-                <select
-                  formControlName="estado"
-                  id="estado"
-                  name="estado"
-                  class="form-control"
-                  required
-                >
-                  <option value="">Seleccione</option>
-                  <option *ngFor="let item of Estados" [value]="item.value">
-                    {{ item.text }}
-                  </option>
-                </select>
-
-                <div *ngIf="estado.invalid && (estado.dirty || estado.touched)">
-                  <div
-                    class="container-error-message"
-                    *ngIf="estado.errors.required"
-                  >
-                    <small class="text-danger"> Estado requerido </small>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </form>
       </div>

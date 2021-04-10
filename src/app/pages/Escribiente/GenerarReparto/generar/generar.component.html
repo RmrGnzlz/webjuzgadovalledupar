@@ -1,0 +1,118 @@
+<div class="row">
+  <div class="col-lg-12">
+      <div class="card">
+          <div class="card-header bg-info">
+              <h4 class="m-b-0 text-white">Generar Reparto</h4>
+          </div>
+          <div class="card-body">
+              <form action="#">
+                  <div class="form-body">
+                      <h3 class="card-title">Información</h3>
+                      <hr>
+                      <div class="row p-t-20">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label class="control-label">Tipo Solicitante</label>
+                                  <input type="text" id="firstName" readonly class="form-control" placeholder="John doe">
+                                 </div>
+                          </div>
+                          <!--/span-->
+                          <div class="col-md-6">
+                              <div class="form-group ">
+                                  <label class="control-label">Nombre</label>
+                                  <input type="text" id="lastName" class="form-control" readonly placeholder="12n">
+                                 </div>
+                          </div>
+                          <!--/span-->
+                      </div>
+                      <!--/row-->
+                      <div class="row">
+                          <div class="col-md-6">
+                              <div class="form-group has-success">
+                                  <label class="control-label">Anexos</label>
+                                  <br>
+                                  <a
+                                  href="javascript:void(0)"
+                                  (click)="verAnexo()"
+                                  role="button"
+                                  >Recursos de apelacion para jovenes</a>
+
+                                 </div>
+                          </div>
+
+                      </div>
+
+                      <h3 class="box-title m-t-40">Asignación</h3>
+                      <hr>
+                      <div class="row">
+                          <div class="col-md-12 ">
+                            <div class="form-group">
+                              <label>Juzgado*</label>
+                              <select class="form-control custom-select">
+                                  <option>--Selecciona Juzgado--</option>
+                                  <option>Control de garantia 1</option>
+                                  <option>Control de garantia 2</option>
+                                  <option>Control de garantia 3</option>
+                                  <option>Sri Lanka</option>
+                                  <option>USA</option>
+                              </select>
+                          </div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-12 ">
+                            <div class="form-group">
+                              <label>Seleccione ítems de audiencias*</label>
+                              <ngx-select [multiple]="true"
+                              [items]="audiencias" optionValueField="key" optionTextField='nombre'
+                              formControlName="areaServiciosKeys"
+                              [autoClearSearch]="true"
+                              placeholder="--Seleccione al menos una audiencia--"
+                              >
+                       </ngx-select>
+                          </div>
+                          </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group row">
+
+                            <!-- (change)="isPDF($event)" -->
+                            <div class="col-md-12">
+                                <input
+                                  type="file"
+                                  accept="application/pdf"
+                                  class="form-control"
+                                  id="file"
+                                  (change)="isPDF($event)"
+                                />
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="row" *ngIf="pdfSrc!=''" >
+                          <div class="col-md-12">
+                            <pdf-viewer [src]="pdfSrc"
+                            [render-text]="true"
+                            [page]="1"
+                            style="display: block;"
+                         ></pdf-viewer>
+                          </div>
+
+                      </div>
+                      <!--/row-->
+
+                  </div>
+                    <div class="row justify-content-center">
+                      <div class="col text-center">
+                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Registrar</button>
+                        <button type="submit" class="btn btn-inverse waves-effect waves-light">Volver</button>
+                      </div>
+                      <!-- <div class="col">
+                      </div> -->
+                    </div>
+              </form>
+          </div>
+      </div>
+  </div>
+</div>

@@ -10,24 +10,26 @@ export class NotificacionServiceService {
   constructor(private service: SnotifyService) { }
 
   public MensajeSuccess(descripcion="Transacción exitosa",title="Exitoso!!"){
-    console.log("hola");
-
-    this.service.success(descripcion, title, { position: SnotifyPosition.rightTop });
+    this.service.success(descripcion, title, { position: SnotifyPosition.rightTop, titleMaxLength:title.length,bodyMaxLength:descripcion.length });
   }
 
   public MensajeInfo(descripcion="",title="Información!!"){
-    this.service.info(descripcion, title, { position: SnotifyPosition.rightTop });
+    this.service.info(descripcion, title, { position: SnotifyPosition.rightTop,titleMaxLength:title.length,bodyMaxLength:descripcion.length });
   }
 
   public MensajeError(descripcion="Ocurrio un error",title="Error!!"){
-    this.service.error(descripcion, title, { position: SnotifyPosition.rightTop });
+    this.service.error(descripcion, title, { position: SnotifyPosition.rightTop,titleMaxLength:title.length,bodyMaxLength:descripcion.length });
   }
 
-  public MensajeConfir(elemento:string){
+  public MensajeConfir(elemento:string,title='Seguro desea borrar'){
 
     return new Promise(resolve=>{
-      this.service.error( elemento,'Seguro desea borrar', {
+      this.service.error( elemento,title,
+
+      {
         timeout: 50000,
+        titleMaxLength:20,
+        bodyMaxLength:elemento.length,
         position: SnotifyPosition.rightTop,
         showProgressBar: false,
         closeOnClick: true,

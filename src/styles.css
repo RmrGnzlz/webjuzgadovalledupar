@@ -1,6 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
+html, body {
+   height: 100%;
+  width: 100%;
+  }
+
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .ng-valid.ng-dirty:not(form) {
@@ -11,9 +15,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   border: solid 2px lightcoral;
 }
 
-.container-error-message{
 
-}
 
 .alert-danger{
   color: #721c24;
@@ -21,3 +23,24 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   border-color: #f5c6cb;
   margin-bottom: 5px;
 }
+
+.fondo_negro{
+  background-color: rgba(0, 0, 0, 0.83);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+.ocultarModal{
+  display: none;
+}
+
+.card{
+  -webkit-box-shadow: 6px 11px 9px 2px rgba(0,0,0,0.25);
+-moz-box-shadow: 6px 11px 9px 2px rgba(0,0,0,0.25);
+box-shadow: 6px 11px 9px 2px rgba(0,0,0,0.25);
+}
+
+

@@ -1,24 +1,32 @@
 import { BaseModel } from './Base/Base.Model';
-import { Despacho } from './Despacho.Model';
 import { Audiencia } from './Audiencia';
+import { EstadoGenerico } from './Enums/EstadoGenerico';
+import { Edificio } from './Edificio.Model';
+import { AreaServicio } from './AreaServicio';
+import { Juez } from './Juez';
 export class Juzgado extends BaseModel {
   public nombre: string;
   public email: string;
-  public despacho: Despacho;
-  public despachoKey: number;
-  public tipo: TipoAreaEnum;
+  public tipo: AreaServicio | TipoAreaEnum
   public audiencias: Audiencia[];
-  public estado :EstadoJuzgado;
+  public jueces:Juez[]=[];
+  public estado: EstadoGenerico;
+  public edificio: Edificio;
+  public edificioKey: number;
+  public telefono: string;
 
-   constructor(nombre:string, email:string, despacho:number,tipo: TipoAreaEnum, estado: EstadoJuzgado ){
-     super();
-      this.nombre=nombre;
-      this.email=email;
-      this.despachoKey=despacho;
-      this.tipo=tipo;
-      this.estado=estado;
 
-   }
+  constructor(){
+    super();
+  }
+  // constructor(nombre: string, email: string, tipo: TipoAreaEnum, estado: EstadoGenerico) {
+  //   super();
+  //   this.nombre = nombre;
+  //   this.email = email;
+  //   this.tipo = tipo;
+  //   this.estado = estado;
+
+  // }
 
 
 }
@@ -29,7 +37,3 @@ export enum TipoAreaEnum {
   Magistrado = 2
 }
 
-export enum EstadoJuzgado{
-  Inactivo=0,
-  Activo=1
-}

@@ -1,8 +1,5 @@
 
 
-<div class="col-12">
-  <div class="card">
-    <div class="card-body">
 
       <div class="columns">
         <div class="column col-12">
@@ -10,12 +7,7 @@
           <div class="row justify-content-between">
             <div class="col-4">
               <div id="example23_filter" (input)="onChange($event.target.value)" class="dataTables_filter"><label>Buscar:<input type="search" class="" placeholder="" aria-controls="example23"></label></div>
-              <!-- <input
-              class="form-input text-center"
-              type="text"
-              id="globalSearch"
-              (input)="onChange($event.target.value)"
-              placeholder="Search"/> -->
+
             </div>
             <div class="col-4">
               <ng-content seleect="button"></ng-content>
@@ -29,17 +21,29 @@
 
       <ngx-table
         [configuration]="configuration"
-        [data]="Data"
+        [summaryTemplate]="summaryTemplateRef"
+        [data]="data"
         [columns]="Columns"
-        (event)="onEvent($event)"
+        [pagination]="pagination"
+        (event)="eventEmitted($event)"
+        [noResultsTemplate]="noResultsTemplate"
         #table
-      >
+        >
 
       </ngx-table>
-      <ng-template #actionTpl let-row let-rowIndex="rowIndex">
-        <div class="btn btn-primary" >Remove</div>
+      <ng-template #summaryTemplateRef let-total="total">
+        <th colspan="5">
+          <span class="mb-2">Total de elementos: {{ total }} </span>
+
+        </th>
+      </ng-template>
+      <ng-template #noResultsTemplate>
+        <td [attr.colspan]="Columns?.length" class="no-results">
+          No se encontro resultados :(
+        </td>
       </ng-template>
 
-    </div>
-  </div>
-</div>
+      <!-- <ng-template #actionTpl let-row let-rowIndex="rowIndex">
+        <div class="btn btn-primary" >Remove</div>
+      </ng-template> -->
+

@@ -1,0 +1,26 @@
+<app-tabla
+#tabla
+[rutaApi]="'solicitud'" [Columns]="Columns">
+
+</app-tabla>
+
+<ng-template #estadoTpl let-row let-rowIndex="rowIndex">
+
+</ng-template>
+
+<ng-template #actionTpl let-row let-rowIndex="rowIndex">
+  <div>
+    <button
+      data-toggle="modal"
+      data-target="#exampleModal"
+      class="btn btn-outline-info"
+    >
+      <i class="fa fa-edit"></i>
+    </button>
+    <button
+      class="btn waves-effect waves-light btn-outline-danger"
+    >
+      <i class="fa fa-trash-o"></i>
+    </button>
+  </div>
+</ng-template>
