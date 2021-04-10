@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -30,7 +31,7 @@ export class ServicieGeneric{
   }
 
   getRemove<returnType>(
-    id: number | null,
+    id: string | null | number,
     route: string,
     qp: QueryParams = {},
     method: 'get' | 'delete' = 'get'
@@ -45,7 +46,7 @@ export class ServicieGeneric{
     route: string,
     data: any,
     id: number = null,
-    method: 'post' | 'patch' | 'put',
+    method: 'post' | 'put' = 'post',
     qp: QueryParams = {}
   ): Observable<returnType> {
     const cfqu = this.correctFormatForQueryUrl(qp);
@@ -54,6 +55,19 @@ export class ServicieGeneric{
       data
     ) as Observable<returnType>;
   }
+
+
+  getDeleteObject<ResponseHttp>(
+    route: string,
+    data: any,
+    method: 'get' | 'delete' = 'get'
+  ): Observable<ResponseHttp> {
+    return this.http[method](
+      `${this.END_POINT}${route}`, data
+    ) as unknown  as Observable<ResponseHttp>;
+  }
+
+
 
 
 }

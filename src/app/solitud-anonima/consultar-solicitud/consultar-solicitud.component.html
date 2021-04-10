@@ -1,0 +1,253 @@
+<div class="container">
+  <br />
+  <br />
+  <ng-container *ngIf="!existeSolicitud" >
+
+  <div class="row justify-content-center">
+    <div class="card w-75 text-center">
+      <div class="card-header">
+        <div class="row justify-content-around">
+          <div class="col-6">CONSULTA SOLICITUD DE AUDIENCIA</div>
+          <div class="col-4"></div>
+        </div>
+      </div>
+      <br />
+      <div class="card-body">
+        <form #consultarForm="ngForm">
+          <div class="row justify-content-center">
+            <div class="col-5">
+              <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1"
+                  >No Radicado*</span
+                >
+                <input
+                  type="text"
+                  [(ngModel)]="Radicado"
+                  #radicadoControl="ngModel"
+                  name="radicado"
+                  class="form-control"
+                  required
+                  maxlength="15"
+                  minlength="15"
+                  aria-describedby="basic-addon1"
+                />
+
+              </div>
+
+            </div>
+          </div>
+          <ng-container
+          *ngIf="
+            radicadoControl.invalid &&
+            radicadoControl.touched
+          "
+        >
+          <div
+            *ngIf="radicadoControl.errors.required"
+            class="container-error-message"
+          >
+            <small class="text-danger"> Campo requerido </small>
+          </div>
+          <div
+            *ngIf="radicadoControl.errors.minlength"
+            class="container-error-message"
+          >
+            <small class="text-danger"> Minimo 15 digitos</small>
+          </div>
+          <div
+            *ngIf="radicadoControl.errors.maxlength"
+            class="container-error-message"
+          >
+            <small class="text-danger"> Maximo 15 digitos</small>
+          </div>
+        </ng-container>
+          <br />
+          <div class="row justify-content-center">
+            <div class="col-2">
+              <button
+              [disabled]="!consultarForm.valid"
+              (click)="consultarSolicitud()"
+                type="button"
+                class="btn waves-effect waves-light btn-rounded btn-outline-success"
+              >
+                Consultar
+              </button>
+            </div>
+            <div class="col-2">
+              <button
+                  routerLink="/login"
+                type="button"
+                class="btn waves-effect waves-light btn-rounded btn-secondary"
+              >
+                Volver
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+  <ng-container *ngIf="existeSolicitud" >
+    <div class="row justify-content-around">
+      <div class="col">
+        <div class="card text-center">
+          <br />
+          <div class="card-body">
+            <form class="form-horizontal" role="form">
+              <div class="form-body">
+                <h3 class="box-title">Datos Solicitud</h3>
+                <hr class="m-t-0 m-b-40" />
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="control-label text-right col-md-3"
+                        >Solicitante:</label
+                      >
+                      <div class="col-md-9">
+                        <p class="form-control-static">
+                          {{Solicitud.solicitante.nombres+ " "+Solicitud.solicitante.apellidos }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/span-->
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="control-label text-right col-md-3"
+                        >No RADICADO:</label
+                      >
+                      <div class="col-md-9">
+                        <p class="form-control-static">{{Solicitud.radicado}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/span-->
+                </div>
+                <!--/row-->
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="control-label text-right col-md-3"
+                        >Tipo Solicitante:</label
+                      >
+                      <div class="col-md-9">
+                        <p class="form-control-static">{{ TipoSolicitante(Solicitud.tipoSolicitante)}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/span-->
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="control-label text-right col-md-3"
+                        >Proceso:</label
+                      >
+                      <div class="col-md-9">
+                        <p class="form-control-static">{{Solicitud.proceso.cui}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/span-->
+                </div>
+                <!--/row-->
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="control-label text-right col-md-3"
+                        >Fecha de solicitud:</label
+                      >
+                      <div class="col-md-9">
+                        <p class="form-control-static">{{Solicitud.creacion | date:'dd-MM-yyyy'}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/span-->
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="control-label text-right col-md-3"
+                        >Estado:</label
+                      >
+                      <div class="col-md-9">
+                        <p class="form-control-static">{{EstadoSolicitud(Solicitud.estado)}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <!--/span-->
+                </div>
+
+                <div class="row justify-content-center">
+                  <div class="col-2 text-right">
+                    <label class="control-label text-right">Asunto:</label>
+                  </div>
+                  <div class="col-7">
+                    <textarea class="form-control mb-2" cols="60" rows="2" [value]="Solicitud.asunto" disabled="true"></textarea>
+                  </div>
+                </div>
+
+                <div class="row justify-content-center">
+                  <div class="col-2 text-right">
+                    <label class="control-label text-right">Descripción:</label>
+                  </div>
+                  <div class="col-7">
+                    <textarea  class="form-control" readonly cols="60" rows="3"[value]="Solicitud.descripcion" disabled="true" ></textarea>
+                  </div>
+                </div>
+
+                <div class="row justify-content-center">
+                  <div class="col-2 text-right">
+                    <label class="control-label text-right"
+                      >Documento Adjunto:</label
+                    >
+                  </div>
+                  <div class="col-7 text-left">
+                    <a href="#">{{Solicitud.archivo.nombre}}</a>
+                  </div>
+                </div>
+                <!--/row-->
+                <h3 class="box-title">Novedades</h3>
+                <hr class="m-t-0 m-b-40" />
+                <div class="row">
+                  <div class="col">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Fecha Creación</th>
+                          <th scope="col">Estado</th>
+                          <th scope="col">Novedad</th>
+                          <th scope="col">Comentario</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of Solicitud.novedadesSolicitud" >
+                          <td>{{item.fecha}}</td>
+                          <td>{{EstadoNovedad(item.estado)}}</td>
+                          <td>{{item.asunto}}</td>
+                          <td>{{item.descripcion}}</td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!--/row-->
+              </div>
+              <div class="row justify-content-center">
+                <div class="col-4">
+                  <button
+                  routerLink="/login"
+                    type="button"
+                    class="btn waves-effect waves-light btn-rounded btn-secondary"
+                  >
+                    Volver
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

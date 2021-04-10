@@ -27,6 +27,10 @@
               "node_modules/ngx-easy-table/style.css",
               "node_modules/typeface-montserrat/index.css",
               "node_modules/ng-snotify/styles/material.scss",
+              "node_modules/ng-wizard/themes/ng_wizard.min.css",
+              "node_modules/ng-wizard/themes/ng_wizard_theme_dots.min.css",
+              "node_modules/ng-wizard/themes/ng_wizard_theme_circles.min.css",
+
               "src/styles.css"
 
             ],

@@ -1,0 +1,86 @@
+<p>modal-auth works!</p>
+<!-- Button trigger modal -->
+
+<div class="fondo_negro animated fadeIn" [ngClass]="_serviceModal.oculto">
+  <!-- Modal -->
+  <div class="modal" style="display: block" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Iniciar Sesión</h5>
+        </div>
+        <div class="modal-body" align="center">
+          <p class="text-muted m-b-30 font-13">
+            <b>
+              Su sesión ha caducado, para continuar ingrese nuevamente sus
+              credenciales
+            </b>
+          </p>
+          <form #form="ngForm">
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <div class="input-group">
+                    <div class="input-group-addon"><i class="ti-user"></i></div>
+                    <input
+                      [(ngModel)]="usuario"
+                      name="usuario"
+                      type="text"
+                      class="form-control"
+                      id="exampleInputuname"
+                      placeholder="Usuario"
+                      required
+                      readonly
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  <div class="input-group">
+                    <div class="input-group-addon"><i class="ti-lock"></i></div>
+                    <input
+                      [(ngModel)]="password"
+                      name="password"
+                      type="password"
+                      class="form-control"
+                      id="pwd2"
+                      placeholder="Contraseña"
+                      required
+                      minlength="6"
+                      #passControl="ngModel"
+                      autocomplete="off"
+                    />
+                  </div>
+                  <ng-container *ngIf="passControl.invalid && (passControl.dirty || passControl.touched)">
+                    <div  *ngIf="passControl.errors.required"
+                    class="container-error-message">
+                      <small class="text-danger"> Campo es requerido. </small>
+                    </div>
+                    <div  *ngIf="passControl.errors.minlength"
+                    class="container-error-message">
+                      <small class="text-danger"> Requerido minimo 6 caracteres. </small>
+                    </div>
+
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            (click)="cerrarModalYLogout()"
+            class="btn btn-secondary"
+          >
+            Salir
+          </button>
+          <button type="button" (click)="ingresar(form)" class="btn btn-primary">Ingresar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
