@@ -28,8 +28,8 @@ export class TablaComponent implements OnInit {
   selected;
   @Input() Columns = [];
   @Input() Data = [];
-  @Input() rutaApi:string;
-  @Input() pagination={
+  @Input() rutaApi: string;
+  @Input() pagination = {
     limit: 10,
     offset: 0,
     count: -1,
@@ -41,14 +41,14 @@ export class TablaComponent implements OnInit {
   public data;
 
   public configuration: Config;
-    constructor( private readonly companyService: SalaService,
+  constructor(private readonly companyService: SalaService,
     private readonly cdr: ChangeDetectorRef,
     private _ServiceGeneric: ServicieGeneric) {
-   }
+  }
 
 
   ngOnInit(): void {
-    this.data=[];
+    this.data = [];
     this.configuration = { ...DefaultConfig };
     this.configuration.tableLayout.striped = !this.configuration.tableLayout.striped;
     this.configuration.tableLayout.style = 'tiny';
@@ -57,11 +57,13 @@ export class TablaComponent implements OnInit {
     this.configuration.persistState = true;
     this.configuration.serverPagination = true;
     this.configuration.threeWaySort = true;
+    console.log(this.Data);
+      console.log(this.rutaApi);
 
-    if (this.rutaApi==='') {
-      this.data=this.Data;
-    }
-    this.getData('');
+    if (this.rutaApi === undefined)
+      this.getDataObject();
+    else
+      this.getDataApi('');
   }
   onEvent(event: { event: string; value: any }): void {
     this.selected = JSON.stringify(event.value.row, null, 2);
@@ -70,7 +72,6 @@ export class TablaComponent implements OnInit {
   eventEmitted(event: { event: string; value: any }): void {
     if (event.event === 'onOrder') {
       console.log(event.event);
-
       this.parseEvent(event);
     }
   }
@@ -82,28 +83,40 @@ export class TablaComponent implements OnInit {
     this.pagination.sort = !!obj.value.key ? obj.value.key : this.pagination.sort;
     this.pagination.order = !!obj.value.order ? obj.value.order : this.pagination.order;
     this.pagination = { ...this.pagination };
-    const pagination:any={
-      size:this.pagination.limit,
-      page: (this.pagination.offset===0)?1:this.pagination.offset,
-      orderBy:this.pagination.sort,
-      order:this.pagination.order
+    const pagination: any = {
+      size: this.pagination.limit,
+      page: (this.pagination.offset === 0) ? 1 : this.pagination.offset,
+      orderBy: this.pagination.sort,
+      order: this.pagination.order
     }
 
-
-    this.getData(pagination);
+      if(this.rutaApi!==undefined)
+      this.getDataApi(pagination);
+      else
+      this.getDataObject();
   }
 
-  public getData(paginacion:any): void {
+  public getDataObject(){
     this.configuration.isLoading = true;
-    this._ServiceGeneric.getRemove<DataListado<any>>(null,`${this.rutaApi}`,paginacion)
-    .pipe(takeUntil(this.ngUnsubscribe))
-    .subscribe(res=>{
-        this.data=res.data;
-        console.log(this.data);
+    this.data = this.Data;
+    this.configuration.isLoading = false;
+    this.pagination.count = this.Data.length;
+    this.pagination = { ...this.pagination };
+
+  }
+
+  public getDataApi(paginacion: any): void {
+    console.log('Api');
+
+    this.configuration.isLoading = true;
+    this._ServiceGeneric.getRemove<DataListado<any>>(null, `${this.rutaApi}`, paginacion)
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(res => {
+        this.data = res.data;
         this.configuration.isLoading = false;
-          this.pagination.count=res.totalEntities;
-          this.pagination = { ...this.pagination };
-    })
+        this.pagination.count = res.totalEntities;
+        this.pagination = { ...this.pagination };
+      })
 
   }
 
@@ -113,6 +126,8 @@ export class TablaComponent implements OnInit {
       type: API.onGlobalSearch,
       value: name,
     });
+    console.log(name);
+
   }
 
 

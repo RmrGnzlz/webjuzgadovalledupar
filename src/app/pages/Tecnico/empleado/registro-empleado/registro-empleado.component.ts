@@ -55,6 +55,7 @@ export class RegistroEmpleadoComponent implements OnInit {
       this.areasDeServicios=res[0].data as AreaServicio[];
       this.roles=res[1].data as Rol[];
       this.paises=res[2].data as Pais[];
+      console.log(res);
     })
 
     this.loadEnums();

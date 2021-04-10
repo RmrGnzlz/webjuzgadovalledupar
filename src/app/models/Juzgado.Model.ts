@@ -3,13 +3,13 @@ import { Audiencia } from './Audiencia';
 import { EstadoGenerico } from './Enums/EstadoGenerico';
 import { Edificio } from './Edificio.Model';
 import { AreaServicio } from './AreaServicio';
-import { Empleado } from './Empleado';
+import { Juez } from './Juez';
 export class Juzgado extends BaseModel {
   public nombre: string;
   public email: string;
   public tipo: AreaServicio | TipoAreaEnum
   public audiencias: Audiencia[];
-  public jueces:Empleado[]=[];
+  public jueces:Juez[]=[];
   public estado: EstadoGenerico;
   public edificio: Edificio;
   public edificioKey: number;

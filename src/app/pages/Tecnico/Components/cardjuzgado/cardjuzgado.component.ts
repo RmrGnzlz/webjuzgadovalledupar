@@ -63,12 +63,12 @@ export class CardjuzgadoComponent implements OnInit {
     console.log(juez);
 
   var request:any={
-    juezKey:juez.key,
-    juzgadokey:this.juzgado.key
+    juzgadokey:this.juzgado.key,
+    juezKey:juez.key
     }
-    var res=this.notificacion.MensajeConfir('Seguro desea quitar el juez '+juez.persona.nombres,"Información");
+    var res=this.notificacion.MensajeConfir('Seguro desea quitar el juez '+juez.persona?.nombres,"Información");
     res.then(res=>{
-      this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado/revocar',request)
+      this._serviceGeneric.getRemove<ResponseHttp<Juzgado>>(null,`juzgado/eliminarJuez/${this.juzgado.key}/${juez.key}`,null,'delete')
       .subscribe(res=>this.notificacion.MensajeSuccess(res.message))
     })
   }
@@ -80,7 +80,7 @@ export class CardjuzgadoComponent implements OnInit {
       }
     var res=this.notificacion.MensajeConfir("Esta seguro, de cambiar el juez principal","Información");
     res.then(res=>{
-      this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado',request)
+      this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado/Ascender',request)
       .subscribe(res=>{
         this.notificacion.MensajeSuccess(res.message);
       })
@@ -96,12 +96,13 @@ export class CardjuzgadoComponent implements OnInit {
 
   console.log(this.form.value);
 
-    // this.juzgad.setValue(this.juzgado.key);
-    // this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado/AsignarJuez',this.form.value)
-    // .subscribe(res=>{
-    //   this.juzgado=res.data as Juzgado;
-    //   this.notificacion.MensajeSuccess(res.message);
-    // });
+    this.juzgad.setValue(this.juzgado.key);
+    this._serviceGeneric.postPatch<ResponseHttp<Juzgado>>('juzgado/AsignarJuez',this.form.value)
+    .subscribe(res=>{
+      console.log(res);
+      this.juzgado=res.data as Juzgado;
+      this.notificacion.MensajeSuccess(res.message);
+    });
 
   }
 

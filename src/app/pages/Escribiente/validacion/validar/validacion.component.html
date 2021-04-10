@@ -181,8 +181,7 @@
                         href="javascript:void(0)"
                         (click)="verAnexo()"
                         role="button"
-                        >Recursos de apelacion para jovenes</a
-                      >
+                        >Recursos de apelacion para jovenes</a>
                     </div>
                   </div>
                   <!--/span-->
@@ -218,54 +217,9 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-6">
-                    <div class="col-12">
-                      <div class="card">
-                        <div class="card-body">
-                          <div class="table-responsive m-t-20">
-                            <table class="table vm no-th-brd pro-of-month">
-                              <thead>
-                                <tr>
-                                  <th class="text-left">
-                                    Nombres Sujetos Procesales
-                                  </th>
-                                  <th class="text-left">Tipo</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td class="text-left">
-                                    <h6>Helmer Segundo Fuentes Alvarado</h6>
-                                  </td>
-                                  <td class="text-left">
-                                    <h6>Juez</h6>
-                                  </td>
-                                </tr>
-                                <!-- <tr *ngFor="let item of juzgado?.jueces" >
-                                    <div >
-                                      <td>
-                                        <h6>{{item?.persona?.nombres+' '+ item?.persona?.apellidos}}</h6>
-                                      </td>
-                                      <td class="text-center">
-                                        <span class="label label-success "> <h6>PRINCIPAL</h6> </span>
-                                      </td>
-                                      <td>
-                                        <button class="btn waves-effect waves-light btn-outline-danger" >
-                                          <i class="fa fa-trash-o"></i>
-                                          Eliminar
-                                        </button>
-                                      </td>
-                                    </div>
-                                  </tr> -->
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+
                   <!--/span-->
-                  <div class="col-6">
+                  <div class="col">
                     <div class="col-12">
                       <div class="card">
                         <div class="card-body">
@@ -300,6 +254,42 @@
           </ng-wizard-step>
           <ng-wizard-step
           [title]="'Paso 3'"
+          [description]="'Partes'"
+          [canEnter]="isValidTypeBoolean"
+          [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+        >
+          <div class="card">
+            <div class="card-body">
+              <form  class="form-horizontal">
+                <div class="form-body">
+                  <h3 class="box-title">Partes Procesales</h3>
+                  <hr class="m-t-0 m-b-40" />
+                    <app-tabla
+                    [Columns]="Columns"
+                    [Data]="partesProcesalesSimulado"
+                    >
+                    <ng-template #actionTpl let-row let-rowIndex="rowIndex">
+                      <div>
+                        <button
+                        data-toggle="modal"
+                       data-target=".bd-example-modal-lg"
+                            (click)="showSujeto(row)"
+                          class="btn btn-outline-info"
+                        >
+                          <i class="fa fa-eye"></i>
+                        </button>
+                      </div>
+                    </ng-template>
+
+                    </app-tabla>
+                </div>
+              </form>
+            </div>
+          </div>
+        </ng-wizard-step>
+
+          <ng-wizard-step
+          [title]="'Paso 4'"
           [description]="'Respuesta'"
           [canEnter]="isValidTypeBoolean"
           [canExit]="isValidFunctionReturnsBoolean.bind(this)"
@@ -435,3 +425,145 @@
     </div>
   </div>
 </div>
+
+<!--
+  MODAL PARA ATUALIZACION DATOS NOTIFICICACIÓN
+ -->
+
+ <div
+  class="modal fade bd-example-modal-lg"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myLargeModalLabel"
+  aria-hidden="true"
+  data-keyboard="false"
+  data-backdrop="static"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-header bg-info">
+              <h4 class="m-b-0 text-white">Sujeto Procesal</h4>
+            </div>
+            <div class="card-body">
+              <form class="form-horizontal" >
+                <div class="form-body">
+                  <h3 class="box-title">Informacion Contacto</h3>
+                  <hr class="m-t-0 m-b-40" />
+
+                  <div class="row">
+                    <div class="col text-center">
+                      <div class="form-group ">
+                             <h5>
+                               <p>Helmer Segundo Fuentes Alvarado</p>
+                             </h5>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <!--/row-->
+                      <br>
+                  <div class="row">
+                    <div class="col-5">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-md-auto "
+                          >Telefono*:</label
+                        >
+                        <div class="">
+                          <input
+                            class="form-control-static"
+                            type="text"
+                            name="telefono"
+                            minlength="10"
+                            maxlength="10"
+                            required
+                            value="3145096908"
+                            formControlName="telefono"
+                            (keypress)="onlyNumberKey($event)"
+
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <!--/span-->
+                    <div class="col-7">
+                      <div class="form-group row">
+                        <label class="control-label text-right col-md-auto"
+                          >Correo:*</label
+                        >
+                        <div class="col-md-auto">
+                          <input
+                            class="form-control-static"
+                            type="email"
+                            formControlName="email"
+                            value="helmerfa@unicesar.edu.co"
+
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!--/span-->
+                  </div>
+                  <!--/row-->
+                  <div class="row">
+
+                    <!--/span-->
+                    <div class="form-group row">
+                    <div class="col-4">
+                        <label class="control-label text-right col-md-auto"
+                          >Direción*:
+                        </label>
+
+                      </div>
+                      <div class="col-8">
+                        <input
+                        class="form-control-static"
+                        type="text"
+                        formControlName="direccion"
+                        required
+                        value="calle 16b #27-05 villa corelca"
+                      />
+                      </div>
+                    </div>
+                    <!--/span-->
+                  </div>
+                  <!--/row-->
+
+
+                <div class="form-actions">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="col-md-offset-3 col-md-9">
+                          <button type="submit" class="btn btn-danger"
+                          (click)="updateDatosNotificacion()" >
+                            <i class="fa fa-pencil"></i> Editar
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-inverse"
+                            data-dismiss="modal"
+                            #botonCerrar
+                          >
+                            Salir
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6"></div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ <!-- FIN MODAL ACTUALIZACION DE DATOS -->

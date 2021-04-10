@@ -123,10 +123,8 @@ export class ListadoEmpleadoComponent implements OnInit {
     .subscribe(res=>{
       this.botonCerrar.nativeElement.click();
       this.notificacion.MensajeSuccess('Registro actualizado');
-      this.tabla.getData('');
+      this.tabla.getDataApi('');
     })
-
-
   }
 
   updateState(key:number,status:boolean){

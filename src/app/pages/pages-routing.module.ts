@@ -23,7 +23,7 @@ const pagesRoute: Routes = [
     canActivateChild:[NgxPermissionsGuard],
     data:{
       permissions: {
-        only: ['escribiente','auditor'],
+        only: ['escribiente','auditor','tecnico'],
         redirectTo: '/NotFound'
 
       }

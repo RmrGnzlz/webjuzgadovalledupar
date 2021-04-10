@@ -49,7 +49,7 @@ export class SalaComponent implements OnInit {
 
   ngOnInit() {
 
-    
+
     // this.modal.mostrarModal();
     this._ServiceGeneric.getRemove<ResponseHttp<Edificio>>(null, 'edificio')
     .subscribe(res=>this.ListaEdificios=res.data as Edificio[]);
@@ -176,7 +176,7 @@ export class SalaComponent implements OnInit {
       .subscribe(res => {
         this.notificacion.MensajeSuccess();
         this.closeModal();
-        this.tabla.getData('');
+        this.tabla.getDataApi('');
       });
   }
 
@@ -203,7 +203,7 @@ export class SalaComponent implements OnInit {
       .subscribe({
         next: (p: unknown) => {
           this.notificacion.MensajeSuccess("Registro eliminado","Exitoso")
-          this.tabla.getData('');
+          this.tabla.getDataApi('');
         }
       })
     }

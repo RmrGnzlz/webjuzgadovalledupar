@@ -12,7 +12,6 @@ import { SalaComponent } from './sala/sala.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgWizardConfig, NgWizardModule, THEME } from 'ng-wizard';
 import { ComponentsModule } from '../../components/components.module';
-import { NgxSelectModule } from 'ngx-select-ex';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { ComponentModule } from './Components/component.module';
 
@@ -34,7 +33,7 @@ const ngWizardConfig: NgWizardConfig = {
   imports: [
     TecnicoRoutingModule,
     NgWizardModule.forRoot(ngWizardConfig),
-    NgxSelectModule,
+
     NgxPermissionsModule.forChild(),
     ComponentModule
   ],

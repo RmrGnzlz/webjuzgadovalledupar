@@ -6,7 +6,9 @@ import { ValidacionComponent } from "./validacion/validar/validacion.component";
 import { ListadoComponent } from "./validacion/listado/listado.component";
 import { ComponentsModule } from "src/app/components/components.module";
 import { ListadoActaComponent } from "./GenerarActas/listado-acta/listado-acta.component";
-import { ListadoRepartoComponent } from './GeneraReparto/listado-reparto/listado-reparto.component';
+import { ListadoRepartoComponent } from './GenerarReparto/listado-reparto/listado-reparto.component';
+import { GenerarActaComponent } from './GenerarActas/generar/generarActa.component';
+import { GenerarRepartoComponent } from './GenerarReparto/generar/generarReparto.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +17,9 @@ import { ListadoRepartoComponent } from './GeneraReparto/listado-reparto/listado
     ListadoComponent,
     ListadoActaComponent,
     ListadoRepartoComponent,
+    GenerarActaComponent,
+    GenerarRepartoComponent
+
 
   ],
   imports: [CommonModule, EscribienteRoutingModule, ComponentsModule],

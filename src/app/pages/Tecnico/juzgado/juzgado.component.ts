@@ -90,7 +90,7 @@ export class JuzgadoComponent implements OnInit {
         .subscribe(res => {
           this.notificacion.MensajeSuccess(res.message);
           this.closeModal();
-          this.tabla.getData('');
+          this.tabla.getDataApi('');
         });
 
     } else {
@@ -119,10 +119,10 @@ export class JuzgadoComponent implements OnInit {
   }
 
   async delete(element: any, rowIndex: number) {
-    var res = await this.notificacion.MensajeConfir(element.nombre);
+    var res = await this.notificacion.MensajeConfir(element?.nombre);
 
     if (res) {
-      this._ServiceGeneric.getRemove<ResponseHttp<Juzgado>>(element.key, 'juzgado', null, 'delete')
+      this._ServiceGeneric.getRemove<ResponseHttp<Juzgado>>(element?.key, 'juzgado', null, 'delete')
         .subscribe({
           next: (p: unknown) => {
             this.notificacion.MensajeSuccess("juzgado eliminado");
@@ -139,7 +139,7 @@ export class JuzgadoComponent implements OnInit {
         .subscribe(res => {
           this.notificacion.MensajeSuccess();
           this.closeModal();
-         this.tabla.getData('');
+         this.tabla.getDataApi('');
         });
     } else {
       this.notificacion.MensajeInfo("formulario invalido!!");

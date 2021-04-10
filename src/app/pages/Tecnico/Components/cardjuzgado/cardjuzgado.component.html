@@ -45,7 +45,7 @@
 
               <div class="col-4" *ngIf="puedeAsignarPrincipal()" >
                 <div class="form-check mx-auto">
-                  <input type="checkbox" formControlName="principal" class="form-check-input text-left" id="exampleCheck1">
+                  <input readonly type="checkbox" formControlName="principal" class="form-check-input text-left" id="exampleCheck1">
                   <label class="form-check-label" for="exampleCheck1">Principal</label>
                 </div>
               </div>
@@ -82,9 +82,14 @@
                   <td>
                     <h6>{{item?.persona?.nombres+' '+ item?.persona?.apellidos}}</h6>
                   </td>
-                  <td class="text-center">
+
+                  <td class="text-center" *ngIf="item.tipo==='Principal'" >
                     <span class="label label-success "> <h6>PRINCIPAL</h6> </span>
                   </td>
+                  <td class="text-center" *ngIf="item.tipo==='Secundario'" >
+                    <span class="label label-success "> <h6>Secundario</h6> </span>
+                  </td>
+
                   <td>
                     <button class="btn waves-effect waves-light btn-outline-danger"
                     (click)="revocarJuez(item)"

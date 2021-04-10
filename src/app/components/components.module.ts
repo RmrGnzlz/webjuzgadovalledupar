@@ -5,6 +5,8 @@ import { TableModule } from 'ngx-easy-table';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgWizardConfig, NgWizardModule, THEME } from 'ng-wizard';
 import { NgxMaskModule } from 'ngx-mask';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxSelectModule } from 'ngx-select-ex';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.circles
@@ -21,6 +23,8 @@ const ngWizardConfig: NgWizardConfig = {
     FormsModule,
     NgWizardModule.forRoot(ngWizardConfig),
     NgxMaskModule.forRoot(),
+    PdfViewerModule,
+    NgxSelectModule
 
   ],
   exports: [
@@ -30,7 +34,9 @@ const ngWizardConfig: NgWizardConfig = {
     ReactiveFormsModule,
     FormsModule,
     NgWizardModule,
-    NgxMaskModule
+    NgxMaskModule,
+    PdfViewerModule,
+    NgxSelectModule
   ]
 })
 export class ComponentsModule { }

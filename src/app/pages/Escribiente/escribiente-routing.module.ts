@@ -1,3 +1,4 @@
+import { GenerarActaComponent } from './GenerarActas/generar/generarActa.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NgxPermissionsGuard } from 'ngx-permissions';
@@ -5,7 +6,8 @@ import { ListadoActaComponent } from './GenerarActas/listado-acta/listado-acta.c
 import { PrincipalComponent } from './principal/principal.component';
 import { ListadoComponent } from './validacion/listado/listado.component';
 import { ValidacionComponent } from './validacion/validar/validacion.component';
-import { ListadoRepartoComponent } from './GeneraReparto/listado-reparto/listado-reparto.component';
+import { ListadoRepartoComponent } from './GenerarReparto/listado-reparto/listado-reparto.component';
+import { GenerarRepartoComponent } from './GenerarReparto/generar/generarReparto.component';
 
 const EscribienteRoutes:Routes=[
 {
@@ -52,6 +54,16 @@ const EscribienteRoutes:Routes=[
         }
       }
     },
+    {
+      path:'generar',
+      component:GenerarActaComponent,
+      data: {
+        permissions: {
+          only: '',
+          redirectTo: '/Not-Found'
+        }
+      }
+    }
 
   ]
 },
@@ -66,6 +78,16 @@ const EscribienteRoutes:Routes=[
         redirectTo: '/Not-Found'
       }
     }
+    },
+    {
+      path:'generar',
+      component:GenerarRepartoComponent,
+      data: {
+        permissions: {
+          only: '',
+          redirectTo: '/Not-Found'
+        }
+      }
     }
   ]
 }
