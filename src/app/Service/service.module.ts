@@ -7,19 +7,24 @@ import {
 UsuarioService,
 SalaService,
 EdificioService,
-ServicieGeneric
+ServicieGeneric,
 } from './service.index';
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+
+  ],
+  exports:[
+
   ],
   providers:[
   UsuarioService,
   SalaService,
   EdificioService,
-  ServicieGeneric
+  ServicieGeneric,
+
   ]
 })
 export class ServiceModule { }

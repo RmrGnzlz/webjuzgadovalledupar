@@ -1,0 +1,273 @@
+<app-tabla
+#tabla
+ [rutaApi]="'juzgado'" [Columns]="Columns">
+  <button
+    data-toggle="modal"
+    data-target="#exampleModal"
+    type="button"
+    class="btn btn-outline-info text-right"
+  >
+    <i class="fa fa-plus-square"></i> Crear Juzgado
+  </button>
+    <button
+    routerLink="asignar"
+    type="button"
+    class="btn waves-effect waves-light btn-outline-primary"
+  >
+    <i class="fa fa-retweet"></i> Asignación Juzgado
+  </button>
+</app-tabla>
+
+<ng-template #estadoTpl let-row let-rowIndex="rowIndex">
+  <label>
+    <div class="switch">
+      <label>
+        <input
+          type="checkbox"
+          [checked]="row.estado"
+          (click)="updateState(row.key,!row.estado)"
+        />
+        <span class="lever switch-col-cyan"></span>
+      </label>
+    </div>
+  </label>
+</ng-template>
+
+
+
+<ng-template #actionTpl let-row let-rowIndex="rowIndex">
+  <div>
+    <button
+      data-toggle="modal"
+      data-target="#exampleModal"
+      class="btn btn-outline-info"
+      (click)="showJuzgado(row)"
+    >
+      <i class="fa fa-edit"></i>
+    </button>
+    <button
+      class="btn waves-effect waves-light btn-outline-danger"
+      (click)="delete(row,rowIndex)"
+    >
+      <i class="fa fa-trash-o"></i>
+    </button>
+  </div>
+</ng-template>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  data-backdrop="static"
+  data-keyboard="false"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE JUZGADO</h5>
+        <button
+          #botonCerrar
+          (click)="closeModal()"
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!--  -->
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <input type="hidden" name="key" formControlName="key" />
+          <div class="form-group">
+            <input
+              name="nombre"
+              id="nombre"
+              type="text"
+              class="form-control"
+              placeholder="Digite nombre del Juzgado"
+              required
+              formControlName="nombre"
+            />
+            <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+              <div
+                class="container-error-message"
+                *ngIf="nombre.errors.required"
+              >
+                <small class="text-danger"> nombre es requerido </small>
+              </div>
+              <div
+                class="container-error-message"
+                *ngIf="nombre.errors.minlength"
+              >
+                <small class="text-danger">
+                  Nombre debe contener minimo 5 caracteres
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <select
+                  class="select2 form-control custom-select"
+                  formControlName="edificioKey"
+                  id="edificioKey"
+                  name="edificioKey"
+                >
+                  <option value="">Selecione Edificio</option>
+                    <option
+                      *ngFor="let item of ListaEdificios"
+                      [ngValue]="item.key"
+                    >
+                      {{ item.nombre }}
+                    </option>
+                </select>
+                <div
+                  *ngIf="
+                    edificio.invalid && (edificio.dirty || edificio.touched)
+                  "
+                >
+                  <div
+                    class="container-error-message"
+                    *ngIf="edificio.errors.required"
+                  >
+                    <small class="text-danger"> Edificio requerido </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <select
+                  formControlName="areaKey"
+                  class="form-control"
+                >
+                  <option value="">Seleccione Area</option>
+                  <option *ngFor="let item of ListaAreas" [ngValue]="item.key">
+                    {{ item.tipo }}
+                  </option>
+                </select>
+                <div *ngIf="tipo.invalid && (tipo.dirty || tipo.touched)">
+                  <div
+                    class="container-error-message"
+                    *ngIf="tipo.errors.required"
+                  >
+                    <small class="text-danger"> Area requerida </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input
+              name="telefono"
+              id="telefono"
+              type="text"
+              class="form-control"
+              placeholder="Digite Teléfono"
+              required
+              formControlName="telefono"
+            />
+            <div *ngIf="telefono.invalid && (telefono.dirty || telefono.touched)">
+              <div
+                class="container-error-message"
+                *ngIf="telefono.errors.required"
+              >
+                <small class="text-danger"> Campo requerido </small>
+              </div>
+              <div
+                class="container-error-message"
+                *ngIf="telefono.errors.minlength"
+              >
+                <small class="text-danger">
+                  Debe contener minimo 5 digitos
+                </small>
+              </div>
+              <div
+              class="container-error-message"
+              *ngIf="telefono.errors.maxlength"
+            >
+              <small class="text-danger">
+                 Debe contener maximo 10 digitos
+              </small>
+            </div>
+            <div
+            class="container-error-message"
+            *ngIf="telefono.errors.pattern"
+          >
+            <small class="text-danger">
+              Solo se permiten numeros
+            </small>
+          </div>
+            </div>
+          </div>
+
+
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <input
+                  type="text"
+                  formControlName="email"
+                  class="form-control"
+                  placeholder="juzgado@gmail.com"
+                  aria-describedby="helpId"
+                />
+                <div *ngIf="email.invalid && (email.dirty || email.touched)">
+                  <div
+                    class="container-error-message"
+                    *ngIf="email.errors.required"
+                  >
+                    <small class="text-danger"> Correo requerido. </small>
+                  </div>
+
+                  <div
+                    class="container-error-message"
+                    *ngIf="email.errors.email"
+                  >
+                    <small class="text-danger"> Correo no valido </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          Close
+        </button>
+
+        <div *ngIf="!Actualizar">
+          <button
+            (click)="add()"
+            [disabled]="!this.form.valid"
+            class="btn btn-outline-info text-right"
+          >
+            Guardar
+          </button>
+        </div>
+        <div *ngIf="Actualizar">
+          <button
+            (click)="update()"
+            [disabled]="!this.form.valid"
+            class="btn btn-outline-info text-right"
+          >
+            Actualizar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

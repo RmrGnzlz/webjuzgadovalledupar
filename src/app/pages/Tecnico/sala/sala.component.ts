@@ -1,12 +1,14 @@
 import { ServicieGeneric } from './../../../Service/ServiceGeneric';
 import { Columns } from 'ngx-easy-table';
-import { EstadoSalaEnum, Sala } from './../../../models/Sala.Model';
+import {  Sala } from './../../../models/Sala.Model';
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { EdificioService } from '../../../Service/Edificio/edificio.service';
 import { Edificio } from 'src/app/models/Edificio.Model';
-import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { TipoSalaEnum,  SalaFisica, SalaVirtual } from '../../../models/Sala.Model';
+import { NotificacionServiceService } from 'src/app/utils/notificacion-service.service';
+import { ResponseHttp } from '../../../models/Base/ResponseHttp';
+import { EstadoGenerico } from '../../../models/Enums/EstadoGenerico';
+import { TablaComponent } from 'src/app/components/tabla/tabla.component';
 
 
 
@@ -27,6 +29,7 @@ export class SalaComponent implements OnInit {
   form: FormGroup;
   formSubmitted = false;
   public Columns: Columns[];
+  @ViewChild(TablaComponent) tabla: TablaComponent;
 
   @ViewChild('botonCerrar', { static: false }) botonCerrar: ElementRef;
   @ViewChild('tipoTpl', { static: true }) tipoTpl: TemplateRef<any>;
@@ -35,9 +38,10 @@ export class SalaComponent implements OnInit {
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
-    private service: SnotifyService,
     private formBuilder: FormBuilder,
-    private _ServiceGeneric: ServicieGeneric) {
+    private _ServiceGeneric: ServicieGeneric,
+    private notificacion: NotificacionServiceService,
+    ) {
   }
 
 
@@ -45,36 +49,29 @@ export class SalaComponent implements OnInit {
 
   ngOnInit() {
 
-    this._ServiceGeneric.getRemove<Edificio[]>(null, 'edificio')
-    .subscribe({
-      next: (res: any) => {
-        this.ListaEdificios = res.data;
-      },
-      error: console.error
 
-    });
+    // this.modal.mostrarModal();
+    this._ServiceGeneric.getRemove<ResponseHttp<Edificio>>(null, 'edificio')
+    .subscribe(res=>this.ListaEdificios=res.data as Edificio[]);
 
     this.buildForm();
     this.setSalaTipoValidator();
     this.LoadEnums();
     this.Columns = [
-      { key: 'key', title: '#',cellTemplate: this.numeroTpl },
-      { key: 'edificio.nombre', title: 'Edificio' },
-      { key: 'nombre', title: 'Sala' },
-      { key: 'tipo', title: 'Tipo', cellTemplate: this.tipoTpl },
-      { key: 'estado', title: 'Estado', cellTemplate: this.estadoTpl },
-      { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl },
+      { key: 'key', title: '#',cellTemplate: this.numeroTpl,width:'5' },
+      { key: 'edificio.nombre', title: 'Edificio',width:'40' },
+      { key: 'nombre', title: 'Sala',width:'40' },
+      { key: 'tipo', title: 'Tipo', cellTemplate: this.tipoTpl,width:'10' },
+      { key: 'estado', title: 'Estado', cellTemplate: this.estadoTpl,width:'10' },
+      { key: 'opciones', title: 'Opciones', cellTemplate: this.actionTpl,width:'20' },
     ];
-
-
-    this.loadSala();
 
   }
 
   LoadEnums() {
-    for (const item in EstadoSalaEnum) {
+    for (const item in EstadoGenerico) {
       if (isNaN(Number(item))) {
-        this.Estados.push({ text: item, value: EstadoSalaEnum[item] });
+        this.Estados.push({ text: item, value: EstadoGenerico[item] });
       }
     }
 
@@ -128,7 +125,9 @@ export class SalaComponent implements OnInit {
 
 
 
+
   ShowSala(element: any) {
+
     this.Actualizar = true;
     this.form.patchValue(element);
     this.edificio.setValidators(null);
@@ -150,55 +149,39 @@ export class SalaComponent implements OnInit {
     this.form.updateValueAndValidity();
   }
 
-  loadSala() {
-    this._ServiceGeneric.getRemove<Sala[]>(null, 'sala')
-      .subscribe({
-        next: (res: any) => {
-          this.ListaSalas = res.data;
-        },
-        error: console.error
-
-      });
-  }
 
   Update() {
-    if (this.validateForm) {
+    console.log('actualizarss');
 
+    if (this.validateForm) {
       if (this.tipo.value == TipoSalaEnum.Fisica) {
         // tslint:disable-next-line: max-line-length
         const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
         salaFisica.key = this.key.value;
-        this.PeticionPostYPut(SalaFisica, 'fisica', 'put');
-        return;
+        this.PeticionPostYPut(salaFisica, 'fisica', 'put');
+
       } else {
         // tslint:disable-next-line: max-line-length
         const salaVirtual = new SalaVirtual(this.nombre.value, +this.estado.value, this.edificio.value, this.link.value, this.plataforma.value);
         salaVirtual.key = this.key.value;
         this.PeticionPostYPut(salaVirtual, 'virtual', 'put');
-        return;
+
       }
 
     }
-
-
   }
 
   PeticionPostYPut(sala: any, tipo: string, metodo: any) {
-    // tslint:disable-next-line: max-line-length
     this._ServiceGeneric.postPatch<any>(`sala/${tipo}`, sala, null, metodo)
       .subscribe(res => {
-        this.service.success('Transacción exitosa', 'Información', { position: SnotifyPosition.rightTop });
+        this.notificacion.MensajeSuccess();
         this.closeModal();
-        this.loadSala();
-      },
-        err => this.service.error(err.error.mensaje, 'Información', { position: SnotifyPosition.rightTop }));
-
+        this.tabla.getDataApi('');
+      });
   }
 
   add() {
-
-    if (this.validateForm) {
-
+   if (this.validateForm) {
       if (this.tipo.value == TipoSalaEnum.Fisica) {
         // tslint:disable-next-line: max-line-length
         const salaFisica = new SalaFisica(this.nombre.value, +this.estado.value, this.edificio.value, this.numero.value, this.piso.value);
@@ -210,44 +193,28 @@ export class SalaComponent implements OnInit {
         this.PeticionPostYPut(salaVirtual, 'virtual', 'post');
         return;
       }
-
     }
-
-
-
   }
 
-  delete(sala: any) {
-    this.service.error('Seguro desea borrar', sala.nombre, {
-      timeout: 50000,
-      position: SnotifyPosition.rightTop,
-      showProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      buttons: [
-        { text: 'No', action: (toast) => this.service.remove(toast.id) },
-        {
-          text: 'Si', action: () =>
+  async delete(sala: any) {
+    var res=await this.notificacion.MensajeConfir(sala.nombre);
+    if (res) {
+      this._ServiceGeneric.getRemove<any>(sala.key, 'sala', null, 'delete')
+      .subscribe({
+        next: (p: unknown) => {
+          this.notificacion.MensajeSuccess("Registro eliminado","Exitoso")
+          this.tabla.getDataApi('');
+        }
+      })
+    }
 
-            this._ServiceGeneric.getRemove<any>(sala.key, 'sala', null, 'delete')
-              .subscribe({
-                next: (p: unknown) => {
-                  this.service.success('Registro eliminado', 'Información', { position: SnotifyPosition.rightTop });
-                  this.loadSala();
-                },
-                error: console.error
-              })
-        },
-      ]
-    });
   }
 
   validateForm(): boolean {
     if (this.form.valid) {
-      // this.service.success('REGISTRO EXITOSO', 'Informacion', {position: SnotifyPosition.rightTop});
       return true;
     }
-    this.service.error('Datos inconsistentes...', 'Información', { position: SnotifyPosition.rightTop });
+    this.notificacion.MensajeError('Datos inconsistentes...', 'Información');
     return false;
   }
 

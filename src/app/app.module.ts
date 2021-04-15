@@ -1,12 +1,11 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // RUTAS
 import { AppRoutingModule } from './app-routing.module';
 
 
 // MODULOS
-import { PagesModule } from './pages/pages.module';
-import { ServiceModule } from './Service/service.module';
+  import { ServiceModule } from './Service/service.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -18,9 +17,28 @@ import { LoginComponent } from './login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
+import { SolitudAnonimaComponent } from './solitud-anonima/Solicitar-solicitud/solitud-anonima.component';
 
 
+import { NgWizardModule, NgWizardConfig, THEME, TOOLBAR_POSITION } from 'ng-wizard';
+import { NgxMaskModule } from 'ngx-mask';
+import { ConsultarSolicitudComponent } from './solitud-anonima/consultar-solicitud/consultar-solicitud.component';
+import { InterceptorService } from './Service/Interceptors/interceptor.service';
+import { PagesComponent } from './pages/pages.component';
+import { SharedModule } from './shared/shared.module';
+import { PagesModule } from './pages/pages.module';
+import { SnotifyModule, ToastDefaults, SnotifyService } from 'ng-snotify';
+import { ComponentsModule } from './components/components.module';
+import { ModalAuthComponent } from './components/modal-auth/modal-auth.component';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
+const ngWizardConfig: NgWizardConfig = {
+  theme: THEME.circles,
+  lang: {
+    next: "Siguiente",
+    previous:"Anterior"
+  },
+};
 
 
 
@@ -28,29 +46,41 @@ import { RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
   declarations: [
     AppComponent,
     NotFoundComponent,
-    LoginComponent
-
-
-
+    LoginComponent,
+    SolitudAnonimaComponent,
+    ConsultarSolicitudComponent,
+    ModalAuthComponent,
+    PagesComponent,
   ],
   imports: [
-
     BrowserModule,
-    PagesModule,
     AppRoutingModule,
-    ServiceModule,
+    NgxMaskModule.forRoot(),
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    RxReactiveFormsModule
+    SnotifyModule,
+    RxReactiveFormsModule,
+    NgWizardModule.forRoot(ngWizardConfig),
+    SharedModule,
+    ServiceModule,
+    PagesModule,
+    // ComponentsModule,
+    NgxPermissionsModule.forRoot(),
 
-    // SharedModule
   ],
   exports: [
 
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptorService,
+      multi:true
+    },
+    { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
+    SnotifyService
 
   ],
   bootstrap: [AppComponent]

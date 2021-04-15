@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 //HELPERS
 import { Validators } from '@angular/forms';
+import { NgxPermissionsService, NgxRolesService } from 'ngx-permissions';
 import { ValidatorHelper } from './utils/validator-helper';
 
 
@@ -19,6 +20,7 @@ constructor(){
 
 ngOnInit(): void {
   Validators.minLength = ValidatorHelper.minLength;
+
 }
 
 }
